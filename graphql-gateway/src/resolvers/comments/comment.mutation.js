@@ -1,12 +1,13 @@
 import { isString } from 'lodash'
 
 const CommentMutation = {
-  async createComment(parent, { data }, { commentService, postService, userService, pubsub }, info) {
-    const userExists = (await userService.count({ query: { where: { id: data.author } } })) >= 1
-    const postExists =
-      (await postService.count({
-        query: { where: { id: data.post, published: true } }
-      })) >= 1
+  async createComment(parent, { data }, { commentService, postService, userService, logger, pubsub }, info) {
+    logger.info('CommentMutation#createComment.call', data)
+
+    const userExists = (await userService.count({ where: { id: data.author } })) >= 1
+    const postExists = (await postService.count({ where: { id: data.post, published: true } })) >= 1
+
+    logger.info('CommentMutation#createComment.check', !userExists, !postExists)
 
     if (!userExists || !postExists) {
       throw new Error('Unable to find user and post')
@@ -21,11 +22,18 @@ const CommentMutation = {
       }
     })
 
+    logger.info('CommentMutation#createComment.result', comment)
+
     return comment
   },
-  async updateComment(parent, args, { commentService, pubsub }, info) {
+  async updateComment(parent, args, { commentService, logger, pubsub }, info) {
     const { id, data } = args
-    const comment = await commentService.findOne({ query: { where: { id } } })
+
+    logger.info('CommentMutation#updateComment.call', id, data)
+
+    const comment = await commentService.findOne({ where: { id } })
+
+    logger.info('CommentMutation#updateComment.target', comment)
 
     if (!comment) {
       throw new Error('Comment not found')
@@ -35,25 +43,31 @@ const CommentMutation = {
       comment.text = data.text
     }
 
-    await commentService.update({ id, data: comment })
+    const updatedComment = await commentService.update(id, comment)
 
-    pubsub.publish(`comment#${comment.post}`, {
+    pubsub.publish(`comment#${updatedComment.post}`, {
       comment: {
         mutation: 'UPDATED',
-        data: comment
+        data: updatedComment
       }
     })
 
-    return comment
+    logger.info('CommentMutation#updateComment.result', updatedComment)
+
+    return updatedComment
   },
-  async deleteComment(parent, { id }, { commentService, pubsub }, info) {
-    const comment = await commentService.findOne({ query: { where: { id } } })
+  async deleteComment(parent, { id }, { commentService, logger, pubsub }, info) {
+    logger.info('CommentMutation#deleteComment.call', id)
+
+    const comment = await commentService.findOne({ where: { id } })
+
+    logger.info('CommentMutation#deleteComment.check', !comment)
 
     if (!comment) {
       throw new Error('Comment not found')
     }
 
-    await commentService.destroy({ id })
+    await commentService.destroy(id)
 
     pubsub.publish(`comment#${comment.post}`, {
       comment: {
@@ -61,6 +75,8 @@ const CommentMutation = {
         data: comment
       }
     })
+
+    logger.info('CommentMutation#deleteComment.result', comment)
 
     return comment
   }
