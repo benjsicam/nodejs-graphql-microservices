@@ -6,11 +6,11 @@ import { GraphQLServer } from 'graphql-yoga'
 import { assign, reduce, startCase } from 'lodash'
 import { RedisPubSub } from 'graphql-redis-subscriptions'
 
-import ServiceIndex from './services/_index'
 import * as QueryResolver from 'glob:./resolvers/**/*.query.js' // eslint-disable-line
 import * as MutationResolver from 'glob:./resolvers/**/*.mutation.js' // eslint-disable-line
 import * as SubscriptionResolver from 'glob:./resolvers/**/*.subscription.js' // eslint-disable-line
 import * as GraphResolver from 'glob:./resolvers/**/*.graph.js' // eslint-disable-line
+import ServiceIndex from './services/_index'
 
 const logger = pino({
   safe: true,
@@ -73,6 +73,6 @@ server.start(
     port: process.env.PORT || 3000
   },
   ({ port }) => {
-    console.log(`GraphQL Server is now running on port ${port}`)
+    logger.info(`GraphQL Server is now running on port ${port}`)
   }
 )
