@@ -1,18 +1,18 @@
-import uuidv4 from 'uuid/v4'
 import { isString, isBoolean } from 'lodash'
 
 const PostMutation = {
-  async createPost(parent, { data }, { postService, userService, pubsub }, info) {
+  async createPost(parent, { data }, { postService, userService, logger, pubsub }, info) {
+    logger.info('PostMutation#createPost.call', data)
+
     const userExists = (await userService.count({ where: { id: data.author } })) >= 1
+
+    logger.info('PostMutation#createPost.check', !userExists)
 
     if (!userExists) {
       throw new Error('User not found')
     }
 
-    const post = await postService.create({
-      id: uuidv4(),
-      ...data
-    })
+    const post = await postService.create(data)
 
     if (data.published) {
       pubsub.publish('post', {
@@ -23,12 +23,19 @@ const PostMutation = {
       })
     }
 
+    logger.info('PostMutation#createPost.result', post)
+
     return post
   },
-  async updatePost(parent, args, { postService, pubsub }, info) {
+  async updatePost(parent, args, { postService, logger, pubsub }, info) {
     const { id, data } = args
+
+    logger.info('PostMutation#updatePost.call', id, data)
+
     const post = await postService.findOne({ where: { id } })
     const originalPost = { ...post }
+
+    logger.info('PostMutation#updatePost.target', post)
 
     if (!post) {
       throw new Error('Post not found')
@@ -46,9 +53,11 @@ const PostMutation = {
       post.published = data.published
     }
 
-    await postService.update(id, post)
+    const updatedPost = await postService.update(id, post)
 
     if (originalPost.published && !post.published) {
+      logger.info('PostMutation#updatePost.event', 'DELETED')
+
       pubsub.publish('post', {
         post: {
           mutation: 'DELETED',
@@ -56,25 +65,35 @@ const PostMutation = {
         }
       })
     } else if (!originalPost.published && post.published) {
+      logger.info('PostMutation#updatePost.event', 'CREATED')
+
       pubsub.publish('post', {
         post: {
           mutation: 'CREATED',
-          data: post
+          data: updatedPost
         }
       })
     } else if (post.published) {
+      logger.info('PostMutation#updatePost.event', 'UPDATED')
+
       pubsub.publish('post', {
         post: {
           mutation: 'UPDATED',
-          data: post
+          data: updatedPost
         }
       })
     }
 
-    return post
+    logger.info('PostMutation#updatePost.result', updatedPost)
+
+    return updatedPost
   },
-  async deletePost(parent, { id }, { postService, pubsub }, info) {
+  async deletePost(parent, { id }, { postService, logger, pubsub }, info) {
+    logger.info('PostMutation#deletePost.call', id)
+
     const post = await postService.findOne({ where: { id } })
+
+    logger.info('PostMutation#deletePost.check', !post)
 
     if (!post) {
       throw new Error('Post not found')
@@ -90,6 +109,8 @@ const PostMutation = {
         }
       })
     }
+
+    logger.info('PostMutation#deletePost.result', post)
 
     return post
   }

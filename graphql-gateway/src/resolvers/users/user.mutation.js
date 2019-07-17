@@ -1,24 +1,31 @@
-import uuidv4 from 'uuid/v4'
 import { isString, isNumber } from 'lodash'
 
 const UserMutation = {
-  async createUser(parent, { data }, { userService }, info) {
+  async createUser(parent, { data }, { userService, logger }, info) {
+    logger.info('UserMutation#createUser.call', data)
+
     const userExists = (await userService.count({ where: { email: data.email } })) >= 1
+
+    logger.info('UserMutation#createUser.check', userExists)
 
     if (userExists) {
       throw new Error('Email taken')
     }
 
-    const user = await userService.create({
-      id: uuidv4(),
-      ...data
-    })
+    const user = await userService.create(data)
+
+    logger.info('UserMutation#createUser.result', user)
 
     return user
   },
-  async updateUser(parent, args, { userService }, info) {
+  async updateUser(parent, args, { userService, logger }, info) {
     const { id, data } = args
+
+    logger.info('UserMutation#updateUser.call', id, data)
+
     const user = await userService.findOne({ where: { id } })
+
+    logger.info('UserMutation#updateUser.target', user)
 
     if (!user) {
       throw new Error('User not found')
@@ -42,11 +49,15 @@ const UserMutation = {
       user.age = data.age
     }
 
-    await userService.update(id, user)
+    const updatedUser = await userService.update(id, user)
 
-    return user
+    logger.info('UserMutation#updateUser.result', updatedUser)
+
+    return updatedUser
   },
-  async deleteUser(parent, { id }, { userService }, info) {
+  async deleteUser(parent, { id }, { userService, logger }, info) {
+    logger.info('UserMutation#deleteUser.result', id)
+
     const user = await userService.findOne({ where: { id } })
 
     if (!user) {
@@ -54,6 +65,8 @@ const UserMutation = {
     }
 
     await userService.destroy(id)
+
+    logger.info('UserMutation#deleteUser.result', user)
 
     return user
   }
