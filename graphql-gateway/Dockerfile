@@ -1,0 +1,17 @@
+FROM node:10-alpine as build
+
+WORKDIR /usr/local/graphql-gateway
+
+COPY dist ./
+
+RUN npm install --production
+
+FROM node:10-alpine
+
+WORKDIR /usr/local/graphql-gateway
+
+COPY --from=build /usr/local/graphql-gateway .
+
+EXPOSE 8080
+
+CMD ["node", "main.js"]

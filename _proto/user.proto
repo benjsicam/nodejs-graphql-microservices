@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/any.proto";
+
+message Id {
+  string id = 1;
+}
+
+message Query {
+  google.protobuf.Any query = 1;
+}
+
+message Count {
+  int32 count = 1;
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  int32 age = 4;
+}
+
+message CreateUserInput {
+  string name = 2;
+  string email = 3;
+  int32 age = 4;
+}
+
+message UpdateUserInput {
+  string id = 1;
+  User data = 2;
+}
+
+message UserList {
+  repeated User users = 1;
+}
+
+service UserService {
+  rpc findAll (Query) returns (UserList) {}
+  rpc findOne (Query) returns (User) {}
+  rpc count (Query) returns (User) {}
+  rpc create (CreateUserInput) returns (User) {}
+  rpc update (UpdateUserInput) returns (User) {}
+  rpc destroy (Id) returns (google.protobuf.Empty) {}
+}

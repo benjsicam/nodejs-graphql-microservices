@@ -1,0 +1,9 @@
+{
+    "presets": [
+        "@babel/preset-env"
+    ],
+    "plugins": [
+      "import-glob",
+      "inline-dotenv"
+    ]
+}

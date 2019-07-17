@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/any.proto";
+
+message Id {
+  string id = 1;
+}
+
+message Query {
+  google.protobuf.Any query = 1;
+}
+
+message Count {
+  int32 count = 1;
+}
+
+message Comment {
+  string id = 1;
+  string text = 2;
+  string user = 3;
+  string post = 4;
+}
+
+message CreateCommentInput {
+  string text = 1;
+  string user = 2;
+  string post = 3;
+}
+
+message UpdateCommentInput {
+  string id = 1;
+  Comment data = 2;
+}
+
+message CommentList {
+  repeated Comment comments = 1;
+}
+
+service CommentService {
+  rpc findAll (Query) returns (CommentList) {}
+  rpc findOne (Query) returns (Comment) {}
+  rpc count (Query) returns (Count) {}
+  rpc create (CreateCommentInput) returns (Comment) {}
+  rpc update (UpdateCommentInput) returns (Comment) {}
+  rpc destroy (Id) returns (google.protobuf.Empty) {}
+}

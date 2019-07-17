@@ -1,0 +1,65 @@
+version: "3.6"
+services:
+  comments_svc:
+    build:
+      context: "."
+      dockerfile: "./grpc-services/comments/Dockerfile"
+    depends_on:
+      - "db"
+    environment:
+      DATABASE_URL: "postgres://postgres:golangBlogSample1234@db/postgres?sslmode=disable"
+
+  posts_svc:
+    build:
+      context: "."
+      dockerfile: "./grpc-services/posts/Dockerfile"
+    depends_on:
+      - "db"
+    environment:
+      DATABASE_URL: "postgres://postgres:golangBlogSample1234@db/postgres?sslmode=disable"
+
+  users_svc:
+    build:
+      context: "."
+      dockerfile: "./grpc-services/users/Dockerfile"
+    depends_on:
+      - "db"
+    environment:
+      DATABASE_URL: "postgres://postgres:golangBlogSample1234@db/postgres?sslmode=disable"
+
+  graphql-gateway:
+    build:
+      context: "."
+      dockerfile: "./graphql-gateway/Dockerfile"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "cache"
+      - "comments_svc"
+      - "posts_svc"
+      - "users_svc"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8080
+      REDIS_HOST: cache
+      REDIS_PORT: 6379
+      JWT_SECRET: 47YNbpelXTd2gAi+6r1C4bDj4NSlxUDS
+      COMMENTS_SVC_URL: "comments_svc:8080"
+      POSTS_SVC_URL: "posts_svc:8080"
+      USERS_SVC_URL: "users_svc:8080"
+
+  db:
+    image: "postgres:11.4-alpine"
+    ports: 
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "golangBlogSample1234"
+    restart: "unless-stopped"
+  
+  cache:
+    image: "redis:5.0.5-alpine"
+    ports:
+      - "6379:6379"
+    restart: "unless-stopped"
