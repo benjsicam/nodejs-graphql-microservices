@@ -1,9 +1,10 @@
-import * as grpc from '@grpc/grpc-js'
 import Aigle from 'aigle'
 
-import { CommentServiceClient } from './comments/comment.client'
-import { PostServiceClient } from './posts/post.client'
-import { UserServiceClient } from './users/user.client'
+import * as grpc from '@grpc/grpc-js'
+
+import CommentServiceClient from './comments/comment.client'
+import PostServiceClient from './posts/post.client'
+import UserServiceClient from './users/user.client'
 
 import CommentService from './comments/comment.service'
 import PostService from './posts/post.service'

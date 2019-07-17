@@ -8,4 +8,4 @@ const PROTO_PATH = path.resolve(__dirname, '../_proto/comment.proto')
 const packageDefinition = protoLoader.loadSync(PROTO_PATH)
 const CommentServiceClient = grpc.loadPackageDefinition(packageDefinition).CommentService
 
-export { CommentServiceClient }
+export default CommentServiceClient

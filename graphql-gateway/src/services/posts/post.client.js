@@ -8,4 +8,4 @@ const PROTO_PATH = path.resolve(__dirname, '../_proto/post.proto')
 const packageDefinition = protoLoader.loadSync(PROTO_PATH)
 const PostServiceClient = grpc.loadPackageDefinition(packageDefinition).PostService
 
-export { PostServiceClient }
+export default PostServiceClient
