@@ -1,16 +1,16 @@
 {
-  "name": "node-graphql-microservices",
+  "name": "graphql-gateway",
   "version": "1.0.0",
   "description": "A sample GraphQL API built in Node.js with gRPC back-end microservices. Used for learning/trial purposes only.",
   "scripts": {
     "start": "nodemon --exec babel-node ./src/main.js",
-    "build": "rimraf dist && babel src --out-dir dist --ignore 'tests/**' -s inline --copy-files",
+    "build": "rimraf dist && babel src --out-dir dist --ignore 'tests/**' -s inline --copy-files && cpy package.json dist",
     "test": "jest --watch",
     "lint": "eslint --max-warnings=0 ./src",
     "lint:fix": "eslint --fix ./src",
+    "copy:protos": "cpy ../_proto ./src/services/_proto",
     "precommit": "npm run lint:fix && npm run lint",
-    "prepush": "npm run test",
-    "copy:protos": "cpy ../_proto ./src/services/_proto"
+    "prepush": "npm run test"
   },
   "repository": {
     "type": "git",
