@@ -1,19 +1,9 @@
 syntax = "proto3";
 
+package comment;
+
+import "commons.proto";
 import "google/protobuf/empty.proto";
-import "google/protobuf/any.proto";
-
-message Id {
-  string id = 1;
-}
-
-message Query {
-  google.protobuf.Any query = 1;
-}
-
-message Count {
-  int32 count = 1;
-}
 
 message Comment {
   string id = 1;

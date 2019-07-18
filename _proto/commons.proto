@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package commons;
+
+import "google/protobuf/any.proto";
+
+message Id {
+  string id = 1;
+}
+
+message Query {
+  google.protobuf.Any query = 1;
+}
+
+message Count {
+  int32 count = 1;
+}
