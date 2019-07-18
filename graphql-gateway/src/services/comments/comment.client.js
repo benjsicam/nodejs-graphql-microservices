@@ -6,6 +6,6 @@ import * as protoLoader from '@grpc/proto-loader'
 const PROTO_PATH = path.resolve(__dirname, '../_proto/comment.proto')
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH)
-const CommentServiceClient = grpc.loadPackageDefinition(packageDefinition).CommentService
+const CommentServiceClient = grpc.loadPackageDefinition(packageDefinition).comment.CommentService
 
 export default CommentServiceClient

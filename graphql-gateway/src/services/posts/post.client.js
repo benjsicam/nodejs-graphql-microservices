@@ -6,6 +6,6 @@ import * as protoLoader from '@grpc/proto-loader'
 const PROTO_PATH = path.resolve(__dirname, '../_proto/post.proto')
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH)
-const PostServiceClient = grpc.loadPackageDefinition(packageDefinition).PostService
+const PostServiceClient = grpc.loadPackageDefinition(packageDefinition).post.PostService
 
 export default PostServiceClient

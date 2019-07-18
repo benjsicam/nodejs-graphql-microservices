@@ -6,6 +6,6 @@ import * as protoLoader from '@grpc/proto-loader'
 const PROTO_PATH = path.resolve(__dirname, '../_proto/user.proto')
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH)
-const UserServiceClient = grpc.loadPackageDefinition(packageDefinition).UserService
+const UserServiceClient = grpc.loadPackageDefinition(packageDefinition).user.UserService
 
 export default UserServiceClient
