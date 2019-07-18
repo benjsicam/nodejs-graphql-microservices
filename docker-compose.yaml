@@ -1,36 +1,77 @@
-version: "3.6"
+version: "3.7"
+
 services:
   comments_svc:
+    image: "comments-svc:dev"
+    container_name: "comments-svc"
     build:
       context: "."
       dockerfile: "./grpc-services/comments/Dockerfile"
+    networks:
+      - "frontend"
+      - "backend"
+    expose: 
+      - "8081"
     depends_on:
       - "db"
     environment:
-      DATABASE_URL: "postgres://postgres:golangBlogSample1234@db/postgres?sslmode=disable"
+      HOST: "0.0.0.0"
+      PORT: "8080"
+      REDIS_HOST: "cache"
+      REDIS_PORT: "6379"
+      DATABASE_URL: "postgres://postgres:postgres@db:5432/postgres?sslmode=disable"
+    restart: "on-failure"
 
   posts_svc:
+    image: "posts-svc:dev"
+    container_name: "posts-svc"
     build:
       context: "."
       dockerfile: "./grpc-services/posts/Dockerfile"
+    networks:
+      - "frontend"
+      - "backend"
+    expose: 
+      - "8082"
     depends_on:
       - "db"
     environment:
-      DATABASE_URL: "postgres://postgres:golangBlogSample1234@db/postgres?sslmode=disable"
+      HOST: "0.0.0.0"
+      PORT: "8080"
+      REDIS_HOST: "cache"
+      REDIS_PORT: "6379"
+      DATABASE_URL: "postgres://postgres:postgres@db:5432/postgres?sslmode=disable"
+    restart: "on-failure"
 
   users_svc:
+    image: "users-svc:dev"
+    container_name: "users-svc"
     build:
       context: "."
       dockerfile: "./grpc-services/users/Dockerfile"
+    networks:
+      - "frontend"
+      - "backend"
+    expose: 
+      - "8083"
     depends_on:
       - "db"
     environment:
-      DATABASE_URL: "postgres://postgres:golangBlogSample1234@db/postgres?sslmode=disable"
+      HOST: "0.0.0.0"
+      PORT: "8080"
+      REDIS_HOST: "cache"
+      REDIS_PORT: "6379"
+      DATABASE_URL: "postgres://postgres:postgres@db:5432/postgres?sslmode=disable"
+    restart: "on-failure"
 
-  graphql-gateway:
+  graphql_gateway:
+    image: "graphql-gateway:dev"
+    container_name: "graphql-gateway"
     build:
       context: "."
       dockerfile: "./graphql-gateway/Dockerfile"
+    networks:
+      - "frontend"
     ports:
       - "8080:8080"
     depends_on:
@@ -39,27 +80,34 @@ services:
       - "posts_svc"
       - "users_svc"
     environment:
-      HOST: 0.0.0.0
-      PORT: 8080
-      REDIS_HOST: cache
-      REDIS_PORT: 6379
-      JWT_SECRET: 47YNbpelXTd2gAi+6r1C4bDj4NSlxUDS
-      COMMENTS_SVC_URL: "comments_svc:8080"
-      POSTS_SVC_URL: "posts_svc:8080"
-      USERS_SVC_URL: "users_svc:8080"
+      HOST: "0.0.0.0"
+      PORT: "8080"
+      REDIS_HOST: "cache"
+      REDIS_PORT: "6379"
+      JWT_SECRET: "47YNbpelXTd2gAi+6r1C4bDj4NSlxUDS"
+      COMMENTS_SVC_URL: "comments_svc:8081"
+      POSTS_SVC_URL: "posts_svc:8082"
+      USERS_SVC_URL: "users_svc:8083"
+    restart: "on-failure"
 
   db:
     image: "postgres:11.4-alpine"
-    ports: 
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: "postgres"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "golangBlogSample1234"
-    restart: "unless-stopped"
+    container_name: "postgres"
+    networks:
+      - "backend"
+    expose:
+      - "5432"
+    restart: "on-failure"
   
   cache:
     image: "redis:5.0.5-alpine"
-    ports:
-      - "6379:6379"
-    restart: "unless-stopped"
+    container_name: "redis"
+    networks:
+      - "backend"
+    expose: 
+      - "6379"
+    restart: "on-failure"
+
+networks:
+  frontend:
+  backend:
