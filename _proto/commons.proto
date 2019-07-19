@@ -2,14 +2,12 @@ syntax = "proto3";
 
 package commons;
 
-import "google/protobuf/any.proto";
-
 message Id {
   string id = 1;
 }
 
 message Query {
-  google.protobuf.Any query = 1;
+  string query = 1; // Should've been google.protobuf.Struct type but still not supported https://groups.google.com/d/msg/protobuf/1772tpAr3N4/pngSAwmIBgAJ
 }
 
 message Count {
