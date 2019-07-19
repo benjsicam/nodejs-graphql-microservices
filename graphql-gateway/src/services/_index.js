@@ -1,6 +1,4 @@
-import Aigle from 'aigle'
-
-import * as grpc from '@grpc/grpc-js'
+import * as grpc from 'grpc'
 
 import CommentServiceClient from './comments/comment.client'
 import PostServiceClient from './posts/post.client'
@@ -14,9 +12,9 @@ class ServiceIndex {
   constructor(logger) {
     const grpcCredentials = grpc.credentials.createInsecure()
 
-    const commentServiceClient = Aigle.promisifyAll(new CommentServiceClient(process.env.COMMENTS_SVC_URL, grpcCredentials))
-    const postServiceClient = Aigle.promisifyAll(new PostServiceClient(process.env.POSTS_SVC_URL, grpcCredentials))
-    const userServiceClient = Aigle.promisifyAll(new UserServiceClient(process.env.USERS_SVC_URL, grpcCredentials))
+    const commentServiceClient = new CommentServiceClient(process.env.COMMENTS_SVC_URL, grpcCredentials)
+    const postServiceClient = new PostServiceClient(process.env.POSTS_SVC_URL, grpcCredentials)
+    const userServiceClient = new UserServiceClient(process.env.USERS_SVC_URL, grpcCredentials)
 
     this.services = {
       commentService: new CommentService(commentServiceClient, logger),
