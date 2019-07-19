@@ -99,7 +99,7 @@ const PostMutation = {
       throw new Error('Post not found')
     }
 
-    await postService.destroy(id)
+    const count = await postService.destroy(id)
 
     if (post.published) {
       pubsub.publish('post', {
@@ -110,9 +110,9 @@ const PostMutation = {
       })
     }
 
-    logger.info('PostMutation#deletePost.result', post)
+    logger.info('PostMutation#deletePost.result', count, post)
 
-    return post
+    return count
   }
 }
 
