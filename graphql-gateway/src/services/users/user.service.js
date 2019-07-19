@@ -1,18 +1,8 @@
-import AbstractService from '../abstract.service'
+import AbstractCrudService from '../abstract-crud.service'
 
-class UserService extends AbstractService {
+class UserService extends AbstractCrudService {
   constructor(client, logger) {
     super('UserService', client, logger)
-  }
-
-  async findAll(query) {
-    this._logger.info(`${this._serviceName}#findAll.call`, query)
-
-    return this._client.findAll({ query }).then(result => {
-      this._logger.info(`${this._serviceName}#findAll.result`, result)
-
-      return result.usersList
-    })
   }
 }
 
