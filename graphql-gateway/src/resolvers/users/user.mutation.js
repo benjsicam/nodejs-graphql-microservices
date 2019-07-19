@@ -64,11 +64,11 @@ const UserMutation = {
       throw new Error('User not found')
     }
 
-    await userService.destroy(id)
+    const count = await userService.destroy(id)
 
-    logger.info('UserMutation#deleteUser.result', user)
+    logger.info('UserMutation#deleteUser.result', count, user)
 
-    return user
+    return count
   }
 }
 
