@@ -5,55 +5,20 @@ type Query {
 }
 
 type Mutation {
-  createUser(data: CreateUserInput!): User!
-  deleteUser(id: ID!): User!
-  updateUser(id: ID!, data: UpdateUserInput!): User!
-  createPost(data: CreatePostInput!): Post!
-  deletePost(id: ID!): Post!
-  updatePost(id: ID!, data: UpdatePostInput!): Post!
   createComment(data: CreateCommentInput!): Comment!
-  deleteComment(id: ID!): Comment!
   updateComment(id: ID!, data: UpdateCommentInput!): Comment!
+  deleteComment(id: ID!): Int!
+  createPost(data: CreatePostInput!): Post!
+  updatePost(id: ID!, data: UpdatePostInput!): Post!
+  deletePost(id: ID!): Int!
+  createUser(data: CreateUserInput!): User!
+  updateUser(id: ID!, data: UpdateUserInput!): User!
+  deleteUser(id: ID!): Int!
 }
 
 type Subscription {
   comment(post: ID!): CommentSubscriptionPayload!
   post: PostSubscriptionPayload!
-}
-
-input CreateUserInput {
-  name: String!
-  email: String!
-  age: Int
-}
-
-input UpdateUserInput {
-  name: String
-  email: String
-  age: Int
-}
-
-input CreatePostInput {
-  title: String!
-  body: String!
-  published: Boolean!
-  author: ID!
-}
-
-input UpdatePostInput {
-  title: String
-  body: String
-  published: Boolean
-}
-
-input CreateCommentInput {
-  text: String!
-  author: ID!
-  post: ID!
-}
-
-input UpdateCommentInput {
-  text: String
 }
 
 type User {
@@ -81,12 +46,47 @@ type Comment {
   post: Post!
 }
 
-type PostSubscriptionPayload {
-  mutation: String!
-  data: Post!
+input CreateCommentInput {
+  text: String!
+  author: ID!
+  post: ID!
+}
+
+input UpdateCommentInput {
+  text: String
+}
+
+input CreatePostInput {
+  title: String!
+  body: String!
+  published: Boolean!
+  author: ID!
+}
+
+input UpdatePostInput {
+  title: String
+  body: String
+  published: Boolean
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  age: Int
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  age: Int
 }
 
 type CommentSubscriptionPayload {
   mutation: String!
   data: Comment!
+}
+
+type PostSubscriptionPayload {
+  mutation: String!
+  data: Post!
 }
