@@ -3,18 +3,17 @@ syntax = "proto3";
 package comment;
 
 import "commons.proto";
-import "google/protobuf/empty.proto";
 
 message Comment {
   string id = 1;
   string text = 2;
-  string user = 3;
+  string author = 3;
   string post = 4;
 }
 
 message CreateCommentInput {
   string text = 1;
-  string user = 2;
+  string author = 2;
   string post = 3;
 }
 
@@ -24,7 +23,7 @@ message UpdateCommentInput {
 }
 
 message CommentList {
-  repeated Comment comments = 1;
+  repeated Comment list = 1;
 }
 
 service CommentService {
@@ -33,5 +32,5 @@ service CommentService {
   rpc count (Query) returns (Count) {}
   rpc create (CreateCommentInput) returns (Comment) {}
   rpc update (UpdateCommentInput) returns (Comment) {}
-  rpc destroy (Id) returns (google.protobuf.Empty) {}
+  rpc destroy (Id) returns (Count) {}
 }

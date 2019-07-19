@@ -3,7 +3,6 @@ syntax = "proto3";
 package post;
 
 import "commons.proto";
-import "google/protobuf/empty.proto";
 
 message Post {
   string id = 1;
@@ -26,7 +25,7 @@ message UpdatePostInput {
 }
 
 message PostList {
-  repeated Post posts = 1;
+  repeated Post list = 1;
 }
 
 service PostService {
@@ -35,5 +34,5 @@ service PostService {
   rpc count (Query) returns (Count) {}
   rpc create (CreatePostInput) returns (Post) {}
   rpc update (UpdatePostInput) returns (Post) {}
-  rpc destroy (Id) returns (google.protobuf.Empty) {}
+  rpc destroy (Id) returns (Count) {}
 }

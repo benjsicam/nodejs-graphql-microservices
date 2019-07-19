@@ -3,7 +3,6 @@ syntax = "proto3";
 package user;
 
 import "commons.proto";
-import "google/protobuf/empty.proto";
 
 message User {
   string id = 1;
@@ -24,14 +23,14 @@ message UpdateUserInput {
 }
 
 message UserList {
-  repeated User users = 1;
+  repeated User list = 1;
 }
 
 service UserService {
   rpc findAll (Query) returns (UserList) {}
   rpc findOne (Query) returns (User) {}
-  rpc count (Query) returns (User) {}
+  rpc count (Query) returns (Count) {}
   rpc create (CreateUserInput) returns (User) {}
   rpc update (UpdateUserInput) returns (User) {}
-  rpc destroy (Id) returns (google.protobuf.Empty) {}
+  rpc destroy (Id) returns (Count) {}
 }
