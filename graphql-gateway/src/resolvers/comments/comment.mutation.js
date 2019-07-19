@@ -67,7 +67,7 @@ const CommentMutation = {
       throw new Error('Comment not found')
     }
 
-    await commentService.destroy(id)
+    const count = await commentService.destroy(id)
 
     pubsub.publish(`comment#${comment.post}`, {
       comment: {
@@ -76,9 +76,9 @@ const CommentMutation = {
       }
     })
 
-    logger.info('CommentMutation#deleteComment.result', comment)
+    logger.info('CommentMutation#deleteComment.result', count, comment)
 
-    return comment
+    return count
   }
 }
 
