@@ -10,8 +10,8 @@ env:
   node: true
   jest: true
 rules:
-  no-underscore-dangle: off
-  no-unused-vars: off
+  no-underscore-dangle: 0
+  no-unused-vars: 0
   prettier/prettier:
     - error
     - parser: "babel"
