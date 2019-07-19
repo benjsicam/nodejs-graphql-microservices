@@ -1,5 +1,5 @@
+import path from 'path'
 import pino from 'pino'
-
 import Redis from 'ioredis'
 
 import { GraphQLServer } from 'graphql-yoga'
@@ -10,6 +10,8 @@ import * as QueryResolver from 'glob:./resolvers/**/*.query.js' // eslint-disabl
 import * as MutationResolver from 'glob:./resolvers/**/*.mutation.js' // eslint-disable-line
 import * as SubscriptionResolver from 'glob:./resolvers/**/*.subscription.js' // eslint-disable-line
 import * as GraphResolver from 'glob:./resolvers/**/*.graph.js' // eslint-disable-line
+
+import query from './default-query'
 import ServiceIndex from './services/_index'
 
 const logger = pino({
@@ -32,7 +34,7 @@ const pubsub = new RedisPubSub({
 })
 
 const server = new GraphQLServer({
-  typeDefs: './src/schema.graphql',
+  typeDefs: path.resolve(__dirname, 'schema.graphql'),
   resolvers: {
     Query: reduce(
       QueryResolver,
@@ -70,6 +72,7 @@ const server = new GraphQLServer({
 
 server.start(
   {
+    defaultPlaygroundQuery: query,
     port: process.env.PORT || 3000
   },
   ({ port }) => {
