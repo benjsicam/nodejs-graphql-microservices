@@ -1,108 +1,128 @@
-version: "3.7"
+version: "3.3"
 
 services:
-  comments_svc:
+  comments-svc:
     image: "comments-svc:dev"
     container_name: "comments-svc"
     build:
-      context: "."
-      dockerfile: "./grpc-services/comments/Dockerfile"
+      context: "./grpc-services/comments"
     networks:
       - "frontend"
       - "backend"
     expose: 
-      - "8081"
+      - "8080"
     depends_on:
       - "db"
+      - "cache"
     environment:
+      NODE_ENV: "production"
       HOST: "0.0.0.0"
       PORT: "8080"
+      DB_NAME: "postgres"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
-      DATABASE_URL: "postgres://postgres:postgres@db:5432/postgres?sslmode=disable"
     restart: "on-failure"
 
-  posts_svc:
+  posts-svc:
     image: "posts-svc:dev"
     container_name: "posts-svc"
     build:
-      context: "."
-      dockerfile: "./grpc-services/posts/Dockerfile"
+      context: "./grpc-services/posts"
     networks:
       - "frontend"
       - "backend"
     expose: 
-      - "8082"
+      - "8080"
     depends_on:
       - "db"
+      - "cache"
     environment:
+      NODE_ENV: "production"
       HOST: "0.0.0.0"
       PORT: "8080"
+      DB_NAME: "postgres"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
-      DATABASE_URL: "postgres://postgres:postgres@db:5432/postgres?sslmode=disable"
     restart: "on-failure"
 
-  users_svc:
+  users-svc:
     image: "users-svc:dev"
     container_name: "users-svc"
     build:
-      context: "."
-      dockerfile: "./grpc-services/users/Dockerfile"
+      context: "./grpc-services/users"
     networks:
       - "frontend"
       - "backend"
     expose: 
-      - "8083"
+      - "8080"
     depends_on:
       - "db"
+      - "cache"
     environment:
+      NODE_ENV: "production"
       HOST: "0.0.0.0"
       PORT: "8080"
+      DB_NAME: "postgres"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
-      DATABASE_URL: "postgres://postgres:postgres@db:5432/postgres?sslmode=disable"
     restart: "on-failure"
 
-  graphql_gateway:
+  graphql-gateway:
     image: "graphql-gateway:dev"
     container_name: "graphql-gateway"
     build:
-      context: "."
-      dockerfile: "./graphql-gateway/Dockerfile"
+      context: "./graphql-gateway"
     networks:
       - "frontend"
     ports:
       - "8080:8080"
     depends_on:
       - "cache"
-      - "comments_svc"
-      - "posts_svc"
-      - "users_svc"
+      - "comments-svc"
+      - "posts-svc"
+      - "users-svc"
     environment:
+      NODE_ENV: "production"
       HOST: "0.0.0.0"
       PORT: "8080"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
       JWT_SECRET: "47YNbpelXTd2gAi+6r1C4bDj4NSlxUDS"
-      COMMENTS_SVC_URL: "comments_svc:8081"
-      POSTS_SVC_URL: "posts_svc:8082"
-      USERS_SVC_URL: "users_svc:8083"
+      COMMENTS_SVC_URL: "comments-svc:8080"
+      POSTS_SVC_URL: "posts-svc:8080"
+      USERS_SVC_URL: "users-svc:8080"
     restart: "on-failure"
 
   db:
     image: "postgres:11.4-alpine"
-    container_name: "postgres"
+    container_name: "postgres-db"
     networks:
       - "backend"
     expose:
       - "5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      
     restart: "on-failure"
   
   cache:
     image: "redis:5.0.5-alpine"
-    container_name: "redis"
+    container_name: "redis-cache"
     networks:
+      - "frontend"
       - "backend"
     expose: 
       - "6379"
