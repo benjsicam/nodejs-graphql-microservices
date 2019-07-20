@@ -15,7 +15,7 @@ services:
       - "db"
       - "cache"
     environment:
-      NODE_ENV: "production"
+      NODE_ENV: "test"
       HOST: "0.0.0.0"
       PORT: "8080"
       DB_NAME: "postgres"
@@ -41,7 +41,7 @@ services:
       - "db"
       - "cache"
     environment:
-      NODE_ENV: "production"
+      NODE_ENV: "test"
       HOST: "0.0.0.0"
       PORT: "8080"
       DB_NAME: "postgres"
@@ -67,7 +67,7 @@ services:
       - "db"
       - "cache"
     environment:
-      NODE_ENV: "production"
+      NODE_ENV: "test"
       HOST: "0.0.0.0"
       PORT: "8080"
       DB_NAME: "postgres"
@@ -94,7 +94,7 @@ services:
       - "posts-svc"
       - "users-svc"
     environment:
-      NODE_ENV: "production"
+      NODE_ENV: "test"
       HOST: "0.0.0.0"
       PORT: "8080"
       REDIS_HOST: "cache"
