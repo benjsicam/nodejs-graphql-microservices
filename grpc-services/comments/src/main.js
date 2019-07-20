@@ -10,7 +10,7 @@ import CommentRepository from './repositories/comment.repository'
 
 const logger = pino({
   safe: true,
-  prettyPrint: process.env.NODE_ENV !== 'production'
+  prettyPrint: process.env.NODE_ENV === 'dev'
 })
 
 const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
