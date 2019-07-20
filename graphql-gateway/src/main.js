@@ -6,17 +6,17 @@ import { GraphQLServer } from 'graphql-yoga'
 import { assign, reduce, startCase } from 'lodash'
 import { RedisPubSub } from 'graphql-redis-subscriptions'
 
-import * as QueryResolver from 'glob:./resolvers/**/*.query.js' // eslint-disable-line
-import * as MutationResolver from 'glob:./resolvers/**/*.mutation.js' // eslint-disable-line
-import * as SubscriptionResolver from 'glob:./resolvers/**/*.subscription.js' // eslint-disable-line
-import * as GraphResolver from 'glob:./resolvers/**/*.graph.js' // eslint-disable-line
+import * as QueryResolvers from 'glob:./resolvers/**/*.query.js' // eslint-disable-line
+import * as MutationResolvers from 'glob:./resolvers/**/*.mutation.js' // eslint-disable-line
+import * as SubscriptionResolvers from 'glob:./resolvers/**/*.subscription.js' // eslint-disable-line
+import * as GraphResolvers from 'glob:./resolvers/**/*.graph.js' // eslint-disable-line
 
-import query from './default-query'
 import ServiceIndex from './services/_index'
+import defaultPlaygroundQuery from './default-query'
 
 const logger = pino({
   safe: true,
-  prettyPrint: process.env.NODE_ENV !== 'production'
+  prettyPrint: process.env.NODE_ENV === 'dev'
 })
 
 const serviceIndex = new ServiceIndex(logger)
@@ -37,28 +37,28 @@ const server = new GraphQLServer({
   typeDefs: path.resolve(__dirname, 'schema.graphql'),
   resolvers: {
     Query: reduce(
-      QueryResolver,
+      QueryResolvers,
       (res, val) => {
         return assign(res, val)
       },
       {}
     ),
     Mutation: reduce(
-      MutationResolver,
+      MutationResolvers,
       (res, val) => {
         return assign(res, val)
       },
       {}
     ),
     Subscription: reduce(
-      SubscriptionResolver,
+      SubscriptionResolvers,
       (res, val) => {
         return assign(res, val)
       },
       {}
     ),
     ...reduce(
-      GraphResolver,
+      GraphResolvers,
       (res, val, key) => {
         const obj = {}
         obj[startCase(key.substr(key.lastIndexOf('$') + 1))] = val
@@ -67,12 +67,19 @@ const server = new GraphQLServer({
       {}
     )
   },
-  context: req => ({ ...req, ...serviceIndex.services, logger, pubsub })
+  context(req) {
+    return {
+      ...req,
+      ...serviceIndex.services,
+      logger,
+      pubsub
+    }
+  }
 })
 
 server.start(
   {
-    defaultPlaygroundQuery: query,
+    defaultPlaygroundQuery,
     port: process.env.PORT || 3000
   },
   ({ port }) => {
