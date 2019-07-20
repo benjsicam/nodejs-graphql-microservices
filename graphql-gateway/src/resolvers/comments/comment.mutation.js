@@ -1,7 +1,7 @@
 import { isString } from 'lodash'
 
 const CommentMutation = {
-  async createComment(parent, { data }, { commentService, postService, userService, logger, pubsub }, info) {
+  async createComment(parent, { data }, { commentService, postService, userService, logger, pubsub }) {
     logger.info('CommentMutation#createComment.call', data)
 
     const userExists = (await userService.count({ where: { id: data.author } })) >= 1
@@ -26,7 +26,7 @@ const CommentMutation = {
 
     return comment
   },
-  async updateComment(parent, args, { commentService, logger, pubsub }, info) {
+  async updateComment(parent, args, { commentService, logger, pubsub }) {
     const { id, data } = args
 
     logger.info('CommentMutation#updateComment.call', id, data)
@@ -56,7 +56,7 @@ const CommentMutation = {
 
     return updatedComment
   },
-  async deleteComment(parent, { id }, { commentService, logger, pubsub }, info) {
+  async deleteComment(parent, { id }, { commentService, logger, pubsub }) {
     logger.info('CommentMutation#deleteComment.call', id)
 
     const comment = await commentService.findOne({ where: { id } })

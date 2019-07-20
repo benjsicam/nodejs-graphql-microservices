@@ -1,6 +1,6 @@
 const CommentSubscription = {
   comment: {
-    async subscribe(parent, { post }, { postService, logger, pubsub }, info) {
+    async subscribe(parent, { post }, { postService, logger, pubsub }) {
       logger.info('CommentSubscription#subscribe.call', post)
 
       const postExists = (await postService.count({ where: { id: post, published: true } })) >= 1

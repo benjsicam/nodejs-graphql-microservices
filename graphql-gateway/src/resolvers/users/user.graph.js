@@ -1,5 +1,5 @@
 const UserGraph = {
-  async posts(parent, args, { postService, logger }, info) {
+  async posts(parent, args, { postService, logger }) {
     logger.info('UserGraph#posts.call', parent.id)
 
     const posts = await postService.findAll({
@@ -12,7 +12,7 @@ const UserGraph = {
 
     return posts
   },
-  async comments(parent, args, { commentService, logger }, info) {
+  async comments(parent, args, { commentService, logger }) {
     logger.info('UserGraph#comments.call', parent.id)
 
     const comments = await commentService.findAll({

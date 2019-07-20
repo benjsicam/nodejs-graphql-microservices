@@ -1,7 +1,7 @@
 import { isString, isBoolean } from 'lodash'
 
 const PostMutation = {
-  async createPost(parent, { data }, { postService, userService, logger, pubsub }, info) {
+  async createPost(parent, { data }, { postService, userService, logger, pubsub }) {
     logger.info('PostMutation#createPost.call', data)
 
     const userExists = (await userService.count({ where: { id: data.author } })) >= 1
@@ -27,7 +27,7 @@ const PostMutation = {
 
     return post
   },
-  async updatePost(parent, args, { postService, logger, pubsub }, info) {
+  async updatePost(parent, args, { postService, logger, pubsub }) {
     const { id, data } = args
 
     logger.info('PostMutation#updatePost.call', id, data)
@@ -88,7 +88,7 @@ const PostMutation = {
 
     return updatedPost
   },
-  async deletePost(parent, { id }, { postService, logger, pubsub }, info) {
+  async deletePost(parent, { id }, { postService, logger, pubsub }) {
     logger.info('PostMutation#deletePost.call', id)
 
     const post = await postService.findOne({ where: { id } })

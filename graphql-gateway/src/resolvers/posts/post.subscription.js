@@ -1,6 +1,6 @@
 const PostSubscription = {
   post: {
-    async subscribe(parent, args, { pubsub, logger }, info) {
+    async subscribe(parent, args, { pubsub, logger }) {
       logger.info('PostSubscription#subscribe.call')
 
       return pubsub.asyncIterator('post')

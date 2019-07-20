@@ -1,5 +1,5 @@
 const PostQuery = {
-  async posts(parent, args, { postService, logger }, info) {
+  async posts(parent, args, { postService, logger }) {
     logger.info('PostQuery#posts.call')
 
     const posts = await postService.findAll()

@@ -1,5 +1,5 @@
 const CommentGraph = {
-  async author(parent, args, { userService, logger }, info) {
+  async author(parent, args, { userService, logger }) {
     logger.info('CommentGraph#author.call', parent.author)
 
     const user = await userService.findOne({
@@ -12,7 +12,7 @@ const CommentGraph = {
 
     return user
   },
-  async post(parent, args, { postService, logger }, info) {
+  async post(parent, args, { postService, logger }) {
     logger.info('CommentGraph#post.call', parent.author)
 
     const post = await postService.findOne({

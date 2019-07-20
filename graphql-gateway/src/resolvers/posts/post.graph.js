@@ -1,5 +1,5 @@
 const PostGraph = {
-  async author(parent, args, { userService, logger }, info) {
+  async author(parent, args, { userService, logger }) {
     logger.info('PostGraph#author.call', parent.author)
 
     const user = await userService.findOne({
@@ -12,7 +12,7 @@ const PostGraph = {
 
     return user
   },
-  async comments(parent, args, { commentService, logger }, info) {
+  async comments(parent, args, { commentService, logger }) {
     logger.info('PostGraph#comments.call', parent.id)
 
     const comments = await commentService.findAll({

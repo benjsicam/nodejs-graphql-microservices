@@ -1,5 +1,5 @@
 const UserQuery = {
-  async users(parent, args, { userService, logger }, info) {
+  async users(parent, args, { userService, logger }) {
     logger.info('UserQuery#users.call')
 
     const users = await userService.findAll()

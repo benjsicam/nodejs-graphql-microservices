@@ -1,7 +1,7 @@
 import { isString, isNumber } from 'lodash'
 
 const UserMutation = {
-  async createUser(parent, { data }, { userService, logger }, info) {
+  async createUser(parent, { data }, { userService, logger }) {
     logger.info('UserMutation#createUser.call', data)
 
     const userExists = (await userService.count({ where: { email: data.email } })) >= 1
@@ -18,7 +18,7 @@ const UserMutation = {
 
     return user
   },
-  async updateUser(parent, args, { userService, logger }, info) {
+  async updateUser(parent, args, { userService, logger }) {
     const { id, data } = args
 
     logger.info('UserMutation#updateUser.call', id, data)
@@ -55,7 +55,7 @@ const UserMutation = {
 
     return updatedUser
   },
-  async deleteUser(parent, { id }, { userService, logger }, info) {
+  async deleteUser(parent, { id }, { userService, logger }) {
     logger.info('UserMutation#deleteUser.result', id)
 
     const user = await userService.findOne({ where: { id } })

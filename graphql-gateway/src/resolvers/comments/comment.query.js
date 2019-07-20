@@ -1,5 +1,5 @@
 const CommentQuery = {
-  async comments(parent, args, { commentService, logger }, info) {
+  async comments(parent, args, { commentService, logger }) {
     logger.info('CommentQuery#comments.call')
 
     const comments = await commentService.findAll()
