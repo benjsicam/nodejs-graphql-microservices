@@ -36,6 +36,8 @@ Scaling can also be done in isolation. Each microservice application can scale s
 
 Operations will have better observability on the application as a whole since monitoring and logging can be done in a per microservice application basis and is not mixed with other parts of the application.
 
+## Architecture Layers
+
 ### API Layer
 
 [GraphQL](https://graphql.org/) acts as the API Layer for the architecture. It takes care of listening for user requests and proxying those requests to the appropriate back-end microservice. The framework used for GraphQL in this application is the awesome [graphql-yoga](https://github.com/prisma/graphql-yoga).
