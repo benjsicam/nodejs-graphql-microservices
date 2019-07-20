@@ -6,9 +6,35 @@ This project is a [monorepo](https://gomonorepo.org/) containing a GraphQL API g
 
 The GraphQL API acts as a gateway/proxy for the different microservices it exposes. The resolvers of the GraphQL API make calls to the gRPC servers/microservices in the back-end through gRPC client implementations of the back-end services defined through protocol buffers. The gRPC microservices then acts as middleware to connect to databases or any other service it needs to serve requests.
 
-A diagram showing the architecture is shown below.
+### Diagram
+
+A diagram of the architecture is shown below.
 
 ![Architecture Diagram](https://raw.githubusercontent.com/benjsicam/node-graphql-microservices/master/docs/img/archi-diagram.png)
+
+### Benefits
+
+Some of the benefits of adopting a microservice architecture are:
+
+**Individual Deployment**
+
+Each app can be deployed separately without knowledge of the other application. Each service is reusable in the entire tech stack. Upgrades can also be done in isolation for each application/microservice. This makes hot fixes and quick roll backs possible.
+
+**Fault Isolation**
+
+When an error or fault occurs, one will immediately know where it came from and debugging can be done immediately.
+
+**Easier Testing and Debugging**
+
+Having a very small codebase makes doing unit tests easier and debugging quick by orders of magnitude. Bugs can be quickly identified and fixed.
+
+**Granular Scaling**
+
+Scaling can also be done in isolation. Each microservice application can scale separately of others if it is serving more load than the others.
+
+**Better Observability**
+
+Operations will have better observability on the application as a whole since monitoring and logging can be done in a per microservice application basis and is not mixed with other parts of the application.
 
 ### API Layer
 
