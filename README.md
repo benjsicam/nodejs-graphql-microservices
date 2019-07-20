@@ -8,7 +8,7 @@ The GraphQL API acts as a gateway/proxy for the different microservices it expos
 
 A diagram showing the architecture is shown below.
 
-![Architecture Diagram](https://cloudcraft.co/view/492a9a8b-6c0f-4d2e-a45d-f6cb7ad850cd?key=2V3NRzdfwu70ROtwT6tg0g&embed=true)
+![Architecture Diagram](https://raw.githubusercontent.com/benjsicam/node-graphql-microservices/master/docs/img/archi-diagram.png)
 
 ### API Layer
 
