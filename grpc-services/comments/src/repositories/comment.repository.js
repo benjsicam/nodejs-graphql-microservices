@@ -1,9 +1,5 @@
 import AbstractCrudRepository from './abstract-crud.repository'
 
-class CommentRepository extends AbstractCrudRepository {
-  constructor(db, logger) {
-    super('CommentRepository', db.model('comment'), logger)
-  }
-}
+class CommentRepository extends AbstractCrudRepository {}
 
 export default CommentRepository

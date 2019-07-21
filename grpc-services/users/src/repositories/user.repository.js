@@ -1,9 +1,5 @@
 import AbstractCrudRepository from './abstract-crud.repository'
 
-class UserRepository extends AbstractCrudRepository {
-  constructor(db, logger) {
-    super('UserService', db.model('user'), logger)
-  }
-}
+class UserRepository extends AbstractCrudRepository {}
 
 export default UserRepository

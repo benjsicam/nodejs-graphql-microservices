@@ -1,41 +1,36 @@
-import pino from 'pino'
 import path from 'path'
 
-import * as grpc from 'grpc'
-import * as protoLoader from '@grpc/proto-loader'
-
-import { Sequelize } from 'sequelize'
+import Db from './db'
+import App from './app'
+import logger from './logger'
 
 import UserRepository from './repositories/user.repository'
 
-const logger = pino({
-  safe: true,
-  prettyPrint: process.env.NODE_ENV === 'dev'
-})
+const MODEL_PATH = path.resolve(__dirname, 'models/user.model')
+const PROTO_PATH = path.resolve(__dirname, '_proto/user.proto')
 
-const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-  dialect: 'postgres',
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  logging: logger.info.bind(logger),
-  benchmark: true,
-  pool: {
-    max: 3
-  },
-  retry: {
-    max: 3,
-    typeValidation: true
+const MODEL_NAME = 'user'
+const SERVICE_NAME = 'UserService'
+
+const HOST_PORT = `${process.env.HOST}:${process.env.PORT}`
+
+async function main() {
+  const db = await Db.init(MODEL_PATH, logger)
+  const repo = new UserRepository(SERVICE_NAME, db.model(MODEL_NAME), logger)
+
+  const UserService = {
+    findAll: repo.findAll.bind(repo),
+    findOne: repo.findOne.bind(repo),
+    count: repo.count.bind(repo),
+    create: repo.create.bind(repo),
+    update: repo.update.bind(repo),
+    destroy: repo.destroy.bind(repo)
   }
-})
 
-const server = new grpc.Server()
-const proto = protoLoader.loadSync(path.resolve(__dirname, './_proto/user.proto'))
-const serviceDefinition = grpc.loadPackageDefinition(proto).user.UserService.service
+  const app = await App.init(PROTO_PATH, { UserService })
 
-db.import('./models/user.model')
-db.sync().then(() => {
-  server.addService(serviceDefinition, new UserRepository(db, logger))
-  server.bind(`${process.env.HOST}:${process.env.PORT}`, grpc.ServerCredentials.createInsecure())
-  server.start()
+  app.start(HOST_PORT)
   logger.info(`gRPC Server is now listening on port ${process.env.PORT}`)
-})
+}
+
+main()

@@ -1,41 +1,36 @@
-import pino from 'pino'
 import path from 'path'
 
-import * as grpc from 'grpc'
-import * as protoLoader from '@grpc/proto-loader'
-
-import { Sequelize } from 'sequelize'
+import Db from './db'
+import App from './app'
+import logger from './logger'
 
 import CommentRepository from './repositories/comment.repository'
 
-const logger = pino({
-  safe: true,
-  prettyPrint: process.env.NODE_ENV === 'dev'
-})
+const MODEL_PATH = path.resolve(__dirname, 'models/comment.model')
+const PROTO_PATH = path.resolve(__dirname, '_proto/comment.proto')
 
-const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-  dialect: 'postgres',
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  logging: logger.info.bind(logger),
-  benchmark: true,
-  pool: {
-    max: 3
-  },
-  retry: {
-    max: 3,
-    typeValidation: true
+const MODEL_NAME = 'comment'
+const SERVICE_NAME = 'CommentService'
+
+const HOST_PORT = `${process.env.HOST}:${process.env.PORT}`
+
+async function main() {
+  const db = await Db.init(MODEL_PATH, logger)
+  const repo = new CommentRepository(SERVICE_NAME, db.model(MODEL_NAME), logger)
+
+  const CommentService = {
+    findAll: repo.findAll.bind(repo),
+    findOne: repo.findOne.bind(repo),
+    count: repo.count.bind(repo),
+    create: repo.create.bind(repo),
+    update: repo.update.bind(repo),
+    destroy: repo.destroy.bind(repo)
   }
-})
 
-const server = new grpc.Server()
-const proto = protoLoader.loadSync(path.resolve(__dirname, './_proto/comment.proto'))
-const serviceDefinition = grpc.loadPackageDefinition(proto).comment.CommentService.service
+  const app = await App.init(PROTO_PATH, { CommentService })
 
-db.import('./models/comment.model')
-db.sync().then(() => {
-  server.addService(serviceDefinition, new CommentRepository(db, logger))
-  server.bind(`${process.env.HOST}:${process.env.PORT}`, grpc.ServerCredentials.createInsecure())
-  server.start()
+  app.start(HOST_PORT)
   logger.info(`gRPC Server is now listening on port ${process.env.PORT}`)
-})
+}
+
+main()

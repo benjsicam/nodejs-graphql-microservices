@@ -5,97 +5,78 @@ class AbstractCrudRepository {
     this._logger = logger
   }
 
-  findAll({ request }, callback) {
-    this._logger.info(`${this._serviceName}#findAll.call`, request)
+  async findAll({ req, response }) {
+    this._logger.info(`${this._serviceName}#findAll.call`, req)
 
-    this._model
-      .findAll(JSON.parse(request.query))
-      .then(result => {
-        this._logger.info(`${this._serviceName}#findAll.result`, { list: result })
+    const result = await this._model.findAll(JSON.parse(req.query))
 
-        callback(null, { list: result })
-      })
-      .catch(err => callback(err))
+    this._logger.info(`${this._serviceName}#findAll.result`, { list: result })
+
+    response.res = { list: result }
   }
 
-  findOne({ request }, callback) {
-    this._logger.info(`${this._serviceName}#findOne.call`, request)
+  async findOne({ req, response }) {
+    this._logger.info(`${this._serviceName}#findOne.call`, req)
 
-    this._model
-      .findOne(JSON.parse(request.query))
-      .then(result => {
-        this._logger.info(`${this._serviceName}#findOne.result`, result)
+    const result = await this._model.findOne(JSON.parse(req.query))
 
-        callback(null, result)
-      })
-      .catch(err => callback(err))
+    this._logger.info(`${this._serviceName}#findOne.result`, result)
+
+    response.res = result
   }
 
-  count({ request }, callback) {
-    this._logger.info(`${this._serviceName}#count.call`, request)
+  async count({ req, response }) {
+    this._logger.info(`${this._serviceName}#count.call`, req)
 
-    this._model
-      .count(JSON.parse(request.query))
-      .then(count => {
-        this._logger.info(`${this._serviceName}#count.result`, { count })
+    const count = await this._model.count(JSON.parse(req.query))
 
-        callback(null, { count })
-      })
-      .catch(err => callback(err))
+    this._logger.info(`${this._serviceName}#count.result`, { count })
+
+    response.res = { count }
   }
 
-  create({ request }, callback) {
-    this._logger.info(`${this._serviceName}#create.call`, request)
+  async create({ req, response }) {
+    this._logger.info(`${this._serviceName}#create.call`, req)
 
-    this._model
-      .create(request)
-      .then(result => {
-        this._logger.info(`${this._serviceName}#create.result`, result)
+    const result = await this._model.create(req)
 
-        callback(null, result)
-      })
-      .catch(err => callback(err))
+    this._logger.info(`${this._serviceName}#create.result`, result)
+
+    response.res = result
   }
 
-  update({ request }, callback) {
-    this._logger.info(`${this._serviceName}#update.call`, request)
+  async update({ req, response }) {
+    this._logger.info(`${this._serviceName}#update.call`, req)
 
-    this._model
-      .update(request.data, {
-        where: {
-          id: request.id
-        }
-      })
-      .then(() => {
-        return this._model.findOne({
-          where: {
-            id: request.id
-          }
-        })
-      })
-      .then(result => {
-        this._logger.info(`${this._serviceName}#update.result`, result)
+    await this._model.update(req.data, {
+      where: {
+        id: req.id
+      }
+    })
 
-        callback(null, result)
-      })
-      .catch(err => callback(err))
+    const result = await this._model.findOne({
+      where: {
+        id: req.id
+      }
+    })
+
+    this._logger.info(`${this._serviceName}#update.result`, result)
+
+    response.res = result
   }
 
-  destroy({ request }, callback) {
-    this._logger.info(`${this._serviceName}#destroy.call`, request)
+  async destroy({ req, response }) {
+    this._logger.info(`${this._serviceName}#destroy.call`, req)
 
-    this._model
-      .destroy({
-        where: {
-          id: request.id
-        }
-      })
-      .then(count => {
-        this._logger.info(`${this._serviceName}#destroy.result`, { count })
+    const count = await this._model.destroy({
+      where: {
+        id: req.id
+      }
+    })
 
-        callback(null, { count })
-      })
-      .catch(err => callback(err))
+    this._logger.info(`${this._serviceName}#destroy.result`, { count })
+
+    response.res = { count }
   }
 }
 
