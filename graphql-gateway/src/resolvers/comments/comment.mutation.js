@@ -1,10 +1,14 @@
 import { isString } from 'lodash'
 
+import authUtils from '../../utils/auth'
+
 const CommentMutation = {
-  async createComment(parent, { data }, { commentService, postService, userService, logger, pubsub }) {
+  async createComment(parent, { data }, { request, commentService, postService, userService, logger, pubsub }) {
     logger.info('CommentMutation#createComment.call', data)
 
-    const userExists = (await userService.count({ where: { id: data.author } })) >= 1
+    const author = await authUtils.getUser(request)
+
+    const userExists = (await userService.count({ where: { id: author } })) >= 1
     const postExists = (await postService.count({ where: { id: data.post, published: true } })) >= 1
 
     logger.info('CommentMutation#createComment.check', !userExists, !postExists)
@@ -13,7 +17,10 @@ const CommentMutation = {
       throw new Error('Unable to find user and post')
     }
 
-    const comment = await commentService.create(data)
+    const comment = await commentService.create({
+      ...data,
+      author
+    })
 
     pubsub.publish(`comment#${data.post}`, {
       comment: {
@@ -26,17 +33,18 @@ const CommentMutation = {
 
     return comment
   },
-  async updateComment(parent, args, { commentService, logger, pubsub }) {
+  async updateComment(parent, args, { request, commentService, logger, pubsub }) {
     const { id, data } = args
 
     logger.info('CommentMutation#updateComment.call', id, data)
 
-    const comment = await commentService.findOne({ where: { id } })
+    const author = await authUtils.getUser(request)
+    const comment = await commentService.findOne({ where: { id, author } })
 
     logger.info('CommentMutation#updateComment.target', comment)
 
     if (!comment) {
-      throw new Error('Comment not found')
+      throw new Error('Comment not found or you may not be the owner of the comment')
     }
 
     if (isString(data.text)) {
@@ -56,15 +64,16 @@ const CommentMutation = {
 
     return updatedComment
   },
-  async deleteComment(parent, { id }, { commentService, logger, pubsub }) {
+  async deleteComment(parent, { id }, { request, commentService, logger, pubsub }) {
     logger.info('CommentMutation#deleteComment.call', id)
 
-    const comment = await commentService.findOne({ where: { id } })
+    const author = await authUtils.getUser(request)
+    const comment = await commentService.findOne({ where: { id, author } })
 
     logger.info('CommentMutation#deleteComment.check', !comment)
 
     if (!comment) {
-      throw new Error('Comment not found')
+      throw new Error('Comment not found or you may not be the owner of the comment')
     }
 
     const count = await commentService.destroy(id)

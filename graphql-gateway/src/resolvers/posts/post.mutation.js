@@ -1,10 +1,13 @@
 import { isString, isBoolean } from 'lodash'
 
+import authUtils from '../../utils/auth'
+
 const PostMutation = {
-  async createPost(parent, { data }, { postService, userService, logger, pubsub }) {
+  async createPost(parent, { data }, { request, postService, userService, logger, pubsub }) {
     logger.info('PostMutation#createPost.call', data)
 
-    const userExists = (await userService.count({ where: { id: data.author } })) >= 1
+    const author = await authUtils.getUser(request)
+    const userExists = (await userService.count({ where: { id: author } })) >= 1
 
     logger.info('PostMutation#createPost.check', !userExists)
 
@@ -12,7 +15,10 @@ const PostMutation = {
       throw new Error('User not found')
     }
 
-    const post = await postService.create(data)
+    const post = await postService.create({
+      ...data,
+      author
+    })
 
     if (data.published) {
       pubsub.publish('post', {
@@ -27,18 +33,19 @@ const PostMutation = {
 
     return post
   },
-  async updatePost(parent, args, { postService, logger, pubsub }) {
+  async updatePost(parent, args, { request, postService, logger, pubsub }) {
     const { id, data } = args
 
     logger.info('PostMutation#updatePost.call', id, data)
 
-    const post = await postService.findOne({ where: { id } })
+    const author = await authUtils.getUser(request)
+    const post = await postService.findOne({ where: { id, author } })
     const originalPost = { ...post }
 
     logger.info('PostMutation#updatePost.target', post)
 
     if (!post) {
-      throw new Error('Post not found')
+      throw new Error('Post not found or you may not be the owner of the post')
     }
 
     if (isString(data.title)) {
@@ -88,15 +95,22 @@ const PostMutation = {
 
     return updatedPost
   },
-  async deletePost(parent, { id }, { postService, logger, pubsub }) {
+  async deletePost(parent, { id }, { request, postService, commentService, logger, pubsub }) {
     logger.info('PostMutation#deletePost.call', id)
 
-    const post = await postService.findOne({ where: { id } })
+    const author = await authUtils.getUser(request)
+    const post = await postService.findOne({ where: { id, author } })
 
     logger.info('PostMutation#deletePost.check', !post)
 
     if (!post) {
-      throw new Error('Post not found')
+      throw new Error('Post not found or you may not be the owner of the post')
+    }
+
+    const commentExists = (await commentService.count({ where: { post: id } })) >= 1
+
+    if (commentExists) {
+      throw new Error('Comment/s have already been posted for this post.')
     }
 
     const count = await postService.destroy(id)

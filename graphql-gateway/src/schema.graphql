@@ -1,7 +1,11 @@
 type Query {
-  comments: [Comment!]!
-  posts: [Post!]!
-  users: [User!]!
+  comments(query: String): [Comment!]!
+  posts(query: String): [Post!]!
+  users(query: String): [User!]!
+  user(id: ID!): User!
+  post(id: ID!): Post!
+  me: User!
+  myPosts(query: String): [Post!]!
 }
 
 type Mutation {
@@ -11,9 +15,12 @@ type Mutation {
   createPost(data: CreatePostInput!): Post!
   updatePost(id: ID!, data: UpdatePostInput!): Post!
   deletePost(id: ID!): Int!
-  createUser(data: CreateUserInput!): User!
-  updateUser(id: ID!, data: UpdateUserInput!): User!
-  deleteUser(id: ID!): Int!
+  signup(data: SignupUserInput!): AuthPayload!
+  login(data: LoginUserInput!): AuthPayload!
+  updateProfile(data: UpdateProfileInput!): User!
+  updateEmail(data: UpdateEmailInput): AuthPayload!
+  updatePassword(data: UpdatePasswordInput): AuthPayload!
+  deleteAccount: Int!
 }
 
 type Subscription {
@@ -21,13 +28,20 @@ type Subscription {
   post: PostSubscriptionPayload!
 }
 
-type User {
+scalar DateTime
+
+scalar EmailAddress
+
+scalar UnsignedInt
+
+type Comment {
   id: ID!
-  name: String!
-  email: String!
-  age: Int
-  posts: [Post!]!
-  comments: [Comment!]!
+  text: String!
+  author: User!
+  post: Post!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  version: Int!
 }
 
 type Post {
@@ -37,18 +51,25 @@ type Post {
   published: Boolean!
   author: User!
   comments: [Comment!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  version: Int!
 }
 
-type Comment {
+type User {
   id: ID!
-  text: String!
-  author: User!
-  post: Post!
+  name: String!
+  email: EmailAddress!
+  age: UnsignedInt
+  posts: [Post!]!
+  comments: [Comment!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  version: Int!
 }
 
 input CreateCommentInput {
   text: String!
-  author: ID!
   post: ID!
 }
 
@@ -60,7 +81,6 @@ input CreatePostInput {
   title: String!
   body: String!
   published: Boolean!
-  author: ID!
 }
 
 input UpdatePostInput {
@@ -69,16 +89,37 @@ input UpdatePostInput {
   published: Boolean
 }
 
-input CreateUserInput {
+input SignupUserInput {
   name: String!
-  email: String!
-  age: Int
+  email: EmailAddress!
+  password: String!
+  age: UnsignedInt
 }
 
-input UpdateUserInput {
+input LoginUserInput {
+  email: EmailAddress!
+  password: String!
+}
+
+input UpdateProfileInput {
   name: String
-  email: String
-  age: Int
+  age: UnsignedInt
+}
+
+input UpdateEmailInput {
+  email: EmailAddress!
+  currentPassword: String!
+}
+
+input UpdatePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+  confirmPassword: String!
+}
+
+type AuthPayload {
+    token: String!
+    user: User!
 }
 
 type CommentSubscriptionPayload {

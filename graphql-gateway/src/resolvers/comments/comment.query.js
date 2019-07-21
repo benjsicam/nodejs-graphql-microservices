@@ -1,8 +1,12 @@
 const CommentQuery = {
   async comments(parent, args, { commentService, logger }) {
-    logger.info('CommentQuery#comments.call')
+    logger.info('CommentQuery#comments.call', args)
 
-    const comments = await commentService.findAll()
+    let query = {}
+
+    if (args.query) query = { where: { text: { $like: args.query } } }
+
+    const comments = await commentService.findAll(query)
 
     logger.info('CommentQuery#comments.result', comments)
 
