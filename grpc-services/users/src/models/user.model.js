@@ -21,6 +21,10 @@ export default function(sequelize, DataTypes) {
         allowNull: false,
         comment: "The user's email."
       },
+      password: {
+        type: DataTypes.STRING,
+        comment: 'The user\'s password'
+      },
       age: {
         type: Sequelize.INTEGER,
         comment: "The user's age."
