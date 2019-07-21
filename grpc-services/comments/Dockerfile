@@ -12,6 +12,6 @@ WORKDIR /usr/local/comments-svc
 
 COPY --from=build /usr/local/comments-svc .
 
-EXPOSE 8080
+EXPOSE 50051
 
 CMD ["node", "main.js"]

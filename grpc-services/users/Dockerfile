@@ -12,6 +12,6 @@ WORKDIR /usr/local/users-svc
 
 COPY --from=build /usr/local/users-svc .
 
-EXPOSE 8080
+EXPOSE 50051
 
 CMD ["node", "main.js"]

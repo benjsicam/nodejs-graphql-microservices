@@ -12,6 +12,6 @@ WORKDIR /usr/local/posts-svc
 
 COPY --from=build /usr/local/posts-svc .
 
-EXPOSE 8080
+EXPOSE 50051
 
 CMD ["node", "main.js"]
