@@ -9,17 +9,18 @@ services:
     networks:
       - "frontend"
       - "backend"
+      - "commentsdomain"
     expose: 
-      - "8080"
+      - "50051"
     depends_on:
-      - "db"
+      - "comments-db"
       - "cache"
     environment:
       NODE_ENV: "test"
       HOST: "0.0.0.0"
-      PORT: "8080"
+      PORT: "50051"
       DB_NAME: "postgres"
-      DB_HOST: "db"
+      DB_HOST: "comments-db"
       DB_PORT: "5432"
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
@@ -35,17 +36,18 @@ services:
     networks:
       - "frontend"
       - "backend"
+      - "postsdomain"
     expose: 
-      - "8080"
+      - "50051"
     depends_on:
-      - "db"
+      - "posts-db"
       - "cache"
     environment:
       NODE_ENV: "test"
       HOST: "0.0.0.0"
-      PORT: "8080"
+      PORT: "50051"
       DB_NAME: "postgres"
-      DB_HOST: "db"
+      DB_HOST: "posts-db"
       DB_PORT: "5432"
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
@@ -61,17 +63,18 @@ services:
     networks:
       - "frontend"
       - "backend"
+      - "usersdomain"
     expose: 
-      - "8080"
+      - "50051"
     depends_on:
-      - "db"
+      - "users-db"
       - "cache"
     environment:
       NODE_ENV: "test"
       HOST: "0.0.0.0"
-      PORT: "8080"
+      PORT: "50051"
       DB_NAME: "postgres"
-      DB_HOST: "db"
+      DB_HOST: "users-db"
       DB_PORT: "5432"
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
@@ -87,7 +90,7 @@ services:
     networks:
       - "frontend"
     ports:
-      - "8080:8080"
+      - "3000:3000"
     depends_on:
       - "cache"
       - "comments-svc"
@@ -96,26 +99,49 @@ services:
     environment:
       NODE_ENV: "test"
       HOST: "0.0.0.0"
-      PORT: "8080"
+      PORT: "3000"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
       JWT_SECRET: "47YNbpelXTd2gAi+6r1C4bDj4NSlxUDS"
-      COMMENTS_SVC_URL: "comments-svc:8080"
-      POSTS_SVC_URL: "posts-svc:8080"
-      USERS_SVC_URL: "users-svc:8080"
+      COMMENTS_SVC_URL: "comments-svc:50051"
+      POSTS_SVC_URL: "posts-svc:50051"
+      USERS_SVC_URL: "users-svc:50051"
     restart: "on-failure"
 
-  db:
+  comments-db:
     image: "postgres:11.4-alpine"
-    container_name: "postgres-db"
+    container_name: "comments-db"
     networks:
-      - "backend"
+      - "commentsdomain"
     expose:
       - "5432"
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
-      
+    restart: "on-failure"
+
+  posts-db:
+    image: "postgres:11.4-alpine"
+    container_name: "posts-db"
+    networks:
+      - "postsdomain"
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    restart: "on-failure"
+
+  users-db:
+    image: "postgres:11.4-alpine"
+    container_name: "users-db"
+    networks:
+      - "usersdomain"
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
     restart: "on-failure"
   
   cache:
@@ -131,3 +157,6 @@ services:
 networks:
   frontend:
   backend:
+  commentsdomain:
+  postsdomain:
+  usersdomain:
