@@ -12,6 +12,6 @@ WORKDIR /usr/local/graphql-gateway
 
 COPY --from=build /usr/local/graphql-gateway .
 
-EXPOSE 8080
+EXPOSE 3000
 
 CMD ["node", "main.js"]
