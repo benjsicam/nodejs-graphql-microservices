@@ -9,6 +9,9 @@ message Comment {
   string text = 2;
   string author = 3;
   string post = 4;
+  string createdAt = 5;
+  string updatedAt = 6;
+  int32 version = 7;
 }
 
 message CreateCommentInput {
