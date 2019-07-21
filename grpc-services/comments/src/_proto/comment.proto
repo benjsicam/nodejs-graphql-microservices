@@ -27,10 +27,10 @@ message CommentList {
 }
 
 service CommentService {
-  rpc findAll (Query) returns (CommentList) {}
-  rpc findOne (Query) returns (Comment) {}
-  rpc count (Query) returns (Count) {}
+  rpc findAll (commons.Query) returns (CommentList) {}
+  rpc findOne (commons.Query) returns (Comment) {}
+  rpc count (commons.Query) returns (commons.Count) {}
   rpc create (CreateCommentInput) returns (Comment) {}
   rpc update (UpdateCommentInput) returns (Comment) {}
-  rpc destroy (Id) returns (Count) {}
+  rpc destroy (commons.Id) returns (commons.Count) {}
 }

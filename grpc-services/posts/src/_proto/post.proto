@@ -29,10 +29,10 @@ message PostList {
 }
 
 service PostService {
-  rpc findAll (Query) returns (PostList) {}
-  rpc findOne (Query) returns (Post) {}
-  rpc count (Query) returns (Count) {}
+  rpc findAll (commons.Query) returns (PostList) {}
+  rpc findOne (commons.Query) returns (Post) {}
+  rpc count (commons.Query) returns (commons.Count) {}
   rpc create (CreatePostInput) returns (Post) {}
   rpc update (UpdatePostInput) returns (Post) {}
-  rpc destroy (Id) returns (Count) {}
+  rpc destroy (commons.Id) returns (commons.Count) {}
 }

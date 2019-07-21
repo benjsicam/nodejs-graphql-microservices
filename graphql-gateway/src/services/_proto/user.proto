@@ -27,10 +27,10 @@ message UserList {
 }
 
 service UserService {
-  rpc findAll (Query) returns (UserList) {}
-  rpc findOne (Query) returns (User) {}
-  rpc count (Query) returns (Count) {}
+  rpc findAll (commons.Query) returns (UserList) {}
+  rpc findOne (commons.Query) returns (User) {}
+  rpc count (commons.Query) returns (commons.Count) {}
   rpc create (CreateUserInput) returns (User) {}
   rpc update (UpdateUserInput) returns (User) {}
-  rpc destroy (Id) returns (Count) {}
+  rpc destroy (commons.Id) returns (commons.Count) {}
 }
