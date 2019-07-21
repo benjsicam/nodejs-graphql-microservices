@@ -124,7 +124,7 @@ const UserMutation = {
     logger.info('UserMutation#updateEmail.result', updatedUser)
 
     return {
-      updatedUser,
+      user: updatedUser,
       token: authUtils.generateToken(user.id)
     }
   },
@@ -155,7 +155,7 @@ const UserMutation = {
     logger.info('UserMutation#updatePassword.result', updatedUser)
 
     return {
-      updatedUser,
+      user: updatedUser,
       token: authUtils.generateToken(user.id)
     }
   },
