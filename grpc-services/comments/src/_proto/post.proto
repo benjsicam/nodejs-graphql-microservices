@@ -10,6 +10,9 @@ message Post {
   string body = 3;
   bool published = 4;
   string author = 5;
+  string createdAt = 6;
+  string updatedAt = 7;
+  int32 version = 8;
 }
 
 message CreatePostInput {
