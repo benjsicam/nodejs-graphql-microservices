@@ -68,6 +68,9 @@
 | text | [string](#string) |  |  |
 | author | [string](#string) |  |  |
 | post | [string](#string) |  |  |
+| createdAt | [string](#string) |  |  |
+| updatedAt | [string](#string) |  |  |
+| version | [int32](#int32) |  |  |
 
 
 
@@ -245,6 +248,9 @@
 | body | [string](#string) |  |  |
 | published | [bool](#bool) |  |  |
 | author | [string](#string) |  |  |
+| createdAt | [string](#string) |  |  |
+| updatedAt | [string](#string) |  |  |
+| version | [int32](#int32) |  |  |
 
 
 
@@ -323,6 +329,7 @@
 | ----- | ---- | ----- | ----------- |
 | name | [string](#string) |  |  |
 | email | [string](#string) |  |  |
+| password | [string](#string) |  |  |
 | age | [int32](#int32) |  |  |
 
 
@@ -357,7 +364,11 @@
 | id | [string](#string) |  |  |
 | name | [string](#string) |  |  |
 | email | [string](#string) |  |  |
+| password | [string](#string) |  |  |
 | age | [int32](#int32) |  |  |
+| createdAt | [string](#string) |  |  |
+| updatedAt | [string](#string) |  |  |
+| version | [int32](#int32) |  |  |
 
 
 
