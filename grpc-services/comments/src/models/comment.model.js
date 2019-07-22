@@ -16,12 +16,12 @@ export default function(sequelize, DataTypes) {
         comment: 'The comment body or message.'
       },
       post: {
-        type: Sequelize.UUID,
+        type: DataTypes.UUID,
         allowNull: false,
         comment: 'The post to which the comment is associated to.'
       },
       author: {
-        type: Sequelize.UUID,
+        type: DataTypes.UUID,
         allowNull: false,
         comment: 'The author/user who posted the comment.'
       }

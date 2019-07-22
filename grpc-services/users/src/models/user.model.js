@@ -26,7 +26,7 @@ export default function(sequelize, DataTypes) {
         comment: 'The user\'s password'
       },
       age: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         comment: "The user's age."
       }
     },
