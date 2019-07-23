@@ -68,4 +68,4 @@ Deployment is done with containers in mind. A Docker Compose file along with Doc
 
 ## How to Run
 
-[![GraphQL + gRPC Microservices](https://i9.ytimg.com/vi/SuH2K92FOaE/mq2.jpg?sqp=CMDB2ekF&rs=AOn4CLAsA5KnbJtZxwVSHj8WlpSJbeVIxQ)](https://youtu.be/SuH2K92FOaE)
+[![GraphQL + gRPC Microservices](https://i9.ytimg.com/vi/SuH2K92FOaE/mqdefault.jpg?time=1563845159234&sqp=COzD2ekF&rs=AOn4CLANfki1CFKUQq94wqgkCA_HOaDMVg)](https://youtu.be/SuH2K92FOaE)
