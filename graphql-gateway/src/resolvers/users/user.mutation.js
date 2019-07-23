@@ -143,7 +143,7 @@ const UserMutation = {
       throw new Error('Error updating password. Kindly check your passwords.')
     }
 
-    const password = await passwordUtils.hashPassword(data.password)
+    const password = await passwordUtils.hashPassword(data.newPassword)
 
     const updatedUser = await userService.update(id, {
       ...user,
