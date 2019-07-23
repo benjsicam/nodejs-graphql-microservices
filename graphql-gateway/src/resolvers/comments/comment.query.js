@@ -11,6 +11,19 @@ const CommentQuery = {
     logger.info('CommentQuery#comments.result', comments)
 
     return comments
+  },
+  async commentCount(parent, args, { commentService, logger }) {
+    logger.info('CommentQuery#commentCount.call', args)
+
+    let query = {}
+
+    if (args.query) query = { where: { text: { $like: args.query } } }
+
+    const count = await commentService.count(query)
+
+    logger.info('CommentQuery#commentCount.result', count)
+
+    return count
   }
 }
 

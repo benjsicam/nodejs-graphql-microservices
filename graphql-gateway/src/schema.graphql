@@ -2,6 +2,9 @@ type Query {
   comments(query: String): [Comment!]!
   posts(query: String): [Post!]!
   users(query: String): [User!]!
+  commentCount(query: String): Int!
+  postCount(query: String): Int!
+  userCount(query: String): Int!
   user(id: ID!): User!
   post(id: ID!): Post!
   me: User!

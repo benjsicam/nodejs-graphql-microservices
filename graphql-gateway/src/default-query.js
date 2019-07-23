@@ -318,6 +318,18 @@ query findPost {
   }
 }
 
+query commentCount {
+  commentCount
+}
+
+query postCount {
+  postCount
+}
+
+query userCount {
+  userCount
+}
+
 mutation updateProfile {
   updateProfile (data: {
     name: "Sample User 2",

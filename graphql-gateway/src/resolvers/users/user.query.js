@@ -23,6 +23,19 @@ const UserQuery = {
 
     return users
   },
+  async userCount(parent, args, { userService, logger }) {
+    logger.info('UserQuery#userCount.call', args)
+
+    let query = {}
+
+    if (args.query) query = { where: { name: { $like: args.query } } }
+
+    const count = await userService.count(query)
+
+    logger.info('UserQuery#userCount.result', count)
+
+    return count
+  },
   async me(parent, args, { request, userService, logger }) {
     logger.info('UserQuery#me.call')
 

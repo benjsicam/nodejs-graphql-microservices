@@ -23,6 +23,19 @@ const PostQuery = {
 
     return posts
   },
+  async postCount(parent, args, { postService, logger }) {
+    logger.info('PostQuery#postCount.call', args)
+
+    let query = {}
+
+    if (args.query) query = { where: { title: { $like: args.query } } }
+
+    const count = await postService.count(query)
+
+    logger.info('PostQuery#postCount.result', count)
+
+    return count
+  },
   async myPosts(parent, args, { request, postService, logger }) {
     logger.info('PostQuery#myPosts.call', args)
 
