@@ -1,0 +1,24 @@
+{
+  "name": "react-ui",
+  "version": "1.0.0",
+  "description": "A sample React application to act as front-end for the graphql-gateway. Used for learning/trial purposes only.",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benjsicam/node-graphql-microservices.git"
+  },
+  "keywords": [
+    "react",
+    "graphql",
+    "microservices",
+    "grpc"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benjsicam/node-graphql-microservices/issues"
+  },
+  "homepage": "https://github.com/benjsicam/node-graphql-microservices#readme",
+  "dependencies": {},
+  "devDependencies": {}
+}
