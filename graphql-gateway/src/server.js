@@ -3,9 +3,9 @@ import { assign, reduce, startCase } from 'lodash'
 import { DateTime, EmailAddress, UnsignedInt } from 'graphql-scalars'
 
 const Server = {
-  async init(schemaPath, resolvers, services) {
+  async init(schema, resolvers, services) {
     const server = new GraphQLServer({
-      typeDefs: schemaPath,
+      typeDefs: schema,
       resolvers: {
         DateTime,
         EmailAddress,

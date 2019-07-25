@@ -1,0 +1,45 @@
+
+type User {
+  id: ID!
+  name: String!
+  email: EmailAddress!
+  age: UnsignedInt
+  posts: [Post!]!
+  comments: [Comment!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  version: Int!
+}
+
+input SignupUserInput {
+  name: String!
+  email: EmailAddress!
+  password: String!
+  age: UnsignedInt
+}
+
+input LoginUserInput {
+  email: EmailAddress!
+  password: String!
+}
+
+input UpdateProfileInput {
+  name: String
+  age: UnsignedInt
+}
+
+input UpdateEmailInput {
+  email: EmailAddress!
+  currentPassword: String!
+}
+
+input UpdatePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+  confirmPassword: String!
+}
+
+type AuthPayload {
+    token: String!
+    user: User!
+}

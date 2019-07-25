@@ -8,7 +8,7 @@ import CommentService from './comments/comment.service'
 import PostService from './posts/post.service'
 import UserService from './users/user.service'
 
-class ServiceIndex {
+class ServiceRegistry {
   constructor(logger) {
     const grpcCredentials = grpc.credentials.createInsecure()
 
@@ -24,4 +24,4 @@ class ServiceIndex {
   }
 }
 
-export default ServiceIndex
+export default ServiceRegistry

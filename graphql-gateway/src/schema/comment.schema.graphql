@@ -1,0 +1,23 @@
+type Comment {
+  id: ID!
+  text: String!
+  author: User!
+  post: Post!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  version: Int!
+}
+
+input CreateCommentInput {
+  text: String!
+  post: ID!
+}
+
+input UpdateCommentInput {
+  text: String
+}
+
+type CommentSubscriptionPayload {
+  mutation: String!
+  data: Comment!
+}

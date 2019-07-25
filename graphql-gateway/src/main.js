@@ -1,6 +1,8 @@
-import path from 'path'
+import fs from 'fs'
+import glob from 'glob'
 import Redis from 'ioredis'
 
+import { reduce } from 'lodash'
 import { RedisPubSub } from 'graphql-redis-subscriptions'
 
 import * as QueryResolvers from 'glob:./resolvers/**/*.query.js' // eslint-disable-line
@@ -10,13 +12,24 @@ import * as GraphResolvers from 'glob:./resolvers/**/*.graph.js' // eslint-disab
 
 import logger from './logger'
 import Server from './server'
-import ServiceIndex from './services/_index'
-import defaultPlaygroundQuery from './default-query'
-
-const SCHEMA_PATH = path.resolve(__dirname, 'schema.graphql')
+import ServiceRegistry from './services/service-registry'
+import defaultPlaygroundQuery from './playground-query'
 
 async function main() {
-  const serviceIndex = new ServiceIndex(logger)
+  const schemaPaths = glob.sync('./**/*.schema.graphql')
+  const schema = reduce(
+    schemaPaths,
+    (schemaContents, filePath) => {
+      const fileContents = fs.readFileSync(filePath, {
+        encoding: 'utf8'
+      })
+
+      return schemaContents.concat(fileContents)
+    },
+    ''
+  )
+
+  const serviceRegistry = new ServiceRegistry(logger)
 
   const redisConnOpts = {
     host: process.env.REDIS_HOST,
@@ -31,7 +44,7 @@ async function main() {
   })
 
   const server = await Server.init(
-    SCHEMA_PATH,
+    schema,
     {
       QueryResolvers,
       MutationResolvers,
@@ -39,7 +52,7 @@ async function main() {
       GraphResolvers
     },
     {
-      ...serviceIndex.services,
+      ...serviceRegistry.services,
       pubsub,
       logger
     }

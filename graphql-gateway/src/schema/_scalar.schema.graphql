@@ -1,0 +1,5 @@
+scalar DateTime
+
+scalar EmailAddress
+
+scalar UnsignedInt
