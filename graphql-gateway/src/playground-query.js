@@ -1,10 +1,12 @@
 export default `mutation signup {
-  signup(data: {
-    name: "Sample User",
-    email: "user1@example.com",
-    password: "admin1234"
-    age: 18
-  }) {
+  signup(
+    data: {
+      name: "Sample User"
+      email: "user1@example.com"
+      password: "admin1234"
+      age: 18
+    }
+  ) {
     token
     user {
       id
@@ -19,10 +21,7 @@ export default `mutation signup {
 }
 
 mutation login {
-  login(data: {
-    email: "user1@example.com",
-    password: "admin1234"
-  }) {
+  login(data: { email: "user1@example.com", password: "admin1234" }) {
     token
     user {
       id
@@ -34,11 +33,13 @@ mutation login {
 }
 
 mutation createPost {
-  createPost (data: {
-    title: "My Awesome Blog Post",
-    body: "My Awesome Blog Content",
-    published: false
-  }) {
+  createPost(
+    data: {
+      title: "My Awesome Blog Post"
+      body: "My Awesome Blog Content"
+      published: false
+    }
+  ) {
     id
     title
     published
@@ -57,9 +58,7 @@ mutation createPost {
 }
 
 mutation updatePost {
-  updatePost (id: "<replace with post id>", data: {
-    published: true
-  }) {
+  updatePost(id: "<replace with post id>", data: { published: true }) {
     id
     title
     published
@@ -78,10 +77,9 @@ mutation updatePost {
 }
 
 mutation createComment {
-  createComment (data: {
-    text: "My Awesome Comment",
-    post: "<replace with post id>"
-  }) {
+  createComment(
+    data: { text: "My Awesome Comment", post: "<replace with post id>" }
+  ) {
     id
     text
     createdAt
@@ -100,9 +98,10 @@ mutation createComment {
 }
 
 mutation updateComment {
-  updateComment (id: "<replace with comment id>", data: {
-    text: "My Awesome Comment 2"
-  }) {
+  updateComment(
+    id: "<replace with comment id>"
+    data: { text: "My Awesome Comment 2" }
+  ) {
     id
     text
     createdAt
@@ -155,13 +154,13 @@ query myPosts {
 query findEverything {
   users: users {
     id
-  	name
+    name
     email
     age
     createdAt
     updatedAt
     version
-  },
+  }
   posts: posts {
     id
     title
@@ -170,7 +169,7 @@ query findEverything {
     createdAt
     updatedAt
     version
-  },
+  }
   comments: comments {
     id
     text
@@ -183,7 +182,7 @@ query findEverything {
 query findAllUsers {
   users {
     id
-  	name
+    name
     email
     age
     createdAt
@@ -217,7 +216,7 @@ query findAllComments {
 query findUsersIncludingPostsAndComments {
   users {
     id
-  	name
+    name
     email
     age
     createdAt
@@ -229,8 +228,8 @@ query findUsersIncludingPostsAndComments {
       body
       published
       createdAt
-    	updatedAt
-    	version
+      updatedAt
+      version
     }
     comments {
       id
@@ -331,25 +330,21 @@ query userCount {
 }
 
 mutation updateProfile {
-  updateProfile (data: {
-    name: "Sample User 2",
-    age: 19
-  }) {
+  updateProfile(data: { name: "Sample User 2", age: 19 }) {
     id
     name
     email
     age
-  	createdAt
+    createdAt
     updatedAt
     version
   }
 }
 
 mutation updateEmail {
-  updateEmail (data: {
-    email: "sample2@example.com",
-    currentPassword: "admin1234"
-  }) {
+  updateEmail(
+    data: { email: "sample2@example.com", currentPassword: "admin1234" }
+  ) {
     token
     user {
       id
@@ -364,11 +359,13 @@ mutation updateEmail {
 }
 
 mutation updatePassword {
-  updatePassword (data: {
-    currentPassword: "admin1234",
-    newPassword: "user12345",
-    confirmPassword: "user12345"
-  }) {
+  updatePassword(
+    data: {
+      currentPassword: "admin1234"
+      newPassword: "user12345"
+      confirmPassword: "user12345"
+    }
+  ) {
     token
     user {
       id
@@ -383,11 +380,11 @@ mutation updatePassword {
 }
 
 mutation deleteComment {
-  deleteComment (id: "<replace with comment id>")
+  deleteComment(id: "<replace with comment id>")
 }
 
 mutation deletePost {
-  deletePost (id: "<replace with post id>")
+  deletePost(id: "<replace with post id>")
 }
 
 mutation deleteAccount {
