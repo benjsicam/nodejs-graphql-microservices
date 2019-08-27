@@ -13,6 +13,8 @@ class AbstractCrudRepository {
     this._logger.info(`${this._serviceName}#findAll.result`, { list: result })
 
     response.res = { list: result }
+
+    return response.res
   }
 
   async findOne({ req, response }) {
@@ -23,6 +25,8 @@ class AbstractCrudRepository {
     this._logger.info(`${this._serviceName}#findOne.result`, result)
 
     response.res = result
+
+    return response.res
   }
 
   async count({ req, response }) {
@@ -33,6 +37,8 @@ class AbstractCrudRepository {
     this._logger.info(`${this._serviceName}#count.result`, { count })
 
     response.res = { count }
+
+    return response.res
   }
 
   async create({ req, response }) {
@@ -43,6 +49,8 @@ class AbstractCrudRepository {
     this._logger.info(`${this._serviceName}#create.result`, result)
 
     response.res = result
+
+    return response.res
   }
 
   async update({ req, response }) {
@@ -63,6 +71,8 @@ class AbstractCrudRepository {
     this._logger.info(`${this._serviceName}#update.result`, result)
 
     response.res = result
+
+    return response.res
   }
 
   async destroy({ req, response }) {
@@ -77,6 +87,8 @@ class AbstractCrudRepository {
     this._logger.info(`${this._serviceName}#destroy.result`, { count })
 
     response.res = { count }
+
+    return response.res
   }
 }
 

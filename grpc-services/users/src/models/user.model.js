@@ -23,7 +23,7 @@ export default function(sequelize, DataTypes) {
       },
       password: {
         type: DataTypes.STRING,
-        comment: 'The user\'s password'
+        comment: "The user's password"
       },
       age: {
         type: DataTypes.INTEGER,

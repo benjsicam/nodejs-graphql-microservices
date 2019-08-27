@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize'
 
-const Op = Sequelize.Op;
+const { Op } = Sequelize
 const operatorsAliases = {
   $eq: Op.eq,
   $ne: Op.ne,
@@ -39,7 +39,7 @@ const operatorsAliases = {
 }
 
 const Db = {
-  async init(modelPath, logger) {
+  async init(modelPaths, logger) {
     const db = new Sequelize.Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
       dialect: 'postgres',
       host: process.env.DB_HOST,
@@ -53,7 +53,9 @@ const Db = {
       operatorsAliases
     })
 
-    db.import(modelPath)
+    modelPaths.forEach(modelPath => {
+      db.import(modelPath)
+    })
 
     await db.sync()
 

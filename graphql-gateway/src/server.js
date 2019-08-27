@@ -1,15 +1,15 @@
 import { GraphQLServer } from 'graphql-yoga'
 import { assign, reduce, startCase } from 'lodash'
-import { DateTime, EmailAddress, UnsignedInt } from 'graphql-scalars'
+import { DateTimeResolver, EmailAddressResolver, UnsignedIntResolver } from 'graphql-scalars'
 
 const Server = {
   async init(schema, resolvers, services) {
     const server = new GraphQLServer({
       typeDefs: schema,
       resolvers: {
-        DateTime,
-        EmailAddress,
-        UnsignedInt,
+        DateTime: DateTimeResolver,
+        EmailAddress: EmailAddressResolver,
+        UnsignedInt: UnsignedIntResolver,
         Query: reduce(
           resolvers.QueryResolvers,
           (res, val) => {
