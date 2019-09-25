@@ -2,6 +2,16 @@
 
 This project is a [monorepo](https://gomonorepo.org/) containing a [GraphQL](https://graphql.org/) API gateway with [gRPC](https://grpc.io/) back-end microservices all written in Node.js. This project is mainly used for learning/trial purposes only.
 
+## Graph Model
+
+When creating GraphQL APIs, one must understand what [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) and Graph Data Modelling are. One must also [think in graphs](https://graphql.org/learn/thinking-in-graphs/) as per the GraphQL specification recommends. A diagram of the graph data model is shown below.
+
+![Graph Model](https://raw.githubusercontent.com/benjsicam/node-graphql-microservices/master/docs/img/graph-model.png)
+
+1. Users can write both posts and comments therefore, a users are authors posts and comments.
+2. Posts are authored by users and comments can be linked/submitted for them.
+3. Comments are authored by users and are linked/submitted to posts.
+
 ## Architecture Overview
  
 The GraphQL API acts as a gateway/proxy for the different microservices it exposes. The resolvers of the GraphQL API make calls to the gRPC servers/microservices in the back-end through gRPC client implementations of the back-end services which are defined through [Protocol Buffers](https://developers.google.com/protocol-buffers/) that also serves as the data interchange format. The gRPC microservices then handles the request to connect to databases or any other service it needs to serve requests.
@@ -21,8 +31,6 @@ This architecture implements the following Microservice Design Patterns:
 5. [API Gateway](https://microservices.io/patterns/apigateway.html)
 6. [Database per Service](https://microservices.io/patterns/data/database-per-service.html)
 7. [CQRS](https://microservices.io/patterns/data/cqrs.html) - GraphQL implements CQRS by default through resolution of graphs
-
-Observability is handled by Kubernetes, Istio and other external software.
 
 ### Benefits
 
@@ -62,9 +70,9 @@ Operations will have better observability on the application as a whole since mo
 
 PostgreSQL is used as the database and Redis is used as the cache.
 
-### Deployment
+## Deployment
 
-Deployment is done with containers in mind. A Docker Compose file along with Dockerfiles for each project are given to run the whole thing on any machine. For production, it's always recommended to use [Kubernetes](https://kubernetes.io/) for these kinds of microservices architecture to deploy in production. [Istio](https://istio.io/) takes care of service discovery, tracing and other observability requirements.
+Deployment is done with containers in mind. A Docker Compose file along with Dockerfiles for each project are given to run the whole thing on any machine. For production, it's always recommended to use [Kubernetes](https://kubernetes.io/) for these kinds of microservices architecture to deploy in production. [Istio](https://istio.io/) takes care of service discovery, distributed tracing and other observability requirements.
 
 ## How to Run
 
