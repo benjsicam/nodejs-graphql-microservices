@@ -4,8 +4,8 @@ type User {
   name: String!
   email: EmailAddress!
   age: UnsignedInt
-  posts: [Post!]!
-  comments: [Comment!]!
+  posts(query: String, page: Int, limit: Int, orderBy: String): [Post!]!
+  comments(query: String, page: Int, limit: Int, orderBy: String): [Comment!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   version: Int!

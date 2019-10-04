@@ -1,11 +1,11 @@
 type Query {
   # Comments Query
-  comments(query: String): [Comment!]!
+  comments(query: String, page: Int, limit: Int, orderBy: String): [Comment!]!
   commentCount(query: String): Int!
 
   # Posts Query
   post(id: ID!): Post!
-  posts(query: String): [Post!]!
+  posts(query: String, page: Int, limit: Int, orderBy: String): [Post!]!
   postCount(query: String): Int!
   myPosts(query: String): [Post!]!
 
