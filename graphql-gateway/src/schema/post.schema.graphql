@@ -5,7 +5,7 @@ type Post {
   body: String!
   published: Boolean!
   author: User!
-  comments: [Comment!]!
+  comments(query: String, page: Int, limit: Int, orderBy: String): [Comment!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   version: Int!
