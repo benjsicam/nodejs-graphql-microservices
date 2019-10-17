@@ -16,11 +16,15 @@ class ServiceRegistry {
     const postServiceClient = new PostServiceClient(process.env.POSTS_SVC_URL, grpcCredentials)
     const userServiceClient = new UserServiceClient(process.env.USERS_SVC_URL, grpcCredentials)
 
-    this.services = {
+    this._services = {
       commentService: new CommentService(commentServiceClient, logger),
       postService: new PostService(postServiceClient, logger),
       userService: new UserService(userServiceClient, logger)
     }
+  }
+
+  get services() {
+    return this._services
   }
 }
 

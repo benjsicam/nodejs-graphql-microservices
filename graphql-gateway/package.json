@@ -33,6 +33,7 @@
     "aigle": "^1.14.1",
     "bcryptjs": "^2.4.3",
     "core-js": "^3.2.1",
+    "dataloader": "^1.4.0",
     "glob": "^7.1.4",
     "graphql-redis-subscriptions": "^2.1.1",
     "graphql-scalars": "^1.0.1",
