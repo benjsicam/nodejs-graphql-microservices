@@ -5,11 +5,7 @@ const PostGraph = {
   async author(parent, args, { userService, logger }) {
     logger.info('PostGraph#author.call', parent.author)
 
-    const user = await userService.findOne({
-      where: {
-        id: parent.author
-      }
-    })
+    const user = await userService.loader.load(parent.author)
 
     logger.info('PostGraph#author.result', user)
 
