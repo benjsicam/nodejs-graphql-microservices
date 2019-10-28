@@ -19,7 +19,7 @@ class PostService extends AbstractCrudService {
   }
 
   get loader() {
-    this._loader
+    return this._loader
   }
 }
 

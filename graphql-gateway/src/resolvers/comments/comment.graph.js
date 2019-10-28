@@ -2,11 +2,7 @@ const CommentGraph = {
   async author(parent, args, { userService, logger }) {
     logger.info('CommentGraph#author.call', parent.author)
 
-    const user = await userService.findOne({
-      where: {
-        id: parent.author
-      }
-    })
+    const user = await userService.loader.load(parent.post)
 
     logger.info('CommentGraph#author.result', user)
 
