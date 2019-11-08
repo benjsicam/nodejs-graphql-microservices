@@ -23,6 +23,11 @@ input LoginUserInput {
   password: String!
 }
 
+type UpdateProfilePayload {
+  error: String
+  user: User
+}
+
 input UpdateProfileInput {
   name: String
   age: UnsignedInt
@@ -40,6 +45,7 @@ input UpdatePasswordInput {
 }
 
 type AuthPayload {
-    token: String!
-    user: User!
+    token: String
+    user: User
+    error: String
 }

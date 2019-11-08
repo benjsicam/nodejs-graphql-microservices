@@ -39,11 +39,13 @@
     "graphql-scalars": "^1.0.1",
     "graphql-subscriptions": "^1.1.0",
     "graphql-yoga": "^1.18.3",
+    "graphql-yup-middleware": "0.0.1",
     "grpc": "^1.23.3",
     "ioredis": "^4.14.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
-    "pino": "^5.13.3"
+    "pino": "^5.13.3",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.2",

@@ -14,7 +14,7 @@ class UserService extends AbstractCrudService {
             $in: keys
           }
         }
-      })
+      }).then(rows => keys.map(key => rows.find(row => row.id === key)))
     })
   }
 
