@@ -73,10 +73,10 @@
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
-        "branches": 75,
-        "functions": 75,
-        "lines": 75,
-        "statements": 75
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
       }
     },
     "collectCoverageFrom": [
@@ -85,6 +85,7 @@
       "!src/db.js",
       "!src/logger.js",
       "!src/main.js",
+      "!src/models/*.js",
       "!**/node_modules/**"
     ],
     "moduleFileExtensions": [

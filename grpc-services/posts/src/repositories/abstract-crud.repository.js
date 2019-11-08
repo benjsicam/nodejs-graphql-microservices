@@ -8,7 +8,9 @@ class AbstractCrudRepository {
   async findAll({ req, response }) {
     this._logger.info(`${this._serviceName}#findAll.call`, req)
 
-    const result = await this._model.findAll(JSON.parse(req.query))
+    const result = await this._model.findAll(Object.assign(JSON.parse(req.query), {
+      raw: true
+    }))
 
     this._logger.info(`${this._serviceName}#findAll.result`, { list: result })
 
@@ -20,7 +22,9 @@ class AbstractCrudRepository {
   async findOne({ req, response }) {
     this._logger.info(`${this._serviceName}#findOne.call`, req)
 
-    const result = await this._model.findOne(JSON.parse(req.query))
+    const result = await this._model.findOne(Object.assign(JSON.parse(req.query), {
+      raw: true
+    }))
 
     this._logger.info(`${this._serviceName}#findOne.result`, result)
 
