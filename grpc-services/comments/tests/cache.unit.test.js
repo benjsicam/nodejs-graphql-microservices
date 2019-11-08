@@ -6,7 +6,7 @@ import logger from '../src/logger'
 import CacheService from '../src/services/cache.service'
 import CacheMiddleware from '../src/middlewares/cache.middleware'
 
-const PREFIX = 'comments'
+const PREFIX = 'test'
 
 describe('Cache Testing', () => {
   let redis, redisConnOpts, cacheService, cacheMiddleware
@@ -30,7 +30,7 @@ describe('Cache Testing', () => {
   })
 
   describe('CacheService', () => {
-    test('#should cache values on set ', async () => {
+    it('#should cache values on set ', async () => {
       let key = faker.random.alphaNumeric(24)
       let data = {
         text: faker.random.alphaNumeric(24),
@@ -64,7 +64,7 @@ describe('Cache Testing', () => {
       return
     })
 
-    test('#should remove a single entry on remove ', async () => {
+    it('#should remove a single entry on remove ', async () => {
       let key = faker.random.alphaNumeric(24)
       let data = {
         text: faker.random.alphaNumeric(24),
@@ -85,7 +85,7 @@ describe('Cache Testing', () => {
       return
     })
 
-    test('#should remove multiple entries on flush pattern', async () => {
+    it('#should remove multiple entries on flush pattern', async () => {
       const key1 = `test-${faker.random.alphaNumeric(24)}`
       const data1 = {
         text: faker.random.alphaNumeric(24),
@@ -119,7 +119,7 @@ describe('Cache Testing', () => {
   })
 
   describe('CacheMiddleware', () => {
-    test('#should add to cache on find', async () => {
+    it('#should add to cache on find', async () => {
       const args = {
         req: {
           query: JSON.stringify({
@@ -170,7 +170,7 @@ describe('Cache Testing', () => {
       return
     })
 
-    test('#should grab from cache on find', async () => {
+    it('#should grab from cache on find', async () => {
       const args = {
         req: {
           query: JSON.stringify({
@@ -223,7 +223,7 @@ describe('Cache Testing', () => {
       return
     })
 
-    test('#should cache result on read ', async () => {
+    it('#should cache result on read ', async () => {
       const id = faker.random.uuid()
       const args = {
         req: {
@@ -268,7 +268,7 @@ describe('Cache Testing', () => {
       return
     })
 
-    test('#should cache result on read ', async () => {
+    it('#should cache result on read ', async () => {
       const id = faker.random.uuid()
       const args = {
         req: {
@@ -315,7 +315,7 @@ describe('Cache Testing', () => {
       return
     })
 
-    test('#should flush cache on write', async () => {
+    it('#should flush cache on write', async () => {
       const id = faker.random.uuid()
       const args = {
         req: {
@@ -352,7 +352,7 @@ describe('Cache Testing', () => {
       return
     })
 
-    test('#should flush cache on remove', async () => {
+    it('#should flush cache on remove', async () => {
       const id = faker.random.uuid()
       const args = {
         req: {
@@ -393,7 +393,7 @@ describe('Cache Testing', () => {
       return
     })
 
-    test('#should return nil when 0 count on remove', async () => {
+    it('#should return nil when 0 count on remove', async () => {
       const result = await cacheMiddleware.remove(PREFIX)({
         response: {
           res: { count: 0 }
