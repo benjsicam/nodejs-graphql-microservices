@@ -2,7 +2,7 @@ const CommentGraph = {
   async author(parent, args, { userService, logger }) {
     logger.info('CommentGraph#author.call', parent.author)
 
-    const user = await userService.loader.load(parent.post)
+    const user = await userService.loader.load(parent.author)
 
     logger.info('CommentGraph#author.result', user)
 

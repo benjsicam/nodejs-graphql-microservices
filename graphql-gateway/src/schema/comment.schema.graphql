@@ -8,13 +8,28 @@ type Comment {
   version: Int!
 }
 
+type CreateCommentPayload {
+  error: String
+  comment: Comment
+}
+
 input CreateCommentInput {
   text: String!
   post: ID!
 }
 
+type UpdateCommentPayload {
+  error: String
+  comment: Comment
+}
+
 input UpdateCommentInput {
   text: String
+}
+
+type DeleteCommentPayload {
+  error: String
+  count: Int
 }
 
 type CommentSubscriptionPayload {

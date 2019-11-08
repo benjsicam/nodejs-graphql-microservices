@@ -1,6 +1,7 @@
 import Dataloader from 'dataloader'
 
 import AbstractCrudService from '../abstract-crud.service'
+// import { resolve } from 'dns'
 
 class PostService extends AbstractCrudService {
   constructor(client, logger) {
@@ -14,7 +15,7 @@ class PostService extends AbstractCrudService {
             $in: keys
           }
         }
-      })
+      }).then(rows => keys.map(key => rows.find(row => row.id === key)))
     })
   }
 

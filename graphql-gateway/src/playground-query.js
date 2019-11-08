@@ -17,6 +17,7 @@ export default `mutation signup {
       updatedAt
       version
     }
+    error
   }
 }
 
@@ -29,6 +30,7 @@ mutation login {
       email
       age
     }
+    error
   }
 }
 
@@ -40,38 +42,45 @@ mutation createPost {
       published: false
     }
   ) {
-    id
-    title
-    published
-    createdAt
-    updatedAt
-    version
-    author {
+    error
+    post {
       id
-      name
-    }
-    comments {
-      id
-      text
+      title
+      published
+      body
+      createdAt
+      updatedAt
+      version
+      author {
+        id
+        name
+      }
+      comments {
+        id
+        text
+      }
     }
   }
 }
 
 mutation updatePost {
   updatePost(id: "<replace with post id>", data: { published: true }) {
-    id
-    title
-    published
-    createdAt
-    updatedAt
-    version
-    author {
+    error
+    post {
       id
-      name
-    }
-    comments {
-      id
-      text
+      title
+      published
+      createdAt
+      updatedAt
+      version
+      author {
+        id
+        name
+      }
+      comments {
+        id
+        text
+      }
     }
   }
 }
@@ -80,19 +89,22 @@ mutation createComment {
   createComment(
     data: { text: "My Awesome Comment", post: "<replace with post id>" }
   ) {
-    id
-    text
-    createdAt
-    updatedAt
-    version
-    author {
+    error
+    comment {
       id
-      name
-      email
-    }
-    post {
-      id
-      title
+      text
+      createdAt
+      updatedAt
+      version
+      author {
+        id
+        name
+        email
+      }
+      post {
+        id
+        title
+      }
     }
   }
 }
@@ -102,19 +114,22 @@ mutation updateComment {
     id: "<replace with comment id>"
     data: { text: "My Awesome Comment 2" }
   ) {
-    id
-    text
-    createdAt
-    updatedAt
-    version
-    author {
+    error
+    comment {
       id
-      name
-      email
-    }
-    post {
-      id
-      title
+      text
+      createdAt
+      updatedAt
+      version
+      author {
+        id
+        name
+        email
+      }
+      post {
+        id
+        title
+      }
     }
   }
 }
@@ -331,13 +346,16 @@ query userCount {
 
 mutation updateProfile {
   updateProfile(data: { name: "Sample User 2", age: 19 }) {
-    id
-    name
-    email
-    age
-    createdAt
-    updatedAt
-    version
+    error
+    user {
+      id
+      name
+      email
+      age
+      createdAt
+      updatedAt
+      version
+    }
   }
 }
 
@@ -355,6 +373,7 @@ mutation updateEmail {
       updatedAt
       version
     }
+    error
   }
 }
 
@@ -376,18 +395,26 @@ mutation updatePassword {
       updatedAt
       version
     }
+    error
   }
 }
 
 mutation deleteComment {
-  deleteComment(id: "<replace with comment id>")
+  deleteComment(id: "<replace with comment id>") {
+    error
+    count
+  }
 }
 
 mutation deletePost {
-  deletePost(id: "<replace with post id>")
+  deletePost(id: "<replace with post id>") {
+    error
+    count
+  }
 }
 
 mutation deleteAccount {
   deleteAccount
 }
+
 `

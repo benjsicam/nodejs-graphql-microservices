@@ -1,6 +1,30 @@
 import { GraphQLServer } from 'graphql-yoga'
 import { assign, reduce, startCase } from 'lodash'
 import { DateTimeResolver, EmailAddressResolver, UnsignedIntResolver } from 'graphql-scalars'
+import * as yup from 'yup'
+
+const yupValidation = {
+  async Mutation(resolve, root, args, context, info) {
+    const mutationField = info.schema.getMutationType().getFields()[info.fieldName]
+    const mutationValidationSchema = mutationField.validationSchema
+
+    if (mutationValidationSchema) {
+      try {
+        const values = await mutationValidationSchema.validate(args)
+      } catch (error) {
+        if (error instanceof yup.ValidationError) {
+          return {
+            error: error.message,
+          }
+        } else {
+          throw error
+        }
+      }
+    }
+    
+    return resolve(root, args, context, info)
+  }
+}
 
 const Server = {
   async init(schema, resolvers, services) {
@@ -46,7 +70,8 @@ const Server = {
           ...req,
           ...services
         }
-      }
+      },
+      middlewares: [yupValidation]
     })
 
     return server

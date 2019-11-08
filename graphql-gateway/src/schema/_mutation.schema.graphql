@@ -1,18 +1,18 @@
 type Mutation {
   # Comments Mutation
-  createComment(data: CreateCommentInput!): Comment!
-  updateComment(id: ID!, data: UpdateCommentInput!): Comment!
-  deleteComment(id: ID!): Int!
+  createComment(data: CreateCommentInput!): CreateCommentPayload!
+  updateComment(id: ID!, data: UpdateCommentInput!): UpdateCommentPayload!
+  deleteComment(id: ID!): DeleteCommentPayload!
 
   # Posts Mutation
-  createPost(data: CreatePostInput!): Post!
-  updatePost(id: ID!, data: UpdatePostInput!): Post!
-  deletePost(id: ID!): Int!
+  createPost(data: CreatePostInput!): CreatePostPayload!
+  updatePost(id: ID!, data: UpdatePostInput!): UpdatePostPayload!
+  deletePost(id: ID!): DeletePostPayload!
 
   # Users Mutation
   signup(data: SignupUserInput!): AuthPayload!
   login(data: LoginUserInput!): AuthPayload!
-  updateProfile(data: UpdateProfileInput!): User!
+  updateProfile(data: UpdateProfileInput!): UpdateProfilePayload!
   updateEmail(data: UpdateEmailInput): AuthPayload!
   updatePassword(data: UpdatePasswordInput): AuthPayload!
   deleteAccount: Int!
