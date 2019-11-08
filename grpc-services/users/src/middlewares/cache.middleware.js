@@ -31,7 +31,9 @@ class CacheMiddleware {
 
       this._logger.info('CacheMiddleware#find.addToCache', `${prefix}-find-${key}`, response.res)
 
-      return this._cacheService.set(`${prefix}-find-${key}`, response.res)
+      await this._cacheService.set(`${prefix}-find-${key}`, response.res)
+
+      return response.res
     }
   }
 
@@ -58,7 +60,9 @@ class CacheMiddleware {
 
       this._logger.info('CacheMiddleware#read.addToCache', `${prefix}-read-${key}`, response.res)
 
-      return this._cacheService.set(`${prefix}-read-${key}`, response.res)
+      await this._cacheService.set(`${prefix}-read-${key}`, response.res)
+
+      return response.res
     }
   }
 
