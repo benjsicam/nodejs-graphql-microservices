@@ -1,22 +1,22 @@
 import { isNaN, isEmpty } from 'lodash'
 
 const queryUtils = {
-    async setLimit(limit) {
+    async getLimit(limit) {
         let result = 25
 
         if (!isNaN(limit) && limit > 0) result = limit
 
         return result
     },
-    async setOffset(page, limit) {
+    async getOffset(page, limit) {
         let result = 0
 
         if (!isNaN(page) && page > 0) result = (page - 1) * limit
 
         return result
     },
-    async parseOrder(orderBy) {
-        let result = [['createdAt', 'DESC']]
+    async getOrder(orderBy) {
+        let result
 
         if (!isEmpty(orderBy)) {
             result = []
