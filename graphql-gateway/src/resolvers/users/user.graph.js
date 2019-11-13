@@ -1,5 +1,5 @@
-import queryUtils from '../../utils/query'
 import { get } from 'lodash'
+import queryUtils from '../../utils/query'
 
 const UserGraph = {
   async posts(parent, args, { postService, logger }) {

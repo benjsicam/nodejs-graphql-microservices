@@ -5,12 +5,12 @@
   "scripts": {
     "start": "nodemon --exec babel-node ./src/main.js",
     "build": "rimraf dist && babel src --out-dir dist --ignore 'tests/**' -s inline --copy-files && cpy package.json dist",
-    "test": "jest --watch",
+    "test": "jest --detectOpenHandles",
     "lint": "eslint --max-warnings=0 ./src",
     "lint:fix": "eslint --fix ./src",
     "copy:protos": "cpy ../_proto ./src/services/_proto",
     "precommit": "npm run lint:fix && npm run lint",
-    "prepush": "npm run test"
+    "prepush": "npm test"
   },
   "repository": {
     "type": "git",
@@ -28,45 +28,77 @@
   },
   "homepage": "https://github.com/benjsicam/node-graphql-microservices#readme",
   "dependencies": {
-    "@babel/runtime": "^7.6.2",
-    "@grpc/proto-loader": "^0.5.2",
+    "@babel/runtime": "^7.7.2",
+    "@grpc/proto-loader": "^0.5.3",
     "aigle": "^1.14.1",
     "bcryptjs": "^2.4.3",
-    "core-js": "^3.2.1",
+    "core-js": "^3.4.1",
     "dataloader": "^1.4.0",
-    "glob": "^7.1.4",
+    "glob": "^7.1.6",
     "graphql-redis-subscriptions": "^2.1.1",
-    "graphql-scalars": "^1.0.1",
+    "graphql-scalars": "^1.0.4",
     "graphql-subscriptions": "^1.1.0",
     "graphql-yoga": "^1.18.3",
     "graphql-yup-middleware": "0.0.1",
-    "grpc": "^1.23.3",
+    "grpc": "^1.24.2",
     "ioredis": "^4.14.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
-    "pino": "^5.13.3",
+    "pino": "^5.13.6",
     "yup": "^0.27.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.2",
-    "@babel/core": "^7.6.2",
-    "@babel/node": "^7.6.2",
-    "@babel/preset-env": "^7.6.2",
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/node": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",
     "babel-plugin-import-glob": "^2.0.0",
     "babel-plugin-inline-dotenv": "^1.5.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "cpy-cli": "^2.0.0",
-    "eslint": "^6.4.0",
+    "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-config-prettier": "^6.3.0",
+    "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^22.17.0",
+    "eslint-plugin-jest": "^23.0.3",
     "eslint-plugin-prettier": "^3.1.1",
-    "nodemon": "^1.19.2",
-    "pino-pretty": "^3.2.1",
-    "prettier": "^1.18.2",
+    "faker": "^4.1.0",
+    "jest-extended": "^0.11.2",
+    "nodemon": "^1.19.4",
+    "pino-pretty": "^3.3.0",
+    "prettier": "^1.19.1",
     "rimraf": "^3.0.0"
+  },
+  "jest": {
+    "globals": {},
+    "testRegex": "tests/*.+(test.js)",
+    "setupFilesAfterEnv": [
+      "jest-extended"
+    ],
+    "collectCoverage": true,
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    },
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/logger.js",
+      "!src/main.js",
+      "!src/playground-query.js",
+      "!src/server.js",
+      "!**/node_modules/**"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "node"
+    ],
+    "testEnvironment": "node"
   }
 }
