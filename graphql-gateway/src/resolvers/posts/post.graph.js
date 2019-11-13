@@ -1,5 +1,5 @@
-import queryUtils from '../../utils/query'
 import { get } from 'lodash'
+import queryUtils from '../../utils/query'
 
 const PostGraph = {
   async author(parent, args, { userService, logger }) {

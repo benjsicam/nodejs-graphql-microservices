@@ -10,18 +10,17 @@ const yupValidation = {
 
     if (mutationValidationSchema) {
       try {
-        const values = await mutationValidationSchema.validate(args)
+        await mutationValidationSchema.validate(args)
       } catch (error) {
         if (error instanceof yup.ValidationError) {
           return {
-            error: error.message,
+            error: error.message
           }
-        } else {
-          throw error
         }
+        throw error
       }
     }
-    
+
     return resolve(root, args, context, info)
   }
 }
