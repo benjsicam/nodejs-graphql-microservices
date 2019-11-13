@@ -10,7 +10,7 @@
     "lint:fix": "eslint --fix ./src",
     "copy:protos": "cpy ../_proto ./src/services/_proto",
     "precommit": "npm run lint:fix && npm run lint",
-    "prepush": "npm run test"
+    "prepush": "npm test"
   },
   "repository": {
     "type": "git",
@@ -32,7 +32,7 @@
     "@grpc/proto-loader": "^0.5.3",
     "aigle": "^1.14.1",
     "bcryptjs": "^2.4.3",
-    "core-js": "^3.4.0",
+    "core-js": "^3.4.1",
     "dataloader": "^1.4.0",
     "glob": "^7.1.6",
     "graphql-redis-subscriptions": "^2.1.1",
@@ -44,7 +44,7 @@
     "ioredis": "^4.14.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
-    "pino": "^5.13.5",
+    "pino": "^5.13.6",
     "yup": "^0.27.0"
   },
   "devDependencies": {
@@ -62,13 +62,13 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^23.0.2",
+    "eslint-plugin-jest": "^23.0.3",
     "eslint-plugin-prettier": "^3.1.1",
     "faker": "^4.1.0",
     "jest-extended": "^0.11.2",
     "nodemon": "^1.19.4",
     "pino-pretty": "^3.3.0",
-    "prettier": "^1.18.2",
+    "prettier": "^1.19.1",
     "rimraf": "^3.0.0"
   },
   "jest": {
