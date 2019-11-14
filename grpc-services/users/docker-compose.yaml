@@ -1,0 +1,48 @@
+version: "3.3"
+
+services:
+
+  users-svc:
+    build:
+      context: "."
+    networks:
+      - "local"
+    expose:
+      - "50051"
+    depends_on:
+      - "db"
+      - "cache"
+    environment:
+      NODE_ENV: "test"
+      HOST: "0.0.0.0"
+      PORT: "50051"
+      DB_NAME: "postgres"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+      REDIS_HOST: "cache"
+      REDIS_PORT: "6379"
+    restart: "on-failure"
+
+  db:
+    image: "postgres:11.4-alpine"
+    networks:
+      - "local"
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    restart: "on-failure"
+
+  cache:
+    image: "redis:5.0.5-alpine"
+    networks:
+      - "local"
+    expose:
+      - "6379"
+    restart: "on-failure"
+
+networks:
+  local:

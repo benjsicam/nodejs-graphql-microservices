@@ -10,7 +10,8 @@
     "lint:fix": "eslint --fix ./src",
     "copy:protos": "cpy ../../_proto ./src/_proto",
     "precommit": "npm run lint:fix && npm run lint",
-    "prepush": "npm test"
+    "prepush": "npm run test",
+    "docker:test": "docker-compose build --no-cache && docker-compose run --rm comments-svc npm i -g jest && npm i && npm test"
   },
   "repository": {
     "type": "git",
