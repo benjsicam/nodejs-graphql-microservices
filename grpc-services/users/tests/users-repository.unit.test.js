@@ -44,7 +44,7 @@ describe('Database Testing', () => {
 
   beforeAll(async () => {
     logger.info('=====SETUP====')
-    const modelPaths = glob.sync(path.resolve(process.cwd(), 'dist/**/*.model.js'))
+    const modelPaths = glob.sync(path.resolve(__dirname, '../src/models/*.model.js'))
 
     db = await Db.init(modelPaths, logger)
     repo = new UserRepository(SERVICE_NAME, db.model(MODEL_NAME), logger)

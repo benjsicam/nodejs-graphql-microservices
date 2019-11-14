@@ -1,0 +1,73 @@
+---
+image: node:10
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+before_script:
+  - npm i jest -g
+  - npm i
+
+stages:
+  - build
+  - test
+
+lint:
+  script:
+    - npm run lint:fix
+  stage: build
+  only:
+    - master
+  tags:
+    - docker
+    - linux
+  allow_failure: false
+  when: always
+
+compile:
+  script:
+    - npm run build
+  stage: build
+  artifacts:
+    untracked: true
+  only:
+    - master
+  tags:
+    - docker
+    - linux
+  allow_failure: false
+  when: always
+
+test:
+  services:
+    - name: postgres:11.4-alpine
+      alias: postgres
+    - name: redis:5.0.5-alpine
+      alias: redis
+  dependencies:
+    - compile
+  script:
+    - npm test
+  stage: test
+  variables:
+    NODE_ENV: "test"
+    HOST: "0.0.0.0"
+    PORT: "50051"
+    DB_NAME: "postgres"
+    DB_HOST: "postgres"
+    DB_PORT: "5432"
+    DB_USER: "postgres"
+    DB_PASSWORD: "postgres"
+    REDIS_HOST: "redis"
+    REDIS_PORT: "6379"
+    POSTGRES_USER: "postgres"
+    POSTGRES_PASSWORD: "postgres"
+  only:
+    - master
+  tags:
+    - docker
+    - linux
+  allow_failure: false
+  when: always
