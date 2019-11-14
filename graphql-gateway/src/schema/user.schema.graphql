@@ -24,7 +24,7 @@ input LoginUserInput {
 }
 
 type UpdateProfilePayload {
-  error: String
+  errors: [ErrorPayload]
   user: User
 }
 
@@ -47,5 +47,5 @@ input UpdatePasswordInput {
 type AuthPayload {
     token: String
     user: User
-    error: String
+    errors: [ErrorPayload]
 }

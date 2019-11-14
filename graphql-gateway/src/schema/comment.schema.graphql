@@ -9,7 +9,7 @@ type Comment {
 }
 
 type CreateCommentPayload {
-  error: String
+  errors: [ErrorPayload]
   comment: Comment
 }
 
@@ -19,7 +19,7 @@ input CreateCommentInput {
 }
 
 type UpdateCommentPayload {
-  error: String
+  errors: [ErrorPayload]
   comment: Comment
 }
 
@@ -28,7 +28,7 @@ input UpdateCommentInput {
 }
 
 type DeleteCommentPayload {
-  error: String
+  errors: [ErrorPayload]
   count: Int
 }
 

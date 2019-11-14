@@ -17,3 +17,8 @@ type Mutation {
   updatePassword(data: UpdatePasswordInput): AuthPayload!
   deleteAccount: Int!
 }
+
+type ErrorPayload {
+	field: String
+	message: [String]
+}

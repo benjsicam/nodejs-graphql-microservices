@@ -17,7 +17,10 @@ export default `mutation signup {
       updatedAt
       version
     }
-    error
+    errors {
+      field
+      message
+    }
   }
 }
 
@@ -30,7 +33,10 @@ mutation login {
       email
       age
     }
-    error
+    errors {
+      field
+      message
+    }
   }
 }
 
@@ -42,7 +48,10 @@ mutation createPost {
       published: false
     }
   ) {
-    error
+    errors {
+      field
+      message
+    }
     post {
       id
       title
@@ -65,7 +74,10 @@ mutation createPost {
 
 mutation updatePost {
   updatePost(id: "<replace with post id>", data: { published: true }) {
-    error
+    errors {
+      field
+      message
+    }
     post {
       id
       title
@@ -89,7 +101,10 @@ mutation createComment {
   createComment(
     data: { text: "My Awesome Comment", post: "<replace with post id>" }
   ) {
-    error
+    errors {
+      field
+      message
+    }
     comment {
       id
       text
@@ -114,7 +129,10 @@ mutation updateComment {
     id: "<replace with comment id>"
     data: { text: "My Awesome Comment 2" }
   ) {
-    error
+    errors {
+      field
+      message
+    }
     comment {
       id
       text
@@ -346,7 +364,10 @@ query userCount {
 
 mutation updateProfile {
   updateProfile(data: { name: "Sample User 2", age: 19 }) {
-    error
+    errors {
+      field
+      message
+    }
     user {
       id
       name
@@ -373,7 +394,10 @@ mutation updateEmail {
       updatedAt
       version
     }
-    error
+    errors {
+      field
+      message
+    }
   }
 }
 
@@ -395,20 +419,29 @@ mutation updatePassword {
       updatedAt
       version
     }
-    error
+    errors {
+      field
+      message
+    }
   }
 }
 
 mutation deleteComment {
   deleteComment(id: "<replace with comment id>") {
-    error
+    errors {
+      field
+      message
+    }
     count
   }
 }
 
 mutation deletePost {
   deletePost(id: "<replace with post id>") {
-    error
+    errors {
+      field
+      message
+    }
     count
   }
 }

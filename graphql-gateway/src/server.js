@@ -14,7 +14,10 @@ const yupValidation = {
       } catch (error) {
         if (error instanceof yup.ValidationError) {
           return {
-            error: error.message
+            errors: [{
+              message: error.errors,
+              field: error.path
+            }]
           }
         }
         throw error

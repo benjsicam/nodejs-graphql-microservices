@@ -12,7 +12,7 @@ type Post {
 }
 
 type CreatePostPayload {
-  error: String
+  errors: [ErrorPayload]
   post: Post
 }
 
@@ -23,7 +23,7 @@ input CreatePostInput {
 }
 
 type UpdatePostPayload {
-  error: String
+  errors: [ErrorPayload]
   post: Post
 }
 
@@ -34,7 +34,7 @@ input UpdatePostInput {
 }
 
 type DeletePostPayload {
-  error: String
+  errors: [ErrorPayload]
   count: Int
 }
 
