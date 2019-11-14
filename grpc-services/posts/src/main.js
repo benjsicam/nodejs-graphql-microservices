@@ -18,7 +18,7 @@ const SERVICE_NAME = 'PostService'
 const HOST_PORT = `${process.env.HOST}:${process.env.PORT}`
 
 async function main() {
-  const modelPaths = glob.sync('./**/*.model.js')
+  const modelPaths = glob.sync(path.resolve(__dirname, '../**/*.model.js'))
   const db = await Db.init(modelPaths, logger)
   const repo = new PostRepository(SERVICE_NAME, db.model(MODEL_NAME), logger)
 
