@@ -1,4 +1,4 @@
-import yup from 'yup'
+import * as yup from 'yup'
 import bcrypt from 'bcryptjs'
 
 import { isString, isNumber } from 'lodash'
