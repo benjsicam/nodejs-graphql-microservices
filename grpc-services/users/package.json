@@ -4,7 +4,7 @@
   "description": "gRPC microservice back-end for users. Used for learning/trial purposes only.",
   "scripts": {
     "start": "nodemon --exec babel-node ./src/main.js",
-    "build": "rimraf dist && babel src --out-dir dist --ignore 'tests/**' -s inline --copy-files && cpy package.json dist",
+    "build": "rimraf dist && babel src --out-dir dist -s inline --copy-files && cpy package.json dist",
     "test": "jest --detectOpenHandles",
     "lint": "eslint --max-warnings=0 ./src",
     "lint:fix": "eslint --fix ./src",
@@ -67,7 +67,7 @@
   },
   "jest": {
     "globals": {},
-    "testRegex": "tests/*.+(test.js)",
+    "testRegex": "test/*.+(test.js)",
     "setupFilesAfterEnv": [
       "jest-extended"
     ],
