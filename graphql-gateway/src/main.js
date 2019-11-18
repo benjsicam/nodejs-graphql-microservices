@@ -1,5 +1,6 @@
 import fs from 'fs'
 import glob from 'glob'
+import path from 'path'
 import Redis from 'ioredis'
 
 import { reduce } from 'lodash'
@@ -15,8 +16,8 @@ import Server from './server'
 import ServiceRegistry from './services/service-registry'
 import defaultPlaygroundQuery from './playground-query'
 
-async function main() {
-  const schemaPaths = glob.sync('./**/*.schema.graphql')
+const main = async () => {
+  const schemaPaths = glob.sync(path.resolve(__dirname, '**/*.schema.graphql'))
   const schema = reduce(
     schemaPaths,
     (schemaContents, filePath) => {
@@ -37,10 +38,13 @@ async function main() {
     keyPrefix: process.env.NODE_ENV
   }
 
+  const publisher = new Redis(redisConnOpts)
+  const subscriber = new Redis(redisConnOpts)
+
   const pubsub = new RedisPubSub({
     connection: redisConnOpts,
-    publisher: new Redis(redisConnOpts),
-    subscriber: new Redis(redisConnOpts)
+    publisher,
+    subscriber
   })
 
   const server = await Server.init(
@@ -58,7 +62,7 @@ async function main() {
     }
   )
 
-  server.start(
+  const httpServer = await server.start(
     {
       defaultPlaygroundQuery,
       port: process.env.PORT || 3000
@@ -67,6 +71,12 @@ async function main() {
       logger.info(`GraphQL Server is now running on port ${port}`)
     }
   )
+
+  return {
+    publisher,
+    subscriber,
+    httpServer
+  }
 }
 
-main()
+export default main

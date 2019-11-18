@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "A sample GraphQL API built in Node.js with gRPC back-end microservices. Used for learning/trial purposes only.",
   "scripts": {
-    "start": "nodemon --exec babel-node ./src/main.js",
-    "build": "rimraf dist && babel src --out-dir dist --ignore 'tests/**' -s inline --copy-files && cpy package.json dist",
+    "start": "nodemon --exec babel-node ./src/index.js",
+    "build": "rimraf dist && babel src --out-dir dist -s inline --copy-files && cpy package.json dist",
     "test": "jest --detectOpenHandles",
+    "test:docker": "npm i -g jest && npm i && npm test",
     "lint": "eslint --max-warnings=0 ./src",
     "lint:fix": "eslint --fix ./src",
     "copy:protos": "cpy ../_proto ./src/services/_proto",
@@ -65,6 +66,7 @@
     "eslint-plugin-jest": "^23.0.3",
     "eslint-plugin-prettier": "^3.1.1",
     "faker": "^4.1.0",
+    "graphql-request": "^1.8.2",
     "jest-extended": "^0.11.2",
     "nodemon": "^1.19.4",
     "pino-pretty": "^3.3.0",
@@ -73,7 +75,9 @@
   },
   "jest": {
     "globals": {},
-    "testRegex": "tests/*.+(test.js)",
+    "globalSetup": "<rootDir>/test/_setup.js",
+    "globalTeardown": "<rootDir>/test/_teardown.js",
+    "testRegex": "test/*.+(test.js)",
     "setupFilesAfterEnv": [
       "jest-extended"
     ],
@@ -87,11 +91,12 @@
       }
     },
     "collectCoverageFrom": [
-      "src/**/*.js",
-      "!src/logger.js",
-      "!src/main.js",
-      "!src/playground-query.js",
-      "!src/server.js",
+      "**/*.js",
+      "!./index.js",
+      "!./logger.js",
+      "!./main.js",
+      "!./playground-query.js",
+      "!./server.js",
       "!**/node_modules/**"
     ],
     "moduleFileExtensions": [

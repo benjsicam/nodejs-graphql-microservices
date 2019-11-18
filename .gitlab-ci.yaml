@@ -1,0 +1,37 @@
+---
+image: docker/compose:1.24.1
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+stages:
+  - build
+  - test
+
+build:
+  script:
+    - ./bin/build-all.sh
+  stage: build
+  only:
+    - master
+  tags:
+    - docker
+    - linux
+  allow_failure: false
+  when: always
+
+test:
+  dependencies:
+    - build
+  script:
+    - ./bin/run-tests.sh
+  stage: test
+  only:
+    - master
+  tags:
+    - docker
+    - linux
+  allow_failure: false
+  when: always
