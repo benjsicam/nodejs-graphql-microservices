@@ -14,4 +14,4 @@ COPY --from=build /usr/local/graphql-gateway .
 
 EXPOSE 3000
 
-CMD ["node", "main.js"]
+CMD ["node", "index.js"]
