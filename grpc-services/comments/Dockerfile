@@ -14,4 +14,4 @@ COPY --from=build /usr/local/comments-svc .
 
 EXPOSE 50051
 
-CMD ["node", "main.js"]
+CMD ["node", "index.js"]

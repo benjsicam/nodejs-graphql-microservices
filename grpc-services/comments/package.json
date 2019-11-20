@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "gRPC microservice back-end for comments. Used for learning/trial purposes only.",
   "scripts": {
-    "start": "nodemon --exec babel-node ./src/main.js",
+    "start": "nodemon --exec babel-node ./src/index.js",
     "build": "rimraf dist && babel src --out-dir dist -s inline --copy-files && cpy package.json dist",
     "test": "jest --detectOpenHandles",
     "lint": "eslint --max-warnings=0 ./src",
@@ -84,6 +84,7 @@
       "src/**/*.js",
       "!src/app.js",
       "!src/db.js",
+      "!src/index.js",
       "!src/logger.js",
       "!src/main.js",
       "!src/models/*.js",
