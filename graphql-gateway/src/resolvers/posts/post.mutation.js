@@ -128,7 +128,7 @@ const PostMutation = {
 
       logger.info('PostMutation#updatePost.result', updatedPost)
 
-      return { updatedPost }
+      return { post: updatedPost }
     }
   },
   deletePost: {
@@ -166,7 +166,7 @@ const PostMutation = {
 
       logger.info('PostMutation#deletePost.result', count, post)
 
-      return count
+      return { count }
     }
   }
 }

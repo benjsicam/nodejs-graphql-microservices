@@ -44,6 +44,11 @@ input UpdatePasswordInput {
   confirmPassword: String!
 }
 
+type DeleteUserPayload {
+  errors: [ErrorPayload]
+  count: Int
+}
+
 type AuthPayload {
     token: String
     user: User
