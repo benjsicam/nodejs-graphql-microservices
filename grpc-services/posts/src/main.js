@@ -17,7 +17,7 @@ const SERVICE_NAME = 'PostService'
 
 const HOST_PORT = `${process.env.HOST}:${process.env.PORT}`
 
-async function main() {
+const main = async () => {
   const modelPaths = glob.sync(path.resolve(__dirname, '../**/*.model.js'))
   const db = await Db.init(modelPaths, logger)
   const repo = new PostRepository(SERVICE_NAME, db.model(MODEL_NAME), logger)
@@ -44,4 +44,4 @@ async function main() {
   logger.info(`gRPC Server is now listening on port ${process.env.PORT}`)
 }
 
-main()
+export default main

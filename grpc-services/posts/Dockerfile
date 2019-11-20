@@ -14,4 +14,4 @@ COPY --from=build /usr/local/posts-svc .
 
 EXPOSE 50051
 
-CMD ["node", "main.js"]
+CMD ["node", "index.js"]
