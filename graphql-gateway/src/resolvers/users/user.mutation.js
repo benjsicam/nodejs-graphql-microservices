@@ -148,7 +148,7 @@ const UserMutation = {
 
       logger.info('UserMutation#updateProfile.result', updatedUser)
 
-      return updatedUser
+      return { user: updatedUser }
     }
   },
   updateEmail: {
@@ -281,7 +281,7 @@ const UserMutation = {
 
     logger.info('UserMutation#deleteAccount.result', count, user)
 
-    return count
+    return { count }
   }
 }
 

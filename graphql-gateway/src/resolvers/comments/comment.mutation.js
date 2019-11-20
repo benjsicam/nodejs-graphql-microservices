@@ -88,7 +88,7 @@ const CommentMutation = {
 
       logger.info('CommentMutation#updateComment.result', updatedComment)
 
-      return { updatedComment }
+      return { comment: updatedComment }
     }
   },
   deleteComment: {
@@ -118,7 +118,7 @@ const CommentMutation = {
 
       logger.info('CommentMutation#deleteComment.result', count, comment)
 
-      return count
+      return { count }
     }
   }
 }
