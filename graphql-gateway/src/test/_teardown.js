@@ -1,4 +1,3 @@
-
 import logger from '../logger'
 
 module.exports = async () => {
