@@ -25,7 +25,12 @@ export default `mutation signup {
 }
 
 mutation login {
-  login(data: { email: "user1@example.com", password: "admin1234" }) {
+  login(
+    data: {
+      email: "user1@example.com",
+      password: "admin1234"
+    }
+  ) {
     token
     user {
       id
@@ -43,8 +48,8 @@ mutation login {
 mutation createPost {
   createPost(
     data: {
-      title: "My Awesome Blog Post"
-      body: "My Awesome Blog Content"
+      title: "My Awesome Blog Post",
+      body: "My Awesome Blog Content",
       published: false
     }
   ) {
@@ -73,7 +78,10 @@ mutation createPost {
 }
 
 mutation updatePost {
-  updatePost(id: "<replace with post id>", data: { published: true }) {
+  updatePost(
+    id: "<replace with post id>",
+    data: { published: true }
+  ) {
     errors {
       field
       message
@@ -99,7 +107,10 @@ mutation updatePost {
 
 mutation createComment {
   createComment(
-    data: { text: "My Awesome Comment", post: "<replace with post id>" }
+    data: {
+      text: "My Awesome Comment",
+      post: "<replace with post id>"
+    }
   ) {
     errors {
       field
@@ -363,7 +374,11 @@ query userCount {
 }
 
 mutation updateProfile {
-  updateProfile(data: { name: "Sample User 2", age: 19 }) {
+  updateProfile(data: {
+    name: "Sample User 2",
+    age: 19
+    }
+  ) {
     errors {
       field
       message
@@ -382,7 +397,10 @@ mutation updateProfile {
 
 mutation updateEmail {
   updateEmail(
-    data: { email: "sample2@example.com", currentPassword: "admin1234" }
+    data: {
+      email: "sample2@example.com",
+      currentPassword: "admin1234"
+    }
   ) {
     token
     user {
@@ -404,8 +422,8 @@ mutation updateEmail {
 mutation updatePassword {
   updatePassword(
     data: {
-      currentPassword: "admin1234"
-      newPassword: "user12345"
+      currentPassword: "admin1234",
+      newPassword: "user12345",
       confirmPassword: "user12345"
     }
   ) {
