@@ -2,6 +2,8 @@ import path from 'path'
 import glob from 'glob'
 import Redis from 'ioredis'
 
+import { map } from 'lodash'
+
 import Db from './db'
 import App from './app'
 import logger from './logger'
@@ -22,11 +24,39 @@ const main = async () => {
   const db = await Db.init(modelPaths, logger)
   const repo = new UserRepository(SERVICE_NAME, db.model(MODEL_NAME), logger)
 
-  const redisConnOpts = {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT
+  const redisHostConfig = `${process.env.REDIS_HOST || ''}`.split(',')
+
+  let cache
+  let redisOptions = {}
+
+  if (redisHostConfig.length > 1) {
+    let redisNodes = map(redisHostConfig, host => {
+      return {
+        host,
+        port: process.env.REDIS_PORT
+      }
+    })
+
+    redisOptions = {
+      password: process.env.REDIS_PASSWORD,
+      keyPrefix: process.env.NODE_ENV
+    }
+
+    cache = new Redis.Cluster(redisNodes, {
+      redisOptions
+    })
+  } else {
+    redisOptions = {
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      password: process.env.REDIS_PASSWORD,
+      keyPrefix: process.env.NODE_ENV
+    }
+
+    cache = new Redis(redisOptions)
   }
-  const cacheService = new CacheService(new Redis(redisConnOpts), logger)
+
+  const cacheService = new CacheService(cache, logger)
   const cacheMiddleware = new CacheMiddleware(cacheService, logger)
 
   const UserService = {

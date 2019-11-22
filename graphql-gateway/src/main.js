@@ -3,7 +3,7 @@ import glob from 'glob'
 import path from 'path'
 import Redis from 'ioredis'
 
-import { reduce } from 'lodash'
+import { map, reduce } from 'lodash'
 import { RedisPubSub } from 'graphql-redis-subscriptions'
 
 import * as QueryResolvers from 'glob:./resolvers/**/*.query.js' // eslint-disable-line
@@ -31,18 +31,44 @@ const main = async () => {
   )
 
   const serviceRegistry = new ServiceRegistry(logger)
+  const redisHostConfig = `${process.env.REDIS_HOST || ''}`.split(',')
 
-  const redisConnOpts = {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
-    keyPrefix: process.env.NODE_ENV
+  let publisher, subscriber
+  let redisOptions = {}
+
+  if (redisHostConfig.length > 1) {
+    let redisNodes = map(redisHostConfig, host => {
+      return {
+        host,
+        port: process.env.REDIS_PORT
+      }
+    })
+
+    redisOptions = {
+      password: process.env.REDIS_PASSWORD,
+      keyPrefix: process.env.NODE_ENV
+    }
+
+    publisher = new Redis.Cluster(redisNodes, {
+      redisOptions
+    })
+    subscriber = new Redis.Cluster(redisNodes, {
+      redisOptions
+    })
+  } else {
+    redisOptions = {
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      password: process.env.REDIS_PASSWORD,
+      keyPrefix: process.env.NODE_ENV
+    }
+
+    publisher = new Redis(redisOptions)
+    subscriber = new Redis(redisOptions)
   }
 
-  const publisher = new Redis(redisConnOpts)
-  const subscriber = new Redis(redisConnOpts)
-
   const pubsub = new RedisPubSub({
-    connection: redisConnOpts,
+    connection: redisOptions,
     publisher,
     subscriber
   })
