@@ -2,6 +2,7 @@ import * as yup from 'yup'
 
 import { isString } from 'lodash'
 
+import errorUtils from '../../utils/error'
 import authUtils from '../../utils/auth'
 
 const CommentMutation = {
@@ -28,7 +29,7 @@ const CommentMutation = {
       logger.info('CommentMutation#createComment.check', !userExists, !postExists)
 
       if (!userExists || !postExists) {
-        throw new Error('Unable to find user and post')
+        return errorUtils.buildError(['Unable to find user and post'])
       }
 
       const comment = await commentService.create({
@@ -70,7 +71,7 @@ const CommentMutation = {
       logger.info('CommentMutation#updateComment.target', comment)
 
       if (!comment) {
-        throw new Error('Comment not found or you may not be the owner of the comment')
+        return errorUtils.buildError(['Comment not found or you may not be the owner of the comment'])
       }
 
       if (isString(data.text)) {
@@ -104,7 +105,7 @@ const CommentMutation = {
       logger.info('CommentMutation#deleteComment.check', !comment)
 
       if (!comment) {
-        throw new Error('Comment not found or you may not be the owner of the comment')
+        return errorUtils.buildError(['Comment not found or you may not be the owner of the comment'])
       }
 
       const count = await commentService.destroy(id)

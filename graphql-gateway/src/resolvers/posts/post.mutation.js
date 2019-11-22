@@ -2,6 +2,7 @@ import * as yup from 'yup'
 
 import { isString, isBoolean } from 'lodash'
 
+import errorUtils from '../../utils/error'
 import authUtils from '../../utils/auth'
 
 const PostMutation = {
@@ -31,7 +32,7 @@ const PostMutation = {
       logger.info('PostMutation#createPost.check', !userExists)
 
       if (!userExists) {
-        throw new Error('User not found')
+        return errorUtils.buildError(['User not found'])
       }
 
       const post = await postService.create({
@@ -80,7 +81,7 @@ const PostMutation = {
       logger.info('PostMutation#updatePost.target', post)
 
       if (!post) {
-        throw new Error('Post not found or you may not be the owner of the post')
+        return errorUtils.buildError(['Post not found or you may not be the owner of the post'])
       }
 
       if (isString(data.title)) {
@@ -144,13 +145,13 @@ const PostMutation = {
       logger.info('PostMutation#deletePost.check', !post)
 
       if (!post) {
-        throw new Error('Post not found or you may not be the owner of the post')
+        return errorUtils.buildError(['Post not found or you may not be the owner of the post'])
       }
 
       const commentExists = (await commentService.count({ where: { post: id } })) >= 1
 
       if (commentExists) {
-        throw new Error('Comment/s have already been posted for this post.')
+        return errorUtils.buildError(['Post not found or you may not be the owner of the post'])
       }
 
       const count = await postService.destroy(id)

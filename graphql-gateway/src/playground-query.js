@@ -465,7 +465,13 @@ mutation deletePost {
 }
 
 mutation deleteAccount {
-  deleteAccount
+  deleteAccount {
+    errors {
+      field
+      message
+    }
+    count
+  }
 }
 
 `

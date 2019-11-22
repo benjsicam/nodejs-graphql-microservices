@@ -5,6 +5,7 @@ import { isString, isNumber } from 'lodash'
 
 import authUtils from '../../utils/auth'
 import passwordUtils from '../../utils/password'
+import errorUtils from '../../utils/error'
 
 const UserMutation = {
   signup: {
@@ -41,7 +42,7 @@ const UserMutation = {
       logger.info('UserMutation#signup.check', userExists)
 
       if (userExists) {
-        throw new Error('Email taken')
+        return errorUtils.buildError(['Email taken'])
       }
 
       const password = await passwordUtils.hashPassword(data.password)
@@ -87,7 +88,7 @@ const UserMutation = {
       logger.info('UserQuery#login.check1', !user)
 
       if (!user) {
-        throw new Error('Unable to login')
+        return errorUtils.buildError(['Unable to login'])
       }
 
       const isMatch = await bcrypt.compare(data.password, user.password)
@@ -95,7 +96,7 @@ const UserMutation = {
       logger.info('UserQuery#login.check2', !user)
 
       if (!isMatch) {
-        throw new Error('Unable to login')
+        return errorUtils.buildError(['Unable to login'])
       }
 
       delete user.password
@@ -131,7 +132,7 @@ const UserMutation = {
       logger.info('UserMutation#updateProfile.target', user)
 
       if (!user) {
-        throw new Error('User profile not found')
+        return errorUtils.buildError(['User profile not found'])
       }
 
       if (isString(data.name)) {
@@ -176,7 +177,7 @@ const UserMutation = {
       logger.info('UserMutation#updateEmail.check1', !user || !isMatch)
 
       if (!user || !isMatch) {
-        throw new Error('Error updating email. Kindly check the email or password provided')
+        return errorUtils.buildError(['Error updating email. Kindly check the email or password provided'])
       }
 
       const userExists = (await userService.count({ where: { email: data.email } })) >= 1
@@ -184,7 +185,7 @@ const UserMutation = {
       logger.info('UserMutation#updateEmail.check2', userExists)
 
       if (userExists) {
-        throw new Error('Email taken')
+        return errorUtils.buildError(['Email taken'])
       }
 
       user.email = data.email
@@ -234,7 +235,7 @@ const UserMutation = {
       logger.info('UserMutation#updatePassword.check', !user || !isMatch || !isConfirmed)
 
       if (!user || !isMatch || !isConfirmed) {
-        throw new Error('Error updating password. Kindly check your passwords.')
+        return errorUtils.buildError(['Error updating password. Kindly check your passwords.'])
       }
 
       const password = await passwordUtils.hashPassword(data.newPassword)
@@ -263,7 +264,7 @@ const UserMutation = {
     logger.info('UserMutation#deleteAccount.check1', !user)
 
     if (!user) {
-      throw new Error('User not found')
+      return errorUtils.buildError(['User not found'])
     }
 
     const postExists = (await postService.count({ where: { author: id } })) >= 1
@@ -272,7 +273,7 @@ const UserMutation = {
     logger.info('UserMutation#deleteAccount.check1', postExists || commentExists)
 
     if (postExists || commentExists) {
-      throw new Error('You have already made posts and comments. Kindly delete those first.')
+      return errorUtils.buildError(['You have already made posts and comments. Kindly delete those first.'])
     }
 
     const count = await userService.destroy(id)
