@@ -46,8 +46,7 @@ const main = async () => {
 
     redisOptions = {
       password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV,
-      tls: {}
+      keyPrefix: process.env.NODE_ENV
     }
 
     publisher = new Redis.Cluster(redisNodes, {
@@ -63,8 +62,7 @@ const main = async () => {
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
       password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV,
-      tls: {}
+      keyPrefix: process.env.NODE_ENV
     }
 
     publisher = new Redis(redisOptions)

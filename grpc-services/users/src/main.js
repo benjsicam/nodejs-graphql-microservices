@@ -39,8 +39,7 @@ const main = async () => {
 
     redisOptions = {
       password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV,
-      tls: {}
+      keyPrefix: process.env.NODE_ENV
     }
 
     cache = new Redis.Cluster(redisNodes, {
