@@ -103,6 +103,10 @@ const Server = {
       middlewares: [yupValidation]
     })
 
+    server.express.get('/healthz', (req, res) => {
+      res.send('OK')
+    })
+
     return server
   }
 }
