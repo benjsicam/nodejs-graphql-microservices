@@ -46,13 +46,16 @@ const main = async () => {
 
     redisOptions = {
       password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV
+      keyPrefix: process.env.NODE_ENV,
+      tls: {}
     }
 
     publisher = new Redis.Cluster(redisNodes, {
+      slotsRefreshTimeout: 20000,
       redisOptions
     })
     subscriber = new Redis.Cluster(redisNodes, {
+      slotsRefreshTimeout: 20000,
       redisOptions
     })
   } else {
@@ -60,7 +63,8 @@ const main = async () => {
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
       password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV
+      keyPrefix: process.env.NODE_ENV,
+      tls: {}
     }
 
     publisher = new Redis(redisOptions)
@@ -68,7 +72,6 @@ const main = async () => {
   }
 
   const pubsub = new RedisPubSub({
-    connection: redisOptions,
     publisher,
     subscriber
   })

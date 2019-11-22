@@ -39,18 +39,21 @@ const main = async () => {
 
     redisOptions = {
       password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV
+      keyPrefix: process.env.NODE_ENV,
+      tls: {}
     }
 
     cache = new Redis.Cluster(redisNodes, {
-      redisOptions
+      slotsRefreshTimeout: 20000,
+      redisOptions,
     })
   } else {
     redisOptions = {
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
       password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV
+      keyPrefix: process.env.NODE_ENV,
+      tls: {}
     }
 
     cache = new Redis(redisOptions)
