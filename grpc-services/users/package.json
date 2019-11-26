@@ -3,15 +3,19 @@
   "version": "1.0.0",
   "description": "gRPC microservice back-end for users. Used for learning/trial purposes only.",
   "scripts": {
-    "start": "nodemon --exec babel-node ./src/index.js",
-    "build": "rimraf dist && babel src --out-dir dist -s inline --copy-files && cpy package.json dist",
-    "test": "jest --detectOpenHandles",
     "lint": "eslint --max-warnings=0 ./src",
     "lint:fix": "eslint --fix ./src",
+    "compile": "rimraf dist && babel src --out-dir dist -s inline --copy-files",
+    "compile:test": "rimraf dist-test && babel src --out-dir dist-test/src -s inline --copy-files && babel test --out-dir dist-test/test -s inline --copy-files",
+    "build:compose": "docker-compose -f docker-compose.test.yaml build",
+    "start": "nodemon --exec babel-node ./src/index.js",
+    "test": "jest --detectOpenHandles",
+    "test:compose": "docker-compose -f docker-compose.test.yaml run --rm users-svc npm test",
+    "e2e:local": "npm run lint:fix && npm run compile && npm test",
+    "e2e:compose": "npm run lint:fix && npm run compile:test && npm run build:compose && npm run test:compose",
     "copy:protos": "cpy ../../_proto ./src/_proto",
-    "precommit": "npm run lint:fix && npm run lint",
-    "prepush": "npm run test",
-    "docker:test": "docker-compose build --no-cache && docker-compose run --rm users-svc npm i -g jest && npm i && npm test"
+    "precommit": "npm run lint:fix",
+    "prepush": "npm run test"
   },
   "repository": {
     "type": "git",
