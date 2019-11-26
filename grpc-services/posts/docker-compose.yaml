@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3"
 
 services:
 
@@ -6,9 +6,9 @@ services:
     build:
       context: "."
     networks:
-      - "local"
-    expose:
-      - "50051"
+      - "posts-svc"
+    ports:
+      - "50052:50051"
     depends_on:
       - "db"
       - "cache"
@@ -28,7 +28,7 @@ services:
   db:
     image: "postgres:11.4-alpine"
     networks:
-      - "local"
+      - "posts-svc"
     expose:
       - "5432"
     environment:
@@ -39,10 +39,10 @@ services:
   cache:
     image: "redis:5.0.5-alpine"
     networks:
-      - "local"
+      - "posts-svc"
     expose:
       - "6379"
     restart: "on-failure"
 
 networks:
-  local:
+  posts-svc:

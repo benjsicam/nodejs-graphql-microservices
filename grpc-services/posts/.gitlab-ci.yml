@@ -11,13 +11,14 @@ before_script:
   - npm i
 
 stages:
+  - compile
   - build
   - test
 
 lint:
   script:
-    - npm run lint:fix
-  stage: build
+    - npm run lint
+  stage: compile
   only:
     - master
   tags:
@@ -28,7 +29,23 @@ lint:
 
 compile:
   script:
-    - npm run build
+    - npm run compile:test
+  stage: compile
+  artifacts:
+    untracked: true
+  only:
+    - master
+  tags:
+    - docker
+    - linux
+  allow_failure: false
+  when: always
+
+build:
+  dependencies:
+    - compile
+  script:
+    - npm run build:compose-test
   stage: build
   artifacts:
     untracked: true
@@ -41,29 +58,10 @@ compile:
   when: always
 
 test:
-  services:
-    - name: postgres:11.4-alpine
-      alias: postgres
-    - name: redis:5.0.5-alpine
-      alias: redis
   dependencies:
-    - compile
+    - build
   script:
-    - npm test
-  stage: test
-  variables:
-    NODE_ENV: "test"
-    HOST: "0.0.0.0"
-    PORT: "50051"
-    DB_NAME: "postgres"
-    DB_HOST: "postgres"
-    DB_PORT: "5432"
-    DB_USER: "postgres"
-    DB_PASSWORD: "postgres"
-    REDIS_HOST: "redis"
-    REDIS_PORT: "6379"
-    POSTGRES_USER: "postgres"
-    POSTGRES_PASSWORD: "postgres"
+    - npm run test:docker
   only:
     - master
   tags:
