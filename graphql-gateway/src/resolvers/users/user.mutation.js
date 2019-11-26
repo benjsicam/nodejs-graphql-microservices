@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 import bcrypt from 'bcryptjs'
 
-import { isString, isNumber } from 'lodash'
+import { isEmpty, isString, isNumber } from 'lodash'
 
 import authUtils from '../../utils/auth'
 import passwordUtils from '../../utils/password'
@@ -58,7 +58,7 @@ const UserMutation = {
 
       return {
         user,
-        token: authUtils.generateToken(user.id)
+        token: await authUtils.generateToken(user.id)
       }
     }
   },
@@ -85,15 +85,15 @@ const UserMutation = {
         }
       })
 
-      logger.info('UserQuery#login.check1', !user)
+      logger.info('UserQuery#login.check1', isEmpty(user))
 
-      if (!user) {
+      if (isEmpty(user)) {
         return errorUtils.buildError(['Unable to login'])
       }
 
       const isMatch = await bcrypt.compare(data.password, user.password)
 
-      logger.info('UserQuery#login.check2', !user)
+      logger.info('UserQuery#login.check2', !isMatch)
 
       if (!isMatch) {
         return errorUtils.buildError(['Unable to login'])
@@ -105,7 +105,7 @@ const UserMutation = {
 
       return {
         user,
-        token: authUtils.generateToken(user.id)
+        token: await authUtils.generateToken(user.id)
       }
     }
   },
@@ -198,7 +198,7 @@ const UserMutation = {
 
       return {
         user: updatedUser,
-        token: authUtils.generateToken(user.id)
+        token: await authUtils.generateToken(user.id)
       }
     }
   },
@@ -251,7 +251,7 @@ const UserMutation = {
 
       return {
         user: updatedUser,
-        token: authUtils.generateToken(user.id)
+        token: await authUtils.generateToken(user.id)
       }
     }
   },

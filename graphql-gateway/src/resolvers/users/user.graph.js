@@ -15,7 +15,7 @@ const UserGraph = {
       },
       limit,
       offset,
-      order 
+      order
     })
 
     logger.info('UserGraph#posts.result', posts)
@@ -35,7 +35,7 @@ const UserGraph = {
       },
       limit,
       offset,
-      order 
+      order
     })
 
     logger.info('UserGraph#comments.result', comments)

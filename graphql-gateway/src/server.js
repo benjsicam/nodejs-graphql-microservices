@@ -9,42 +9,42 @@ const yupValidation = {
     const mutationValidationSchema = mutationField.validationSchema
 
     if (mutationValidationSchema) {
-      let errors = []
+      const errors = []
 
       if (!isEmpty(get(mutationValidationSchema, 'fields.data._nodes'))) {
         const fields = mutationValidationSchema.fields.data._nodes
 
-        await Promise.all(map(fields, async (field) => {
-          try {
-            await mutationValidationSchema.validateAt(`data.${field}`, args)
-          } catch (error) {
-            if (error instanceof yup.ValidationError) {
-              errors.push({
-                message: error.errors,
-                field
-              })
-            } else {
-              throw error
+        await Promise.all(
+          map(fields, async field => {
+            try {
+              await mutationValidationSchema.validateAt(`data.${field}`, args)
+            } catch (error) {
+              if (error instanceof yup.ValidationError) {
+                errors.push({
+                  message: error.errors,
+                  field
+                })
+              } else {
+                throw error
+              }
             }
-
-          }
-
-          return
-        }))
+          })
+        )
       } else {
         try {
           await mutationValidationSchema.validate(args)
         } catch (error) {
           if (error instanceof yup.ValidationError) {
             return {
-              errors: [{
-                message: error.errors,
-                field: error.path
-              }]
+              errors: [
+                {
+                  message: error.errors,
+                  field: error.path
+                }
+              ]
             }
-          } else {
-            throw error
           }
+          throw error
         }
       }
 

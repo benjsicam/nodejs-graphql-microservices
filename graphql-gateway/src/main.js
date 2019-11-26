@@ -33,11 +33,12 @@ const main = async () => {
   const serviceRegistry = new ServiceRegistry(logger)
   const redisHostConfig = `${process.env.REDIS_HOST || ''}`.split(',')
 
-  let publisher, subscriber
+  let publisher
+  let subscriber
   let redisOptions = {}
 
   if (redisHostConfig.length > 1) {
-    let redisNodes = map(redisHostConfig, host => {
+    const redisNodes = map(redisHostConfig, host => {
       return {
         host,
         port: process.env.REDIS_PORT

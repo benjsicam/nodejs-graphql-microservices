@@ -24,7 +24,7 @@ const PostGraph = {
       },
       limit,
       offset,
-      order 
+      order
     })
 
     logger.info('PostGraph#comments.result', comments)
