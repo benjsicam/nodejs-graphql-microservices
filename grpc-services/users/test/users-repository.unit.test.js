@@ -4,9 +4,9 @@ import faker from 'faker'
 
 import { map } from 'lodash'
 
-import Db from '../db'
-import logger from '../logger'
-import UserRepository from '../repositories/user.repository'
+import Db from '../src/db'
+import logger from '../src/logger'
+import UserRepository from '../src/repositories/user.repository'
 
 const MODEL_NAME = 'user'
 const SERVICE_NAME = 'UserService'
@@ -44,7 +44,7 @@ describe('Database Testing', () => {
 
   beforeAll(async () => {
     logger.info('=====SETUP====')
-    const modelPaths = glob.sync(path.resolve(__dirname, '../models/*.model.js'))
+    const modelPaths = glob.sync(path.resolve(__dirname, '../src/models/*.model.js'))
 
     db = await Db.init(modelPaths, logger)
     repo = new UserRepository(SERVICE_NAME, db.model(MODEL_NAME), logger)

@@ -4,12 +4,12 @@ import faker from 'faker'
 
 import { map } from 'lodash'
 
-import Db from '../db'
-import logger from '../logger'
-import PostRepository from '../repositories/post.repository'
+import Db from '../src/db'
+import logger from '../src/logger'
+import CommentRepository from '../src/repositories/comment.repository'
 
-const MODEL_NAME = 'post'
-const SERVICE_NAME = 'PostService'
+const MODEL_NAME = 'comment'
+const SERVICE_NAME = 'CommentService'
 
 describe('Database Testing', () => {
   let db, repo
@@ -17,26 +17,22 @@ describe('Database Testing', () => {
   const generateMockData = async (isSingle = false) => {
     if (isSingle) {
       return {
-        title: faker.random.words(),
-        body: faker.lorem.paragraphs(),
-        published: faker.random.boolean(),
+        text: faker.random.alphaNumeric(24),
+        post: faker.random.uuid(),
         author: faker.random.uuid()
       }
     } else {
       return [{
-        title: faker.random.words(),
-        body: faker.lorem.paragraphs(),
-        published: faker.random.boolean(),
+        text: faker.random.alphaNumeric(24),
+        post: faker.random.uuid(),
         author: faker.random.uuid()
       }, {
-        title: faker.random.words(),
-        body: faker.lorem.paragraphs(),
-        published: faker.random.boolean(),
+        text: faker.random.alphaNumeric(24),
+        post: faker.random.uuid(),
         author: faker.random.uuid()
       }, {
-        title: faker.random.words(),
-        body: faker.lorem.paragraphs(),
-        published: faker.random.boolean(),
+        text: faker.random.alphaNumeric(24),
+        post: faker.random.uuid(),
         author: faker.random.uuid()
       }]
     }
@@ -44,10 +40,10 @@ describe('Database Testing', () => {
 
   beforeAll(async () => {
     logger.info('=====SETUP====')
-    const modelPaths = glob.sync(path.resolve(__dirname, '../models/*.model.js'))
+    const modelPaths = glob.sync(path.resolve(__dirname, '../src/models/*.model.js'))
 
     db = await Db.init(modelPaths, logger)
-    repo = new PostRepository(SERVICE_NAME, db.model(MODEL_NAME), logger)
+    repo = new CommentRepository(SERVICE_NAME, db.model(MODEL_NAME), logger)
 
     return
   })
@@ -57,7 +53,7 @@ describe('Database Testing', () => {
     return db.close()
   })
 
-  describe('PostRepository', () => {
+  describe('CommentRepository', () => {
     beforeEach(async () => {
       return db.model(MODEL_NAME).destroy({
         where: {}
@@ -79,9 +75,8 @@ describe('Database Testing', () => {
       // Stucture check/s
       expect(result).toContainAllKeys([
         'id',
-        'title',
-        'body',
-        'published',
+        'text',
+        'post',
         'author',
         'createdAt',
         'updatedAt',
@@ -90,18 +85,16 @@ describe('Database Testing', () => {
 
       // Type check/s
       expect(result.id).toBeString()
-      expect(result.title).toBeString()
-      expect(result.body).toBeString()
-      expect(result.published).toBeBoolean()
+      expect(result.text).toBeString()
+      expect(result.post).toBeString()
       expect(result.author).toBeString()
       expect(result.createdAt).toBeDate()
       expect(result.updatedAt).toBeDate()
       expect(result.version).toBeNumber()
 
       // Value Checks
-      expect(result.title).toBe(data.title)
-      expect(result.body).toBe(data.body)
-      expect(result.published).toBe(data.published)
+      expect(result.text).toBe(data.text)
+      expect(result.post).toBe(data.post)
       expect(result.author).toBe(data.author)
     })
 
@@ -109,17 +102,17 @@ describe('Database Testing', () => {
       const data = await generateMockData(true)
       const updateData = await generateMockData(true)
 
-      let post = await repo.create({
+      let comment = await repo.create({
         req: data,
         response: {}
       })
 
-      post = post.toJSON()
+      comment = comment.toJSON()
 
       let result = await repo.update({
         req: {
-          id: post.id,
-          data: Object.assign(post, updateData)
+          id: comment.id,
+          data: Object.assign(comment, updateData)
         },
         response: {}
       })
@@ -131,9 +124,8 @@ describe('Database Testing', () => {
       // Stucture check/s
       expect(result).toContainAllKeys([
         'id',
-        'title',
-        'body',
-        'published',
+        'text',
+        'post',
         'author',
         'createdAt',
         'updatedAt',
@@ -142,19 +134,17 @@ describe('Database Testing', () => {
 
       // Type check/s
       expect(result.id).toBeString()
-      expect(result.title).toBeString()
-      expect(result.body).toBeString()
-      expect(result.published).toBeBoolean()
+      expect(result.text).toBeString()
+      expect(result.post).toBeString()
       expect(result.author).toBeString()
       expect(result.createdAt).toBeDate()
       expect(result.updatedAt).toBeDate()
       expect(result.version).toBeNumber()
 
       // Value Checks
-      expect(result.id).toBe(post.id)
-      expect(result.title).toBe(updateData.title)
-      expect(result.body).toBe(updateData.body)
-      expect(result.published).toBe(updateData.published)
+      expect(result.id).toBe(comment.id)
+      expect(result.text).toBe(updateData.text)
+      expect(result.post).toBe(updateData.post)
       expect(result.author).toBe(updateData.author)
     })
 
@@ -162,12 +152,12 @@ describe('Database Testing', () => {
       const data = await generateMockData()
 
       await Promise.all(map(data, async (entry) => {
-        const post = await repo.create({
+        const comment = await repo.create({
           req: entry,
           response: {}
         })
 
-        return post.toJSON()
+        return comment.toJSON()
       }))
 
       const { list } = await repo.findAll({
@@ -182,9 +172,8 @@ describe('Database Testing', () => {
       // Stucture check/s
       expect(list[0]).toContainAllKeys([
         'id',
-        'title',
-        'body',
-        'published',
+        'text',
+        'post',
         'author',
         'createdAt',
         'updatedAt',
@@ -194,9 +183,8 @@ describe('Database Testing', () => {
       // Type check/s
       expect(list).toBeArray()
       expect(list[0].id).toBeString()
-      expect(list[0].title).toBeString()
-      expect(list[0].body).toBeString()
-      expect(list[0].published).toBeBoolean()
+      expect(list[0].text).toBeString()
+      expect(list[0].post).toBeString()
       expect(list[0].author).toBeString()
       expect(list[0].createdAt).toBeDate()
       expect(list[0].updatedAt).toBeDate()
@@ -212,12 +200,12 @@ describe('Database Testing', () => {
       const data = await generateMockData()
 
       const entries = await Promise.all(map(data, async (entry) => {
-        const post = await repo.create({
+        const comment = await repo.create({
           req: entry,
           response: {}
         })
 
-        return post.toJSON()
+        return comment.toJSON()
       }))
 
       const { list } = await repo.findAll({
@@ -236,9 +224,8 @@ describe('Database Testing', () => {
       // Stucture check/s
       expect(list[0]).toContainAllKeys([
         'id',
-        'title',
-        'body',
-        'published',
+        'text',
+        'post',
         'author',
         'createdAt',
         'updatedAt',
@@ -248,9 +235,8 @@ describe('Database Testing', () => {
       // Type check/s
       expect(list).toBeArray()
       expect(list[0].id).toBeString()
-      expect(list[0].title).toBeString()
-      expect(list[0].body).toBeString()
-      expect(list[0].published).toBeBoolean()
+      expect(list[0].text).toBeString()
+      expect(list[0].post).toBeString()
       expect(list[0].author).toBeString()
       expect(list[0].createdAt).toBeDate()
       expect(list[0].updatedAt).toBeDate()
@@ -266,18 +252,18 @@ describe('Database Testing', () => {
     it('should return a single row that matches a query', async () => {
       const data = await generateMockData(true)
 
-      let post = await repo.create({
+      let comment = await repo.create({
         req: data,
         response: {}
       })
 
-      post = post.toJSON()
+      comment = comment.toJSON()
 
       const result = await repo.findOne({
         req: {
           query: JSON.stringify({
             where: {
-              id: post.id
+              id: comment.id
             }
           })
         },
@@ -289,9 +275,8 @@ describe('Database Testing', () => {
       // Stucture check/s
       expect(result).toContainAllKeys([
         'id',
-        'title',
-        'body',
-        'published',
+        'text',
+        'post',
         'author',
         'createdAt',
         'updatedAt',
@@ -300,36 +285,34 @@ describe('Database Testing', () => {
 
       // Type check/s
       expect(result.id).toBeString()
-      expect(result.title).toBeString()
-      expect(result.body).toBeString()
-      expect(result.published).toBeBoolean()
+      expect(result.text).toBeString()
+      expect(result.post).toBeString()
       expect(result.author).toBeString()
       expect(result.createdAt).toBeDate()
       expect(result.updatedAt).toBeDate()
       expect(result.version).toBeNumber()
 
       // Value Checks
-      expect(result.title).toBe(data.title)
-      expect(result.body).toBe(data.body)
-      expect(result.published).toBe(data.published)
+      expect(result.text).toBe(data.text)
+      expect(result.post).toBe(data.post)
       expect(result.author).toBe(data.author)
     })
 
     it('should return the correct count that matches a query', async () => {
       const data = await generateMockData(true)
 
-      let post = await repo.create({
+      let comment = await repo.create({
         req: data,
         response: {}
       })
 
-      post = post.toJSON()
+      comment = comment.toJSON()
 
       const result = await repo.count({
         req: {
           query: JSON.stringify({
             where: {
-              id: post.id
+              id: comment.id
             }
           })
         },
@@ -348,16 +331,16 @@ describe('Database Testing', () => {
     it('should delete records properly on destroy', async () => {
       const data = await generateMockData(true)
 
-      let post = await repo.create({
+      let comment = await repo.create({
         req: data,
         response: {}
       })
 
-      post = post.toJSON()
+      comment = comment.toJSON()
 
       await repo.destroy({
         req: {
-          id: post.id
+          id: comment.id
         },
         response: {}
       })
@@ -366,7 +349,7 @@ describe('Database Testing', () => {
         req: {
           query: JSON.stringify({
             where: {
-              id: post.id
+              id: comment.id
             }
           })
         },

@@ -2,9 +2,9 @@ import crypto from 'crypto'
 import Redis from 'ioredis'
 import faker from 'faker'
 
-import logger from '../logger'
-import CacheService from '../services/cache.service'
-import CacheMiddleware from '../middlewares/cache.middleware'
+import logger from '../src/logger'
+import CacheService from '../src/services/cache.service'
+import CacheMiddleware from '../src/middlewares/cache.middleware'
 
 const PREFIX = 'test'
 
