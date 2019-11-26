@@ -30,7 +30,7 @@ const main = async () => {
   let redisOptions = {}
 
   if (redisHostConfig.length > 1) {
-    let redisNodes = map(redisHostConfig, host => {
+    const redisNodes = map(redisHostConfig, host => {
       return {
         host,
         port: process.env.REDIS_PORT
@@ -38,20 +38,18 @@ const main = async () => {
     })
 
     redisOptions = {
-      password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV
+      password: process.env.REDIS_PASSWORD
     }
 
     cache = new Redis.Cluster(redisNodes, {
       slotsRefreshTimeout: 20000,
-      redisOptions,
+      redisOptions
     })
   } else {
     redisOptions = {
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
-      password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV
+      password: process.env.REDIS_PASSWORD
     }
 
     cache = new Redis(redisOptions)

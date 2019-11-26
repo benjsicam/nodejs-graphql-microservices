@@ -15,7 +15,8 @@ class RedisCacheService {
       result = JSON.parse(result)
 
       return result
-    } catch { /* istanbul ignore next */
+    } catch {
+      /* istanbul ignore next */
       return result
     }
   }
@@ -27,7 +28,8 @@ class RedisCacheService {
 
     try {
       val = JSON.stringify(value)
-    } catch { /* istanbul ignore next */
+    } catch {
+      /* istanbul ignore next */
       val = ''
     }
 
@@ -63,7 +65,8 @@ class RedisCacheService {
         resolve()
       })
 
-      stream.on('error', err => { /* istanbul ignore next */
+      stream.on('error', err => {
+        /* istanbul ignore next */
         reject(err)
       })
     })
