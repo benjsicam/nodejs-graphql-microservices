@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "description": "A sample GraphQL API built in Node.js with gRPC back-end microservices. Used for learning/trial purposes only.",
   "scripts": {
-    "start": "nodemon --exec babel-node ./src/index.js",
-    "build": "rimraf dist && babel src --out-dir dist -s inline --copy-files && cpy package.json dist",
-    "test": "jest --detectOpenHandles",
-    "test:docker": "npm i -g jest && npm i && npm test",
     "lint": "eslint --max-warnings=0 ./src",
     "lint:fix": "eslint --fix ./src",
-    "copy:protos": "cpy ../_proto ./src/services/_proto",
-    "precommit": "npm run lint:fix && npm run lint",
-    "prepush": "npm test"
+    "compile": "rimraf dist && babel src --out-dir dist -s inline --copy-files",
+    "compile:test": "rimraf dist-test && babel src --out-dir dist-test/src -s inline --copy-files && babel test --out-dir dist-test/test -s inline --copy-files",
+    "start": "nodemon --exec babel-node ./src/index.js",
+    "test": "jest --detectOpenHandles",
+    "e2e:local": "npm run lint:fix && npm run compile && npm test",
+    "copy:protos": "cpy ../../_proto ./src/_proto",
+    "precommit": "npm run lint:fix",
+    "prepush": "npm run test"
   },
   "repository": {
     "type": "git",
@@ -75,8 +76,6 @@
   },
   "jest": {
     "globals": {},
-    "globalSetup": "<rootDir>/test/_setup.js",
-    "globalTeardown": "<rootDir>/test/_teardown.js",
     "testRegex": "test/*.+(test.js)",
     "setupFilesAfterEnv": [
       "jest-extended"
@@ -91,12 +90,12 @@
       }
     },
     "collectCoverageFrom": [
-      "**/*.js",
-      "!./index.js",
-      "!./logger.js",
-      "!./main.js",
-      "!./playground-query.js",
-      "!./server.js",
+      "src/**/*.js",
+      "!src/index.js",
+      "!src/logger.js",
+      "!src/main.js",
+      "!src/playground-query.js",
+      "!src/server.js",
       "!**/node_modules/**"
     ],
     "moduleFileExtensions": [
