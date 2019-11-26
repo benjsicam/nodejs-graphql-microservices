@@ -2,7 +2,7 @@ FROM node:10-alpine as build
 
 WORKDIR /usr/local/posts-svc
 
-COPY dist ./
+COPY dist package.json ./
 
 RUN npm install --production
 
