@@ -1,0 +1,19 @@
+FROM node:10-alpine as build
+
+WORKDIR /usr/local/graphql-gateway
+
+COPY dist-test package.json ./
+
+RUN npm install
+
+FROM node:10-alpine
+
+WORKDIR /usr/local/graphql-gateway
+
+COPY --from=build /usr/local/graphql-gateway .
+
+RUN npm install -g jest
+
+EXPOSE 3000
+
+CMD ["node", "./src/index.js"]

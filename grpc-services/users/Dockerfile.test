@@ -1,0 +1,19 @@
+FROM node:10-alpine as build
+
+WORKDIR /usr/local/users-svc
+
+COPY dist-test package.json ./
+
+RUN npm install
+
+FROM node:10-alpine
+
+WORKDIR /usr/local/users-svc
+
+COPY --from=build /usr/local/users-svc .
+
+RUN npm install -g jest
+
+EXPOSE 50051
+
+CMD ["node", "./src/index.js"]
