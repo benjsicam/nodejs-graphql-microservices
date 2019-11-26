@@ -1,18 +1,49 @@
 ---
-image: docker/compose:1.24.1
+image: node:10
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
 
+before_script:
+  - npm i
+
 stages:
+  - compile
   - build
   - test
 
-build:
+lint:
   script:
-    - ./bin/build-all.sh
+    - ./bin/lint-all.sh
+  stage: compile
+  only:
+    - master
+  tags:
+    - docker
+    - linux
+  allow_failure: false
+  when: always
+
+compile:
+  script:
+    - ./bin/compile-all-test.sh
+  stage: compile
+  only:
+    - master
+  tags:
+    - docker
+    - linux
+  allow_failure: false
+  when: always
+
+build:
+  image: docker/compose:1.24.1
+  dependencies:
+    - compile
+  script:
+    - ./bin/build-all-test.sh
   stage: build
   only:
     - master
@@ -23,6 +54,7 @@ build:
   when: always
 
 test:
+  image: docker/compose:1.24.1
   dependencies:
     - build
   script:
