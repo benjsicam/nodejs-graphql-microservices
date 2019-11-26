@@ -2,13 +2,21 @@ import faker from 'faker'
 
 import { request, GraphQLClient } from 'graphql-request'
 
-import logger from '../logger'
+import main from '../src/main'
+import logger from '../src/logger'
 
 describe('Comments API Testing', () => {
-  let client, post, loggedInUser
+  let server, client, publisher, subscriber, post, loggedInUser
 
   beforeAll(async () => {
     logger.info('====COMMENTS API SETUP===')
+
+    const start = await main()
+
+    server = start.httpServer
+    publisher = start.publisher
+    subscriber = start.subscriber
+
     const userData = {
       name: faker.fake('{{name.firstName}} {{name.lastName}}'),
       email: faker.internet.email(),
@@ -80,6 +88,14 @@ describe('Comments API Testing', () => {
     post = createPostResponse.createPost.post
 
     return
+  })
+
+  afterAll(async () => {
+    return Promise.all([
+      server.close(),
+      publisher.quit(),
+      subscriber.quit()
+    ])
   })
 
   it('should create a comment', async () => {

@@ -2,10 +2,11 @@ import faker from 'faker'
 
 import { request, GraphQLClient } from 'graphql-request'
 
-import logger from '../logger'
+import main from '../src/main'
+import logger from '../src/logger'
 
 describe('Posts API Testing', () => {
-  let client, loggedInUser
+  let server, client, publisher, subscriber, loggedInUser
 
   const generateMockData = async (isSingle = false) => {
     if (isSingle) {
@@ -37,6 +38,13 @@ describe('Posts API Testing', () => {
 
   beforeAll(async () => {
     logger.info('====POSTS API SETUP===')
+
+    const start = await main()
+
+    server = start.httpServer
+    publisher = start.publisher
+    subscriber = start.subscriber
+
     const data = {
       name: faker.fake('{{name.firstName}} {{name.lastName}}'),
       email: faker.internet.email(),
@@ -83,6 +91,14 @@ describe('Posts API Testing', () => {
     })
 
     return
+  })
+
+  afterAll(async () => {
+    return Promise.all([
+      server.close(),
+      publisher.quit(),
+      subscriber.quit()
+    ])
   })
 
   it('should create a post', async () => {

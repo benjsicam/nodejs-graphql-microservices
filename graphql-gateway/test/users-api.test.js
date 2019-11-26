@@ -2,10 +2,11 @@ import faker from 'faker'
 
 import { request, GraphQLClient } from 'graphql-request'
 
-import logger from '../logger'
+import main from '../src/main'
+import logger from '../src/logger'
 
 describe('Users API Testing', () => {
-  let client, loggedInUser, password
+  let server, client, publisher, subscriber, loggedInUser, password
 
   const generateMockData = async (isSingle = false) => {
     if (isSingle) {
@@ -37,7 +38,14 @@ describe('Users API Testing', () => {
 
   beforeAll(async () => {
     logger.info('====USERS API SETUP===')
-    const data = await  generateMockData(true)
+
+    const start = await main()
+
+    server = start.httpServer
+    publisher = start.publisher
+    subscriber = start.subscriber
+
+    const data = await generateMockData(true)
 
     const response = await request(`http://localhost:${process.env.PORT}/`, `
       mutation {
@@ -79,6 +87,14 @@ describe('Users API Testing', () => {
     })
 
     return
+  })
+
+  afterAll(async () => {
+    return Promise.all([
+      server.close(),
+      publisher.quit(),
+      subscriber.quit()
+    ])
   })
 
   it('should login a user', async () => {
@@ -480,6 +496,10 @@ describe('Users API Testing', () => {
     expect(result).not.toBeNil()
     expect(result.token).not.toBeNil()
     expect(result.user).not.toBeNil()
+
+    await new Promise(resolve => {
+      setTimeout(resolve, 3000)
+    })
 
     response = await client.request(`
       mutation login {
