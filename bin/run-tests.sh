@@ -1,2 +1,3 @@
 #!/bin/bash
-docker-compose run --rm graphql-gateway npm run test:docker
+
+docker-compose -f docker-compose.test.yaml run --rm graphql-gateway npm test
