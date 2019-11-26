@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3"
 
 services:
   comments-svc:
@@ -10,7 +10,7 @@ services:
       - "frontend"
       - "backend"
       - "commentsdomain"
-    expose: 
+    expose:
       - "50051"
     depends_on:
       - "comments-db"
@@ -37,7 +37,7 @@ services:
       - "frontend"
       - "backend"
       - "postsdomain"
-    expose: 
+    expose:
       - "50051"
     depends_on:
       - "posts-db"
@@ -64,7 +64,7 @@ services:
       - "frontend"
       - "backend"
       - "usersdomain"
-    expose: 
+    expose:
       - "50051"
     depends_on:
       - "users-db"
@@ -143,14 +143,14 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
     restart: "on-failure"
-  
+
   cache:
     image: "redis:5.0.5-alpine"
     container_name: "redis-cache"
     networks:
       - "frontend"
       - "backend"
-    expose: 
+    expose:
       - "6379"
     restart: "on-failure"
 
