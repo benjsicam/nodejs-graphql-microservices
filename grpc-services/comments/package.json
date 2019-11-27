@@ -38,6 +38,7 @@
     "core-js": "^3.4.1",
     "glob": "^7.1.6",
     "grpc": "^1.24.2",
+    "grpc-health-check": "^1.7.0",
     "ioredis": "^4.14.1",
     "lodash": "^4.17.15",
     "mali": "^0.19.0",
@@ -92,6 +93,7 @@
       "!src/logger.js",
       "!src/main.js",
       "!src/models/*.js",
+      "!src/services/health-check.service.js.js",
       "!**/node_modules/**"
     ],
     "moduleFileExtensions": [

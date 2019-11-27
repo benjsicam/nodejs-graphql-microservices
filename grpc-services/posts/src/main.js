@@ -1,21 +1,23 @@
 import path from 'path'
 import glob from 'glob'
+import Mali from 'mali'
 import Redis from 'ioredis'
 
 import { map } from 'lodash'
+import { service } from 'grpc-health-check'
 
 import Db from './db'
-import App from './app'
 import logger from './logger'
 
 import CacheService from './services/cache.service'
 import CacheMiddleware from './middlewares/cache.middleware'
+import HealthCheckService from './services/health-check.service'
 import PostRepository from './repositories/post.repository'
-
-const PROTO_PATH = path.resolve(__dirname, '_proto/post.proto')
 
 const MODEL_NAME = 'post'
 const SERVICE_NAME = 'PostService'
+
+const SERVICE_PROTO = path.resolve(__dirname, '_proto/post.proto')
 
 const HOST_PORT = `${process.env.HOST}:${process.env.PORT}`
 
@@ -67,10 +69,27 @@ const main = async () => {
     destroy: [cacheMiddleware.remove('posts'), repo.destroy.bind(repo)]
   }
 
-  const app = await App.init(PROTO_PATH, { PostService })
+  const app = new Mali()
+  const healthCheckService = new HealthCheckService(SERVICE_NAME)
+  const healthCheckImpl = await healthCheckService.getServiceImpl()
 
-  app.start(HOST_PORT)
+  app.addService(SERVICE_PROTO)
+  app.addService(service)
+
+  app.use({
+    PostService,
+    ...healthCheckImpl
+  })
+
+  await app.start(HOST_PORT)
+
   logger.info(`gRPC Server is now listening on port ${process.env.PORT}`)
+
+  return {
+    app,
+    cache,
+    db
+  }
 }
 
 export default main

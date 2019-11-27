@@ -21,3 +21,5 @@ rules:
 plugins:
   - jest
   - prettier
+globals:
+  proto: readonly

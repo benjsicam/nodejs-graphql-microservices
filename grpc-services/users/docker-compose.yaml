@@ -23,6 +23,11 @@ services:
       DB_PASSWORD: "postgres"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     restart: "on-failure"
 
   db:
