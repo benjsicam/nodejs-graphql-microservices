@@ -54,7 +54,9 @@ spec:
               protocol: TCP
           livenessProbe:
             exec:
-              command: ["/bin/grpc_health_probe", "-addr=:50051"]
+              command:
+                - "/bin/grpc_health_probe"
+                - "-addr=:50051"
             initialDelaySeconds: 10
             periodSeconds: 30
             successThreshold: 1
@@ -62,7 +64,9 @@ spec:
             timeoutSeconds: 10
           readinessProbe:
             exec:
-              command: ["/bin/grpc_health_probe", "-addr=:50051"]
+              command:
+                - "/bin/grpc_health_probe"
+                - "-addr=:50051"
             initialDelaySeconds: 5
             periodSeconds: 30
             successThreshold: 1
