@@ -26,6 +26,11 @@ services:
       DB_PASSWORD: "postgres"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     restart: "on-failure"
 
   posts-svc:
@@ -53,6 +58,11 @@ services:
       DB_PASSWORD: "postgres"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     restart: "on-failure"
 
   users-svc:
@@ -80,6 +90,11 @@ services:
       DB_PASSWORD: "postgres"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     restart: "on-failure"
 
   graphql-gateway:
@@ -106,6 +121,11 @@ services:
       COMMENTS_SVC_URL: "comments-svc:50051"
       POSTS_SVC_URL: "posts-svc:50051"
       USERS_SVC_URL: "users-svc:50051"
+    healthcheck:
+      test: ["CMD", "wget", "localhost:3000/healthz -q -O - > /dev/null 2>&1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     restart: "on-failure"
 
   comments-db:

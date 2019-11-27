@@ -52,24 +52,22 @@ spec:
             - name: http
               containerPort: 50051
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /healthz
-          #     port: 8080
-          #   initialDelaySeconds: 90
-          #   periodSeconds: 30
-          #   successThreshold: 1
-          #   failureThreshold: 3
-          #   timeoutSeconds: 10
-          # readinessProbe:
-          #   httpGet:
-          #     path: /healthz
-          #     port: 8080
-          #   initialDelaySeconds: 90
-          #   periodSeconds: 30
-          #   successThreshold: 1
-          #   failureThreshold: 3
-          #   timeoutSeconds: 10
+          livenessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:50051"]
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 10
+          readinessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:50051"]
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 10
 # ---
 # apiVersion: autoscaling/v2beta1
 # kind: HorizontalPodAutoscaler
