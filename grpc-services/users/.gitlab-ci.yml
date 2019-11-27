@@ -7,7 +7,6 @@ cache:
     - node_modules/
 
 before_script:
-  - npm i jest -g
   - npm i
 
 stages:
@@ -42,10 +41,11 @@ compile:
   when: always
 
 build:
+  image: docker/compose:1.24.1
   dependencies:
     - compile
   script:
-    - npm run build:compose-test
+    - npm run build:compose
   stage: build
   artifacts:
     untracked: true
@@ -58,10 +58,11 @@ build:
   when: always
 
 test:
+  image: docker/compose:1.24.1
   dependencies:
     - build
   script:
-    - npm run test:docker
+    - npm run test:compose
   only:
     - master
   tags:
