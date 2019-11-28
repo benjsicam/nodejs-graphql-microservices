@@ -7,9 +7,9 @@ class PostService extends AbstractCrudService {
   constructor(client, logger) {
     super('PostService', client, logger)
 
-    this._loader = new Dataloader(async (keys) => {
+    this._loader = new Dataloader(async keys => {
       this._logger.info(`Loading keys from ${this._serviceName}`, keys)
-      let rows = await this.findAll({
+      const rows = await this.findAll({
         where: {
           id: {
             $in: keys

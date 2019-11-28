@@ -1,5 +1,3 @@
-import Dataloader from 'dataloader'
-
 import AbstractCrudService from '../abstract-crud.service'
 
 class CommentService extends AbstractCrudService {
