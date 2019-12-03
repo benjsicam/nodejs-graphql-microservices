@@ -1,5 +1,5 @@
 import { GraphQLServer } from 'graphql-yoga'
-import { assign, reduce, startCase, map, get, isEmpty, groupBy } from 'lodash'
+import { assign, reduce, startCase, map, groupBy } from 'lodash'
 import { DateTimeResolver, EmailAddressResolver, UnsignedIntResolver } from 'graphql-scalars'
 import * as yup from 'yup'
 
