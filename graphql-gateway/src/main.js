@@ -6,10 +6,11 @@ import Redis from 'ioredis'
 import { map, reduce } from 'lodash'
 import { RedisPubSub } from 'graphql-redis-subscriptions'
 
-import * as QueryResolvers from 'glob:./resolvers/**/*.query.js' // eslint-disable-line
-import * as MutationResolvers from 'glob:./resolvers/**/*.mutation.js' // eslint-disable-line
-import * as SubscriptionResolvers from 'glob:./resolvers/**/*.subscription.js' // eslint-disable-line
-import * as GraphResolvers from 'glob:./resolvers/**/*.graph.js' // eslint-disable-line
+import * as QueryResolvers from './resolvers/**/*.query.js' // eslint-disable-line
+import * as MutationResolvers from './resolvers/**/*.mutation.js' // eslint-disable-line
+import * as SubscriptionResolvers from './resolvers/**/*.subscription.js' // eslint-disable-line
+import * as GraphResolvers from './resolvers/**/*.graph.js' // eslint-disable-line
+import * as Middlewares from './middlewares/*.middleware.js' // eslint-disable-line
 
 import logger from './logger'
 import Server from './server'
@@ -87,7 +88,8 @@ const main = async () => {
       ...serviceRegistry.services,
       pubsub,
       logger
-    }
+    },
+    map(Middlewares, middleware => middleware)
   )
 
   const httpServer = await server.start(

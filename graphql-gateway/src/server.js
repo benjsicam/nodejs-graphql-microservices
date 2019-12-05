@@ -1,45 +1,9 @@
 import { GraphQLServer } from 'graphql-yoga'
-import { assign, reduce, startCase, map, groupBy } from 'lodash'
+import { assign, reduce, startCase } from 'lodash'
 import { DateTimeResolver, EmailAddressResolver, UnsignedIntResolver } from 'graphql-scalars'
-import * as yup from 'yup'
-
-const yupValidation = {
-  async Mutation(resolve, root, args, context, info) {
-    const mutationField = info.schema.getMutationType().getFields()[info.fieldName]
-    const mutationValidationSchema = mutationField.validationSchema
-
-    if (mutationValidationSchema) {
-      let errors = []
-      try {
-        await mutationValidationSchema.validate(args, { strict: true, abortEarly: false })
-      } catch (error) {
-        if (error instanceof yup.ValidationError) {
-          const fieldErrors = groupBy(error.inner, 'path')
-          const fields = Object.keys(fieldErrors)
-
-          await Promise.all(map(fields, async (field) => {
-            let errorsHolder = []
-            await Promise.all(map(fieldErrors[field], fieldError => {
-              errorsHolder.push(fieldError.errors[0])
-            }))
-            errors.push({
-              message: errorsHolder,
-              field
-            })
-          }))
-          if (errors.length > 0) return { errors }
-        } else {
-          throw error
-        }
-      }
-    }
-
-    return resolve(root, args, context, info)
-  }
-}
 
 const Server = {
-  async init(schema, resolvers, services) {
+  async init(schema, resolvers, services, middlewares) {
     const server = new GraphQLServer({
       typeDefs: schema,
       resolvers: {
@@ -83,7 +47,7 @@ const Server = {
           ...services
         }
       },
-      middlewares: [yupValidation]
+      middlewares
     })
 
     server.express.get('/healthz', (req, res) => {
