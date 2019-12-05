@@ -1,15 +1,19 @@
+import errorUtils from '../../utils/error'
+
 const CommentSubscription = {
   comment: {
-    async subscribe(parent, { post }, { postService, logger, pubsub }) {
-      logger.info('CommentSubscription#subscribe.call', post)
-
-      const postExists = (await postService.count({ where: { id: post, published: true } })) >= 1
-
-      if (!postExists) {
-        throw new Error('Unable to fiind post')
+    subscribe: {
+      resolve: async (parent, { post }, { postService, logger, pubsub }) => {
+        logger.info('CommentSubscription#subscribe.call', post)
+  
+        const postExists = (await postService.count({ where: { id: post, published: true } })) >= 1
+  
+        if (!postExists) {
+          return errorUtils.buildError(['Unable to find post'])
+        }
+  
+        return pubsub.asyncIterator(`comment#${post}`)
       }
-
-      return pubsub.asyncIterator(`comment#${post}`)
     }
   }
 }
