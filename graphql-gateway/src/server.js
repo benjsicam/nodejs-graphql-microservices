@@ -1,5 +1,5 @@
 import { GraphQLServer } from 'graphql-yoga'
-import { assign, reduce, startCase, map, get, isEmpty } from 'lodash'
+import { assign, reduce, startCase, map, groupBy } from 'lodash'
 import { DateTimeResolver, EmailAddressResolver, UnsignedIntResolver } from 'graphql-scalars'
 import * as yup from 'yup'
 
@@ -9,46 +9,29 @@ const yupValidation = {
     const mutationValidationSchema = mutationField.validationSchema
 
     if (mutationValidationSchema) {
-      const errors = []
+      let errors = []
+      try {
+        await mutationValidationSchema.validate(args, { strict: true, abortEarly: false })
+      } catch (error) {
+        if (error instanceof yup.ValidationError) {
+          const fieldErrors = groupBy(error.inner, 'path')
+          const fields = Object.keys(fieldErrors)
 
-      if (!isEmpty(get(mutationValidationSchema, 'fields.data._nodes'))) {
-        const fields = mutationValidationSchema.fields.data._nodes
-
-        await Promise.all(
-          map(fields, async field => {
-            try {
-              await mutationValidationSchema.validateAt(`data.${field}`, args)
-            } catch (error) {
-              if (error instanceof yup.ValidationError) {
-                errors.push({
-                  message: error.errors,
-                  field
-                })
-              } else {
-                throw error
-              }
-            }
-          })
-        )
-      } else {
-        try {
-          await mutationValidationSchema.validate(args)
-        } catch (error) {
-          if (error instanceof yup.ValidationError) {
-            return {
-              errors: [
-                {
-                  message: error.errors,
-                  field: error.path
-                }
-              ]
-            }
-          }
+          await Promise.all(map(fields, async (field) => {
+            let errorsHolder = []
+            await Promise.all(map(fieldErrors[field], fieldError => {
+              errorsHolder.push(fieldError.errors[0])
+            }))
+            errors.push({
+              message: errorsHolder,
+              field
+            })
+          }))
+          if (errors.length > 0) return { errors }
+        } else {
           throw error
         }
       }
-
-      if (errors.length > 0) return { errors }
     }
 
     return resolve(root, args, context, info)
