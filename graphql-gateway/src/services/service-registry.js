@@ -8,6 +8,8 @@ import CommentService from './comments/comment.service'
 import PostService from './posts/post.service'
 import UserService from './users/user.service'
 
+import EventsBus from './events-bus.service'
+
 class ServiceRegistry {
   constructor(logger) {
     const grpcCredentials = grpc.credentials.createInsecure()
@@ -17,6 +19,7 @@ class ServiceRegistry {
     const userServiceClient = new UserServiceClient(process.env.USERS_SVC_URL, grpcCredentials)
 
     this._services = {
+      eventsBus: new EventsBus(),
       commentService: new CommentService(commentServiceClient, logger),
       postService: new PostService(postServiceClient, logger),
       userService: new UserService(userServiceClient, logger)

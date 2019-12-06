@@ -10,7 +10,9 @@ import * as QueryResolvers from './resolvers/**/*.query.js' // eslint-disable-li
 import * as MutationResolvers from './resolvers/**/*.mutation.js' // eslint-disable-line
 import * as SubscriptionResolvers from './resolvers/**/*.subscription.js' // eslint-disable-line
 import * as GraphResolvers from './resolvers/**/*.graph.js' // eslint-disable-line
-import * as Middlewares from './middlewares/*.middleware.js' // eslint-disable-line
+
+import ValidationMiddleware from './middlewares/validation.middleware'
+import HookMiddleware from './middlewares/hook.middleware'
 
 import logger from './logger'
 import Server from './server'
@@ -89,7 +91,7 @@ const main = async () => {
       pubsub,
       logger
     },
-    map(Middlewares, middleware => middleware)
+    [ValidationMiddleware, HookMiddleware]
   )
 
   const httpServer = await server.start(
