@@ -34,9 +34,7 @@ const UserMutation = {
           .moreThan('17', 'Age should at least be 18 years old.')
       })
     }),
-    resolve: async (parent, { data }, { userService, logger }) => {
-      logger.info('UserMutation#signup.call', data)
-
+    beforeResolve: async (args, { userService, logger }, info) => {
       const userExists = (await userService.count({ where: { email: data.email } })) >= 1
 
       logger.info('UserMutation#signup.check', userExists)
@@ -47,17 +45,21 @@ const UserMutation = {
 
       const password = await passwordUtils.hashPassword(data.password)
 
-      const user = await userService.create({
-        ...data,
+      return {
+        ...args,
         password
-      })
+      }
+    },
+    afterResolve: async (res, context, info) => {
+      delete res.password
 
-      delete user.password
-
-      logger.info('UserMutation#signup.result', user)
+      return res
+    },
+    resolve: async (parent, { data }, { userService, logger }) => {
+      logger.info('UserMutation#signup.call', data)
 
       return {
-        user,
+        user: await userService.create(data),
         token: await authUtils.generateToken(user.id)
       }
     }
