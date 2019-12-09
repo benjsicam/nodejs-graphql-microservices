@@ -6,7 +6,7 @@ const HookMiddleware = {
     const operation = info.operation.name.value
     const query = info.schema.getQueryType().getFields()[info.fieldName]
 
-    let result
+    let result = args
 
     if (isFunction(query.beforeResolve)) {
       logger.info(`Exec beforeResolve on query#${operation}`)
@@ -30,7 +30,7 @@ const HookMiddleware = {
     const operation = info.operation.name.value
     const mutation = info.schema.getMutationType().getFields()[info.fieldName]
 
-    let result
+    let result = args
 
     if (isFunction(mutation.beforeResolve)) {
       logger.info(`Exec beforeResolve on mutation#${operation}`)

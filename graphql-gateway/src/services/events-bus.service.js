@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
 
 class EventsBus extends EventEmitter {
-  async publish (event, args) {
+  async publish(event, args) {
     return this.emit(event, args)
   }
 

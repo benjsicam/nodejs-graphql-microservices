@@ -11,11 +11,13 @@ import * as MutationResolvers from './resolvers/**/*.mutation.js' // eslint-disa
 import * as SubscriptionResolvers from './resolvers/**/*.subscription.js' // eslint-disable-line
 import * as GraphResolvers from './resolvers/**/*.graph.js' // eslint-disable-line
 
+import LogMiddleware from './middlewares/log.middleware'
 import ValidationMiddleware from './middlewares/validation.middleware'
 import HookMiddleware from './middlewares/hook.middleware'
 
 import logger from './logger'
 import Server from './server'
+import HooksRegistry from './hooks/hooks-registry'
 import ServiceRegistry from './services/service-registry'
 import defaultPlaygroundQuery from './playground-query'
 
@@ -78,6 +80,10 @@ const main = async () => {
     subscriber
   })
 
+  const hooksRegistry = new HooksRegistry(serviceRegistry.services, logger)
+
+  hooksRegistry.register()
+
   const server = await Server.init(
     schema,
     {
@@ -91,7 +97,7 @@ const main = async () => {
       pubsub,
       logger
     },
-    [ValidationMiddleware, HookMiddleware]
+    [LogMiddleware, ValidationMiddleware, HookMiddleware]
   )
 
   const httpServer = await server.start(
