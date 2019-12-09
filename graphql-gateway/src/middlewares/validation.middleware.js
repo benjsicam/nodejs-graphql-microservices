@@ -4,8 +4,8 @@ import { map, groupBy } from 'lodash'
 
 const ValidationMiddleware = {
   async Mutation(resolve, root, args, context, info) {
-    const mutationField = info.schema.getMutationType().getFields()[info.fieldName]
-    const mutationValidationSchema = mutationField.validationSchema
+    const mutation = info.schema.getMutationType().getFields()[info.fieldName]
+    const mutationValidationSchema = mutation.validationSchema
 
     if (mutationValidationSchema) {
       const errors = []

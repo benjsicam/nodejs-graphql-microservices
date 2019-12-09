@@ -3,8 +3,8 @@ import { isFunction } from 'lodash'
 const HookMiddleware = {
   async Query(resolve, root, args, context, info) {
     const { logger, eventsBus } = context
-    const operation = info.operation.name.value
-    const query = info.schema.getQueryType().getFields()[info.fieldName]
+    const operation = info.fieldName
+    const query = info.schema.getQueryType().getFields()[operation]
 
     let result = args
 
@@ -27,8 +27,8 @@ const HookMiddleware = {
   },
   async Mutation(resolve, root, args, context, info) {
     const { logger, eventsBus } = context
-    const operation = info.operation.name.value
-    const mutation = info.schema.getMutationType().getFields()[info.fieldName]
+    const operation = info.fieldName
+    const mutation = info.schema.getMutationType().getFields()[operation]
 
     let result = args
 

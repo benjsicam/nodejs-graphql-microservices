@@ -1,7 +1,7 @@
 const LogMiddleware = {
   async Query(resolve, root, args, context, info) {
     const { logger } = context
-    const operation = info.operation.name.value
+    const operation = info.fieldName
 
     logger.info(`query#${operation}.call`, args)
 
@@ -13,7 +13,7 @@ const LogMiddleware = {
   },
   async Mutation(resolve, root, args, context, info) {
     const { logger } = context
-    const operation = info.operation.name.value
+    const operation = info.fieldName
 
     logger.info(`mutation#${operation}.call`, args)
 
@@ -25,7 +25,7 @@ const LogMiddleware = {
   },
   async Subscription(resolve, root, args, context, info) {
     const { logger } = context
-    const operation = info.operation.name.value
+    const operation = info.fieldName
 
     logger.info(`subscription#${operation}.call`, args)
 
