@@ -3,7 +3,7 @@ import queryUtils from '../../utils/query'
 
 const UserGraph = {
   posts: {
-    resolve: async (parent, args, { postService, logger }) => {
+    resolve: async (parent, args, { postService }) => {
       const limit = await queryUtils.getLimit(get(args, 'limit'))
       const offset = await queryUtils.getOffset(get(args, 'page'), get(args, 'limit') || 25)
       const order = await queryUtils.getOrder(get(args, 'orderBy'))
@@ -19,7 +19,7 @@ const UserGraph = {
     }
   },
   comments: {
-    resolve: async (parent, args, { commentService, logger }) => {
+    resolve: async (parent, args, { commentService }) => {
       const limit = await queryUtils.getLimit(get(args, 'limit'))
       const offset = await queryUtils.getOffset(get(args, 'page'), get(args, 'limit') || 25)
       const order = await queryUtils.getOrder(get(args, 'orderBy'))

@@ -1,5 +1,5 @@
 const user = {
-  resolve: async (parent, { id }, { userService, logger }) => {
+  resolve: async (parent, { id }, { userService }) => {
     return userService.findOne({ where: { id } })
   }
 }

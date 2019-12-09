@@ -3,25 +3,17 @@ import queryUtils from '../../utils/query'
 
 const PostGraph = {
   author: {
-    resolve: async (parent, args, { userService, logger }) => {
-      logger.info('PostGraph#author.call', parent.author)
-  
-      const user = await userService.loader.load(parent.author)
-  
-      logger.info('PostGraph#author.result', user)
-  
-      return user
+    resolve: async (parent, args, { userService }) => {
+      return userService.loader.load(parent.author)
     }
   },
   comments: {
-    resolve: async (parent, args, { commentService, logger }) => {
-      logger.info('PostGraph#comments.call', args)
-  
+    resolve: async (parent, args, { commentService }) => {
       const limit = await queryUtils.getLimit(get(args, 'limit'))
       const offset = await queryUtils.getOffset(get(args, 'page'), get(args, 'limit') || 25)
       const order = await queryUtils.getOrder(get(args, 'orderBy'))
-  
-      const comments = await commentService.findAll({
+
+      return commentService.findAll({
         where: {
           post: parent.id
         },
@@ -29,10 +21,6 @@ const PostGraph = {
         offset,
         order
       })
-  
-      logger.info('PostGraph#comments.result', comments)
-  
-      return comments
     }
   }
 }

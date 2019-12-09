@@ -47,7 +47,7 @@ const signup = {
       }
     }
   },
-  resolve: async (parent, { data }, { userService, logger }) => {
+  resolve: async (parent, { data }, { userService }) => {
     const user = await userService.create(data)
 
     return {

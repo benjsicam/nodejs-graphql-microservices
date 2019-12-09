@@ -1,13 +1,9 @@
-const PostSubscription = {
-  post: {
-    subscribe: {
-      resolve: async (parent, args, { pubsub, logger }) => {
-        logger.info('PostSubscription#subscribe.call')
-  
-        return pubsub.asyncIterator('post')
-      }
+const post = {
+  subscribe: {
+    resolve: async (parent, args, { pubsub }) => {
+      return pubsub.asyncIterator('post')
     }
   }
 }
 
-export default PostSubscription
+export default { post }
