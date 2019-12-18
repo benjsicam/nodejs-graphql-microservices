@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+
+  mailer-svc:
+    image: mailer-svc:test
+    build:
+      context: "."
+      dockerfile: "Dockerfile.test"
+    networks:
+      - "mailer-test"
+    expose:
+      - "50051"
+    environment:
+      NODE_ENV: "test"
+      HOST: "0.0.0.0"
+      PORT: "50051"
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: "on-failure"
+
+networks:
+  mailer-test:

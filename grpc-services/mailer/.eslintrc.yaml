@@ -1,0 +1,25 @@
+---
+extends:
+  - airbnb-base
+  - prettier
+parser: babel-eslint
+parserOptions:
+  ecmaVersion: 2018
+  sourceType: module
+env:
+  node: true
+  jest: true
+rules:
+  no-underscore-dangle: 0
+  prettier/prettier:
+    - error
+    - parser: "babel"
+      printWidth: 200
+      semi: false
+      singleQuote: true
+      endOfline: "lf"
+plugins:
+  - jest
+  - prettier
+globals:
+  proto: readonly

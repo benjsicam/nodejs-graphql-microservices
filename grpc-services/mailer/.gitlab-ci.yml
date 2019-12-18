@@ -1,0 +1,72 @@
+---
+image: node:10
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+before_script:
+  - npm i
+
+stages:
+  - compile
+  - build
+  - test
+
+lint:
+  script:
+    - npm run lint
+  stage: compile
+  only:
+    - master
+  tags:
+    - docker
+    - linux
+  allow_failure: false
+  when: always
+
+compile:
+  script:
+    - npm run compile:test
+  stage: compile
+  artifacts:
+    untracked: true
+  only:
+    - master
+  tags:
+    - docker
+    - linux
+  allow_failure: false
+  when: always
+
+build:
+  image: docker/compose:1.24.1
+  dependencies:
+    - compile
+  script:
+    - npm run build:compose
+  stage: build
+  artifacts:
+    untracked: true
+  only:
+    - master
+  tags:
+    - docker
+    - linux
+  allow_failure: false
+  when: always
+
+test:
+  image: docker/compose:1.24.1
+  dependencies:
+    - build
+  script:
+    - npm run test:compose
+  only:
+    - master
+  tags:
+    - docker
+    - linux
+  allow_failure: false
+  when: always
