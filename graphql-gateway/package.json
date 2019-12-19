@@ -10,7 +10,7 @@
     "start": "nodemon --exec babel-node ./src/index.js",
     "test": "jest --detectOpenHandles",
     "e2e:local": "npm run lint:fix && npm run compile && npm test",
-    "copy:protos": "cpy ../../_proto ./src/_proto",
+    "copy:protos": "cpy ../_proto ./src/_proto",
     "precommit": "npm run lint:fix",
     "prepush": "npm run test"
   },
