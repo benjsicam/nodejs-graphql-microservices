@@ -10,17 +10,17 @@ class AbstractCrudService {
   async findAll(query) {
     this._logger.info(`${this._serviceName}#findAll.call`, { query })
 
-    const result = await this._client.findAllAsync({ query: JSON.stringify(query || {}) })
+    const result = await this._client.findAllAsync({ query: Buffer.from(JSON.stringify(query || {})) })
 
     this._logger.info(`${this._serviceName}#findAll.result`, result)
 
-    return result.list || []
+    return result.list
   }
 
   async findOne(query) {
     this._logger.info(`${this._serviceName}#findOne.call`, { query })
 
-    const result = await this._client.findOneAsync({ query: JSON.stringify(query || {}) })
+    const result = await this._client.findOneAsync({ query: Buffer.from(JSON.stringify(query || {})) })
 
     this._logger.info(`${this._serviceName}#findOne.result`, result)
 
@@ -30,7 +30,7 @@ class AbstractCrudService {
   async count(query) {
     this._logger.info(`${this._serviceName}#count.call`, { query })
 
-    const result = await this._client.countAsync({ query: JSON.stringify(query || {}) })
+    const result = await this._client.countAsync({ query: Buffer.from(JSON.stringify(query || {})) })
 
     this._logger.info(`${this._serviceName}#count.result`, result)
 
