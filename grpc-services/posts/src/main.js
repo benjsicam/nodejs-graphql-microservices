@@ -73,7 +73,11 @@ const main = async () => {
   const healthCheckService = new HealthCheckService(SERVICE_NAME)
   const healthCheckImpl = await healthCheckService.getServiceImpl()
 
-  app.addService(SERVICE_PROTO)
+  app.addService(SERVICE_PROTO, null, {
+    enums: String,
+    objects: true,
+    arrays: true
+  })
   app.addService(service)
 
   app.use({
