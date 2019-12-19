@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package commons;
+
+message Id {
+  string id = 1;
+}
+
+message Query {
+  bytes query = 1;
+}
+
+message Count {
+  int32 count = 1;
+}
