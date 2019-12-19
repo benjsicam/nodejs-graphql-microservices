@@ -101,12 +101,16 @@ services:
     restart: "on-failure"
 
   mailer-svc:
+    image: "mailer-svc:test"
+    container_name: "mailer-svc"
     build:
-      context: "."
+      context: "./grpc-services/mailer"
+      dockerfile: "Dockerfile.test"
     networks:
-      - "mailer-svc"
-    ports:
-      - "50053:50051"
+      - "frontend"
+      - "mailerdomain"
+    expose:
+      - "50051"
     environment:
       NODE_ENV: "test"
       HOST: "0.0.0.0"
@@ -133,6 +137,7 @@ services:
       - "comments-svc"
       - "posts-svc"
       - "users-svc"
+      - "mailer-svc"
     environment:
       NODE_ENV: "test"
       HOST: "0.0.0.0"
@@ -143,6 +148,7 @@ services:
       COMMENTS_SVC_URL: "comments-svc:50051"
       POSTS_SVC_URL: "posts-svc:50051"
       USERS_SVC_URL: "users-svc:50051"
+      MAILER_SVC_URL: "mailer-svc:50051"
     healthcheck:
       test: ["CMD", "wget", "localhost:3000/healthz -q -O - > /dev/null 2>&1"]
       interval: 30s
@@ -202,3 +208,4 @@ networks:
   commentsdomain:
   postsdomain:
   usersdomain:
+  mailerdomain:

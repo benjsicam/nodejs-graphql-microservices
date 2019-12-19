@@ -8,11 +8,16 @@ services:
     networks:
       - "mailer-svc"
     ports:
-      - "50053:50051"
+      - "50054:50051"
     environment:
       NODE_ENV: "test"
       HOST: "0.0.0.0"
       PORT: "50051"
+      SMTP_HOST: "smtp.gmail.com"
+      SMTP_PORT: "587"
+      SMTP_SECURE: "true"
+      SMTP_USER: "username"
+      SMTP_PASS: "password"
     healthcheck:
       test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
       interval: 30s
