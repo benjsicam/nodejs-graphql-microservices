@@ -97,6 +97,24 @@ services:
       retries: 5
     restart: "on-failure"
 
+  mailer-svc:
+    build:
+      context: "."
+    networks:
+      - "mailer-svc"
+    ports:
+      - "50053:50051"
+    environment:
+      NODE_ENV: "test"
+      HOST: "0.0.0.0"
+      PORT: "50051"
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: "on-failure"
+
   graphql-gateway:
     image: "graphql-gateway:dev"
     container_name: "graphql-gateway"
