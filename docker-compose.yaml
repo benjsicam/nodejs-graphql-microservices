@@ -101,7 +101,7 @@ services:
     image: "mailer-svc:dev"
     container_name: "mailer-svc"
     build:
-      context: "./grpc-services/mailer-svc"
+      context: "./grpc-services/mailer"
     networks:
       - "frontend"
       - "mailerdomain"

@@ -11,16 +11,13 @@ class UserHooks {
       const logger = this._logger
 
       logger.info(user)
+      const { mailerService } = this._services
 
-      return user
-
-      // const { mailer } = this._services
-
-      // return mailer.send({
-      //   template: 'signup',
-      //   to: user.email,
-      //   data: user
-      // })
+      return mailerService.send({
+        template: 'signup',
+        to: user.user.email,
+        data: Buffer.from(JSON.stringify(user.user))
+      })
     }
   }
 }
