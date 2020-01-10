@@ -12,23 +12,31 @@ class CommentHooks {
 
       logger.info(comment)
 
-      return comment
+      // return comment
+      const { mailerService, postService, userService } = this._services
 
-      // const { mailer, postService, userService } = this._services
+      const post = await postService.findOne({
+        where: { id: comment.post }
+      })
 
-      // const post = await postService.findOne({
-      //   where: { id: comment.post }
-      // })
+      const postAuthor = await userService.findOne({
+        where: { id: post.author }
+      })
 
-      // const author = await userService.findOne({
-      //   where: { id: post.author }
-      // })
+      const commentAuthor = await userService.findOne({
+        where: { id: comment.comment.author }
+      })
 
-      // return mailer.send({
-      //   template: 'new-comment',
-      //   to: author.email,
-      //   data: comment
-      // })
+      return mailerService.send({
+        template: 'new-comment',
+        to: postAuthor.email,
+        data: Buffer.from(JSON.stringify({
+          comment: comment.comment,
+          post,
+          postAuthor,
+          commentAuthor
+        }))
+      })
     }
   }
 }
