@@ -2,7 +2,6 @@ import * as yup from 'yup'
 import bcrypt from 'bcryptjs'
 
 import authUtils from '../../utils/auth'
-import errorUtils from '../../utils/error'
 
 const updateEmail = {
   validationSchema: yup.object().shape({
@@ -18,7 +17,8 @@ const updateEmail = {
         .required('Password is a required field.')
     })
   }),
-  resolve: async (parent, { data }, { request, userService, logger }) => {
+  beforeResolve: async (args, { request, userService, logger }) => {
+    const { data } = args
     const id = await authUtils.getUser(request)
     const user = await userService.findOne({ where: { id } })
     const isMatch = await bcrypt.compare(data.currentPassword, user.password)
@@ -27,7 +27,7 @@ const updateEmail = {
     logger.info('UserMutation#updateEmail.check1', !user || !isMatch)
 
     if (!user || !isMatch) {
-      return errorUtils.buildError(['Error updating email. Kindly check the email or password provided'])
+      throw new Error('Error updating email. Kindly check the email or password provided')
     }
 
     const userExists = (await userService.count({ where: { email: data.email } })) >= 1
@@ -35,11 +35,14 @@ const updateEmail = {
     logger.info('UserMutation#updateEmail.check2', userExists)
 
     if (userExists) {
-      return errorUtils.buildError(['Email taken'])
+      throw new Error('Email taken')
     }
 
     user.email = data.email
 
+    return { id, user }
+  },
+  resolve: async (parent, { id, user }, { userService }) => {
     const updatedUser = await userService.update(id, user)
 
     return {
