@@ -2,7 +2,6 @@ import * as yup from 'yup'
 
 import { isString, isBoolean } from 'lodash'
 
-import errorUtils from '../../utils/error'
 import authUtils from '../../utils/auth'
 
 const updatePost = {
@@ -20,7 +19,7 @@ const updatePost = {
       published: yup.boolean()
     })
   }),
-  resolve: async (parent, args, { request, postService, logger, pubsub }) => {
+  beforeResolve: async (args, { request, postService, logger }) => {
     const { id, data } = args
 
     const author = await authUtils.getUser(request)
@@ -30,7 +29,7 @@ const updatePost = {
     logger.info('PostMutation#updatePost.target', post)
 
     if (!post) {
-      return errorUtils.buildError(['Post not found or you may not be the owner of the post'])
+      throw new Error('Post not found or you may not be the owner of the post')
     }
 
     if (isString(data.title)) {
@@ -45,8 +44,14 @@ const updatePost = {
       post.published = data.published
     }
 
+    return { id, post, originalPost }
+  },
+  resolve: async (parent, { id, post, originalPost }, { postService }) => {
     const updatedPost = await postService.update(id, post)
 
+    return { post, originalPost, updatedPost }
+  },
+  afterResolve: async ({ post, originalPost, updatedPost }, { pubsub, logger }) => {
     if (originalPost.published && !post.published) {
       logger.info('PostMutation#updatePost.event', 'DELETED')
 

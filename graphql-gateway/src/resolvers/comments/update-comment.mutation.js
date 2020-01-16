@@ -2,7 +2,6 @@ import * as yup from 'yup'
 
 import { isString } from 'lodash'
 
-import errorUtils from '../../utils/error'
 import authUtils from '../../utils/auth'
 
 const updateComment = {
@@ -16,7 +15,7 @@ const updateComment = {
         .max(500, 'Text should be 500 characters at most.')
     })
   }),
-  resolve: async (parent, args, { request, commentService, logger, pubsub }) => {
+  beforeResolve: async (args, { request, commentService, logger }) => {
     const { id, data } = args
 
     const author = await authUtils.getUser(request)
@@ -25,15 +24,21 @@ const updateComment = {
     logger.info('CommentMutation#updateComment.target', comment)
 
     if (!comment) {
-      return errorUtils.buildError(['Comment not found or you may not be the owner of the comment'])
+      throw new Error('Comment not found or you may not be the owner of the comment')
     }
 
     if (isString(data.text)) {
       comment.text = data.text
     }
 
+    return { id, comment }
+  },
+  resolve: async (parent, {id, comment}, { commentService }) => {
     const updatedComment = await commentService.update(id, comment)
 
+    return { updatedComment }
+  },
+  afterResolve: async( { updatedComment }, { pubsub } ) => {
     pubsub.publish(`comment#${updatedComment.post}`, {
       comment: {
         mutation: 'UPDATED',

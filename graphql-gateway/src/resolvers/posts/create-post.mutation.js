@@ -1,6 +1,5 @@
 import * as yup from 'yup'
 
-import errorUtils from '../../utils/error'
 import authUtils from '../../utils/auth'
 
 const createPost = {
@@ -20,21 +19,32 @@ const createPost = {
       published: yup.boolean()
     })
   }),
-  resolve: async (parent, { data }, { request, postService, userService, logger, pubsub }) => {
+  beforeResolve: async (args, { request, userService, logger }) => {
     const author = await authUtils.getUser(request)
     const userExists = (await userService.count({ where: { id: author } })) >= 1
 
     logger.info('PostMutation#createPost.check', !userExists)
 
     if (!userExists) {
-      return errorUtils.buildError(['User not found'])
+      throw new Error('User not found')
     }
 
+    return {
+      data: {
+        ...args.data,
+      },
+      author
+    }
+  },
+  resolve: async (parent, { data, author }, { postService }) => {
     const post = await postService.create({
       ...data,
       author
     })
 
+    return { data, post }
+  },
+  afterResolve: async ({ data, post }, { pubsub }) => {
     if (data.published) {
       pubsub.publish('post', {
         post: {

@@ -1,10 +1,9 @@
 import * as yup from 'yup'
 import bcrypt from 'bcryptjs'
 
-import { isEmpty } from 'lodash'
+import { isEmpty, isNil } from 'lodash'
 
 import authUtils from '../../utils/auth'
-import errorUtils from '../../utils/error'
 
 const login = {
   validationSchema: yup.object().shape({
@@ -20,7 +19,9 @@ const login = {
         .required('Password is a required field.')
     })
   }),
-  resolve: async (parent, { data }, { userService, logger }) => {
+  beforeResolve: async (args, { userService, logger }) => {
+    const { data } = args
+
     const user = await userService.findOne({
       where: {
         email: data.email
@@ -29,8 +30,8 @@ const login = {
 
     logger.info('UserQuery#login.check1', isEmpty(user))
 
-    if (isEmpty(user)) {
-      return errorUtils.buildError(['Unable to login'])
+    if (isEmpty(user) || isNil(user)) {
+      throw new Error('Unable to login')
     }
 
     const isMatch = await bcrypt.compare(data.password, user.password)
@@ -38,12 +39,19 @@ const login = {
     logger.info('UserQuery#login.check2', !isMatch)
 
     if (!isMatch) {
-      return errorUtils.buildError(['Unable to login'])
+      throw new Error('Unable to login')
     }
 
-    return {
-      user,
-      token: await authUtils.generateToken(user.id)
+    return { user, isMatch }
+  },
+  resolve: async (parent, { user, isMatch }, { userService, logger }) => {
+    if (!isMatch) {
+      throw new Error('Unable to login')
+    } else {
+      return {
+        user,
+        token: await authUtils.generateToken(user.id)
+      }
     }
   }
 }

@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs'
 
 import authUtils from '../../utils/auth'
 import passwordUtils from '../../utils/password'
-import errorUtils from '../../utils/error'
 
 const updatePassword = {
   validationSchema: yup.object().shape({
@@ -26,7 +25,8 @@ const updatePassword = {
         .max('50', 'Confirm Password should be 50 characters at most.')
     })
   }),
-  resolve: async (parent, { data }, { request, userService, logger }) => {
+  beforeResolve: async (args, { request, userService, logger }) => {
+    const { data } = args
     const id = await authUtils.getUser(request)
     const user = await userService.findOne({ where: { id } })
     const isMatch = await bcrypt.compare(data.currentPassword, user.password)
@@ -36,11 +36,14 @@ const updatePassword = {
     logger.info('UserMutation#updatePassword.check', !user || !isMatch || !isConfirmed)
 
     if (!user || !isMatch || !isConfirmed) {
-      return errorUtils.buildError(['Error updating password. Kindly check your passwords.'])
+      throw new Error('Error updating password. Kindly check your passwords.')
     }
 
     const password = await passwordUtils.hashPassword(data.newPassword)
 
+    return { id, user, password }
+  },
+  resolve: async (parent, { id, user, password }, { userService }) => {
     const updatedUser = await userService.update(id, {
       ...user,
       password

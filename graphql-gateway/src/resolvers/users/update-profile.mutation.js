@@ -3,7 +3,6 @@ import * as yup from 'yup'
 import { isString, isNumber } from 'lodash'
 
 import authUtils from '../../utils/auth'
-import errorUtils from '../../utils/error'
 
 const updateProfile = {
   validationSchema: yup.object().shape({
@@ -19,14 +18,15 @@ const updateProfile = {
         .moreThan('17', 'Age should at least be 18 years old.')
     })
   }),
-  resolve: async (parent, { data }, { request, userService, logger }) => {
+  beforeResolve: async (args, { request, userService, logger }) => {
+    const { data } = args
     const id = await authUtils.getUser(request)
     const user = await userService.findOne({ where: { id } })
 
     logger.info('UserMutation#updateProfile.target', user)
 
     if (!user) {
-      return errorUtils.buildError(['User profile not found'])
+      throw new Error(['User profile not found'])
     }
 
     if (isString(data.name)) {
@@ -37,6 +37,9 @@ const updateProfile = {
       user.age = data.age
     }
 
+    return { id, user }
+  },
+  resolve: async (parent, { id, user }, { userService }) => {
     const updatedUser = await userService.update(id, user)
 
     return { user: updatedUser }

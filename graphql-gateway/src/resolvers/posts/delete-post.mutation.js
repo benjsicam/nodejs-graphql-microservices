@@ -1,30 +1,38 @@
 import * as yup from 'yup'
 
-import errorUtils from '../../utils/error'
 import authUtils from '../../utils/auth'
 
 const deletePost = {
   validationSchema: yup.object().shape({
     id: yup.string().required('ID is a required field.')
   }),
-  resolve: async (parent, { id }, { request, postService, commentService, logger, pubsub }) => {
+  beforeResolve: async (args, { request, postService, commentService, logger}) => {
     const author = await authUtils.getUser(request)
-    const post = await postService.findOne({ where: { id, author } })
+    const post = await postService.findOne({ where: { id: args.id, author } })
 
     logger.info('PostMutation#deletePost.check', !post)
 
     if (!post) {
-      return errorUtils.buildError(['Post not found or you may not be the owner of the post'])
+      throw new Error('Post not found or you may not be the owner of the post')
     }
 
-    const commentExists = (await commentService.count({ where: { post: id } })) >= 1
+    const commentExists = (await commentService.count({ where: { post: args.id } })) >= 1
 
     if (commentExists) {
-      return errorUtils.buildError(['Post not found or you may not be the owner of the post'])
+      throw new Error('Post not found or you may not be the owner of the post')
     }
 
+    return {
+      id: args.id,
+      post
+    }
+  },
+  resolve: async (parent, { id, post }, { postService }) => {
     const count = await postService.destroy(id)
 
+    return { post, count }
+  },
+  afterResolve: async ({ post, count }, { pubsub }) => {
     if (post.published) {
       pubsub.publish('post', {
         post: {
