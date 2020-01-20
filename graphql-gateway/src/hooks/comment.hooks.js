@@ -27,6 +27,13 @@ class CommentHooks {
         where: { id: comment.comment.author }
       })
 
+      pubsub.publish(`comment#${comment.post}`, {
+        comment: {
+          mutation: 'CREATED',
+          data: comment
+        }
+      })
+
       return mailerService.send({
         template: 'new-comment',
         to: postAuthor.email,
@@ -37,6 +44,19 @@ class CommentHooks {
           commentAuthor
         }))
       })
+    }
+  }
+
+  onUpdate() {
+    return async comment => {
+      pubsub.publish(`comment#${comment.post}`, {
+        comment: {
+          mutation: 'UPDATED',
+          data: comment
+        }
+      })
+
+      return
     }
   }
 }

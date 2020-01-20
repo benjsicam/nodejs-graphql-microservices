@@ -33,20 +33,10 @@ const updateComment = {
 
     return { id, comment }
   },
-  resolve: async (parent, {id, comment}, { commentService }) => {
+  resolve: async (parent, { id, comment }, { commentService }) => {
     const updatedComment = await commentService.update(id, comment)
 
     return { updatedComment }
-  },
-  afterResolve: async( { updatedComment }, { pubsub } ) => {
-    pubsub.publish(`comment#${updatedComment.post}`, {
-      comment: {
-        mutation: 'UPDATED',
-        data: updatedComment
-      }
-    })
-
-    return { comment: updatedComment }
   }
 }
 

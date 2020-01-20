@@ -17,22 +17,11 @@ const deleteComment = {
     }
 
     return {
-      id: args.id,
       comment
     }
   },
-  resolve: async (parent, { id, comment }, { commentService }) => {
-    const count = await commentService.destroy(id)
-
-    return { comment, count }
-  },
-  afterResolve: async ({ comment, count }, { pubsub }) => {
-    pubsub.publish(`comment#${comment.post}`, {
-      comment: {
-        mutation: 'DELETED',
-        data: comment
-      }
-    })
+  resolve: async (parent, { comment }, { commentService }) => {
+    const count = await commentService.destroy(comment.id)
 
     return { count }
   }

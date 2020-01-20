@@ -3,6 +3,7 @@ import * as yup from 'yup'
 import authUtils from '../../utils/auth'
 
 const createComment = {
+  authRequired: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       text: yup
@@ -39,22 +40,9 @@ const createComment = {
       author
     })
 
-    logger.info('CommentMutation#createComment.result', comment)
-
-    return { 
-      data,
+    return {
       comment
      }
-  },
-  afterResolve: async ({ data, comment }, { pubsub }) => {
-    pubsub.publish(`comment#${data.post}`, {
-      comment: {
-        mutation: 'CREATED',
-        data: comment
-      }
-    })
-
-    return { comment }
   }
 }
 
