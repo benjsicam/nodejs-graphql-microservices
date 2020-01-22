@@ -1,7 +1,5 @@
 import * as yup from 'yup'
 
-import authUtils from '../../utils/auth'
-
 const createComment = {
   authRequired: true,
   validationSchema: yup.object().shape({
@@ -15,10 +13,8 @@ const createComment = {
       post: yup.string().required('Post is a required field.')
     })
   }),
-  beforeResolve: async (args, { request, postService, userService, logger }) => {
-    const author = await authUtils.getUser(request)
-
-    const userExists = (await userService.count({ where: { id: author } })) >= 1
+  beforeResolve: async (args, { postService, userService, logger }) => {
+    const userExists = (await userService.count({ where: { id: args.user } })) >= 1
     const postExists = (await postService.count({ where: { id: args.data.post, published: true } })) >= 1
 
     logger.info('CommentMutation#createComment.check', !userExists, !postExists)
@@ -31,7 +27,7 @@ const createComment = {
       data: {
         ...args.data,
       },
-      author
+      author: args.user
     }
   },
   resolve: async (parent, { data, author }, { commentService, logger }) => {

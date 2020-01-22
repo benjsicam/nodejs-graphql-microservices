@@ -1,14 +1,12 @@
 import * as yup from 'yup'
 
-import authUtils from '../../utils/auth'
-
 const deleteComment = {
+  authRequired: true,
   validationSchema: yup.object().shape({
     id: yup.string().required('ID is a required field.')
   }),
-  beforeResolve: async (args, { request, commentService, logger }) => {
-    const author = await authUtils.getUser(request)
-    const comment = await commentService.findOne({ where: { id: args.id, author } })
+  beforeResolve: async (args, { commentService, logger }) => {
+    const comment = await commentService.findOne({ where: { id: args.id, author: args.user } })
 
     logger.info('CommentMutation#deleteComment.check', !comment)
 

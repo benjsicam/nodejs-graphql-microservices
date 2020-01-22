@@ -1,8 +1,7 @@
 import * as yup from 'yup'
 
-import authUtils from '../../utils/auth'
-
 const createPost = {
+  authRequired: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       title: yup
@@ -19,9 +18,8 @@ const createPost = {
       published: yup.boolean()
     })
   }),
-  beforeResolve: async (args, { request, userService, logger }) => {
-    const author = await authUtils.getUser(request)
-    const userExists = (await userService.count({ where: { id: author } })) >= 1
+  beforeResolve: async (args, { userService, logger }) => {
+    const userExists = (await userService.count({ where: { id: args.user } })) >= 1
 
     logger.info('PostMutation#createPost.check', !userExists)
 
@@ -33,7 +31,7 @@ const createPost = {
       data: {
         ...args.data,
       },
-      author
+      author: args.user
     }
   },
   resolve: async (parent, { data, author }, { postService }) => {

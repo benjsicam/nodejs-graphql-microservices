@@ -14,6 +14,7 @@ import * as GraphResolvers from './resolvers/**/*.graph.js' // eslint-disable-li
 import LogMiddleware from './middlewares/log.middleware'
 import ValidationMiddleware from './middlewares/validation.middleware'
 import HookMiddleware from './middlewares/hook.middleware'
+import AuthenticationMiddleware from './middlewares/authentication.middleware'
 
 import logger from './logger'
 import Server from './server'
@@ -97,7 +98,7 @@ const main = async () => {
       pubsub,
       logger
     },
-    [LogMiddleware, ValidationMiddleware, HookMiddleware]
+    [LogMiddleware, AuthenticationMiddleware, ValidationMiddleware, HookMiddleware]
   )
 
   const httpServer = await server.start(

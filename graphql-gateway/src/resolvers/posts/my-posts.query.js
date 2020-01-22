@@ -1,12 +1,9 @@
-import authUtils from '../../utils/auth'
-
 const myPosts = {
+  authRequired: true,
   beforeResolve: async (parent, args, {request}) => {
-    const author = await authUtils.getUser(request)
+    let query = { where: {author: args.user} }
 
-    let query = { where: { author } }
-
-    if (args.query) query = { where: { author, title: { $like: args.query } } }
+    if (args.query) query = { where: { author: args.user, title: { $like: args.query } } }
 
     return { query }
   },

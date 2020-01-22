@@ -5,6 +5,7 @@ import { isString, isNumber } from 'lodash'
 import authUtils from '../../utils/auth'
 
 const updateProfile = {
+  authRequired: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       name: yup
@@ -20,8 +21,7 @@ const updateProfile = {
   }),
   beforeResolve: async (args, { request, userService, logger }) => {
     const { data } = args
-    const id = await authUtils.getUser(request)
-    const user = await userService.findOne({ where: { id } })
+    const user = await userService.findOne({ where: { id: args.user } })
 
     logger.info('UserMutation#updateProfile.target', user)
 
@@ -37,7 +37,7 @@ const updateProfile = {
       user.age = data.age
     }
 
-    return { id, user }
+    return { id: args.user, user }
   },
   resolve: async (parent, { id, user }, { userService }) => {
     const updatedUser = await userService.update(id, user)

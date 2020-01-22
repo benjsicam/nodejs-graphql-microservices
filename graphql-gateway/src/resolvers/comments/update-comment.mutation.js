@@ -2,9 +2,8 @@ import * as yup from 'yup'
 
 import { isString } from 'lodash'
 
-import authUtils from '../../utils/auth'
-
 const updateComment = {
+  authRequired: true,
   validationSchema: yup.object().shape({
     id: yup.string().required('ID is a required field.'),
     data: yup.object().shape({
@@ -15,11 +14,9 @@ const updateComment = {
         .max(500, 'Text should be 500 characters at most.')
     })
   }),
-  beforeResolve: async (args, { request, commentService, logger }) => {
+  beforeResolve: async (args, { commentService, logger }) => {
     const { id, data } = args
-
-    const author = await authUtils.getUser(request)
-    const comment = await commentService.findOne({ where: { id, author } })
+    const comment = await commentService.findOne({ where: { id, author: args.user } })
 
     logger.info('CommentMutation#updateComment.target', comment)
 

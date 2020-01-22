@@ -4,6 +4,7 @@ import authUtils from '../../utils/auth'
 import passwordUtils from '../../utils/password'
 
 const signup = {
+  authRequired: false,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       name: yup

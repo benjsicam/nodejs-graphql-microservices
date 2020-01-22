@@ -1,4 +1,5 @@
 const posts = {
+  authRequired: false,
   beforeResolve: async (parent, args) => {
     let query = {}
 

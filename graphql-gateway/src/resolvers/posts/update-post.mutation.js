@@ -2,9 +2,8 @@ import * as yup from 'yup'
 
 import { isString, isBoolean } from 'lodash'
 
-import authUtils from '../../utils/auth'
-
 const updatePost = {
+  authRequired: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       title: yup
@@ -22,8 +21,7 @@ const updatePost = {
   beforeResolve: async (args, { request, postService, logger }) => {
     const { id, data } = args
 
-    const author = await authUtils.getUser(request)
-    const post = await postService.findOne({ where: { id, author } })
+    const post = await postService.findOne({ where: { id, author: args.user } })
     const originalPost = { ...post }
 
     logger.info('PostMutation#updatePost.target', post)

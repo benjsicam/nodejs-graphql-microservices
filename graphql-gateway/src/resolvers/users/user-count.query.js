@@ -1,4 +1,5 @@
 const userCount = {
+  authRequired: false,
   beforeResolve: async (parent, args) => {
     let query = {}
 

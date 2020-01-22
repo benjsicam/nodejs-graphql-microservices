@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs'
 import authUtils from '../../utils/auth'
 
 const updateEmail = {
+  authRequired: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       email: yup
@@ -19,8 +20,7 @@ const updateEmail = {
   }),
   beforeResolve: async (args, { request, userService, logger }) => {
     const { data } = args
-    const id = await authUtils.getUser(request)
-    const user = await userService.findOne({ where: { id } })
+    const user = await userService.findOne({ where: { id: args.user } })
     const isMatch = await bcrypt.compare(data.currentPassword, user.password)
 
     logger.info('UserMutation#updateEmail.target', user)
@@ -40,7 +40,7 @@ const updateEmail = {
 
     user.email = data.email
 
-    return { id, user }
+    return { id: args.user, user }
   },
   resolve: async (parent, { id, user }, { userService }) => {
     const updatedUser = await userService.update(id, user)

@@ -1,9 +1,7 @@
-import authUtils from '../../utils/auth'
-
 const me = {
+  authRequired: true,
   resolve: async (parent, args, { request, userService }) => {
-    const id = await authUtils.getUser(request)
-    const user = await userService.findOne({ where: { id } })
+    const user = await userService.findOne({ where: { id: args.user } })
 
     return user
   }
