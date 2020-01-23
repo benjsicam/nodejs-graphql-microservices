@@ -1,4 +1,5 @@
 const users = {
+  authRequired: true,
   beforeResolve: async (parent, args) => {
     let query = {}
 

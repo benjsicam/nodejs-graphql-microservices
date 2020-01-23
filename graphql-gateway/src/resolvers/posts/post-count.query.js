@@ -1,4 +1,5 @@
 const postCount = {
+  authRequired: false,
   beforeResolve: async (parent, args) => {
     let query = {}
 

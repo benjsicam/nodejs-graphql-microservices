@@ -1,4 +1,5 @@
 const commentCount = {
+  authRequired: false,
   beforeResolve: async (parent, args) => {
     let query = {}
 

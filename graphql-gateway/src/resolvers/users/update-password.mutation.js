@@ -5,6 +5,7 @@ import authUtils from '../../utils/auth'
 import passwordUtils from '../../utils/password'
 
 const updatePassword = {
+  authRequired: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       currentPassword: yup
@@ -27,8 +28,7 @@ const updatePassword = {
   }),
   beforeResolve: async (args, { request, userService, logger }) => {
     const { data } = args
-    const id = await authUtils.getUser(request)
-    const user = await userService.findOne({ where: { id } })
+    const user = await userService.findOne({ where: { id: args.user } })
     const isMatch = await bcrypt.compare(data.currentPassword, user.password)
     const isConfirmed = data.newPassword === data.confirmPassword
 
@@ -41,7 +41,7 @@ const updatePassword = {
 
     const password = await passwordUtils.hashPassword(data.newPassword)
 
-    return { id, user, password }
+    return { id: args.user, user, password }
   },
   resolve: async (parent, { id, user, password }, { userService }) => {
     const updatedUser = await userService.update(id, {
