@@ -7,7 +7,7 @@ const postCount = {
 
     return { query }
   },
-  resolve: async (parent, {query}, { postService }) => {
+  resolve: async (parent, { query }, { postService }) => {
     return postService.count(query)
   }
 }

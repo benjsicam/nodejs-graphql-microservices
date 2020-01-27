@@ -9,7 +9,7 @@ class MailerService {
 
   async send(details) {
     this._logger.info(`${this._serviceName}#sendMail.call`, details)
-    
+
     const result = await this._client.sendAsync(details)
 
     this._logger.info(`${this._serviceName}#sendMail.result`, result)

@@ -29,7 +29,7 @@ const createPost = {
 
     return {
       data: {
-        ...args.data,
+        ...args.data
       },
       author: args.user
     }

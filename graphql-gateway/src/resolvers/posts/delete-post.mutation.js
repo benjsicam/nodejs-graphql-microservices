@@ -5,7 +5,7 @@ const deletePost = {
   validationSchema: yup.object().shape({
     id: yup.string().required('ID is a required field.')
   }),
-  beforeResolve: async (args, { request, postService, commentService, logger}) => {
+  beforeResolve: async (args, { request, postService, commentService, logger }) => {
     const post = await postService.findOne({ where: { id: args.id, author: args.user } })
 
     logger.info('PostMutation#deletePost.check', !post)

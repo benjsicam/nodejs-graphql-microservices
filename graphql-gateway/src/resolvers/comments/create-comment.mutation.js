@@ -25,7 +25,7 @@ const createComment = {
 
     return {
       data: {
-        ...args.data,
+        ...args.data
       },
       author: args.user
     }
@@ -38,7 +38,7 @@ const createComment = {
 
     return {
       comment
-     }
+    }
   }
 }
 
