@@ -3,6 +3,9 @@ import glob from 'glob'
 import Mali from 'mali'
 import Redis from 'ioredis'
 
+import * as errorMiddleware from '@malijs/onerror'
+import * as loggerMiddleware from '@malijs/logger'
+
 import { map } from 'lodash'
 import { service } from 'grpc-health-check'
 
@@ -24,7 +27,7 @@ const HOST_PORT = `${process.env.HOST}:${process.env.PORT}`
 const main = async () => {
   const modelPaths = glob.sync(path.resolve(__dirname, '../**/*.model.js'))
   const db = await Db.init(modelPaths, logger)
-  const repo = new PostRepository(SERVICE_NAME, db.model(MODEL_NAME), logger)
+  const repo = new PostRepository(db.model(MODEL_NAME))
 
   const redisHostConfig = `${process.env.REDIS_HOST || ''}`.split(',')
 
@@ -80,6 +83,18 @@ const main = async () => {
   })
   app.addService(service)
 
+  app.use(
+    errorMiddleware((err, ctx) => {
+      logger.error(`${ctx.service}#${ctx.name}.error`, err)
+    })
+  )
+  app.use(
+    loggerMiddleware({
+      timestamp: true,
+      request: true,
+      response: true
+    })
+  )
   app.use({
     PostService,
     ...healthCheckImpl

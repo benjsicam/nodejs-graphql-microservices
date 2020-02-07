@@ -43,7 +43,7 @@ describe('Database Testing', () => {
     const modelPaths = glob.sync(path.resolve(__dirname, '../src/models/*.model.js'))
 
     db = await Db.init(modelPaths, logger)
-    repo = new CommentRepository(SERVICE_NAME, db.model(MODEL_NAME), logger)
+    repo = new CommentRepository(db.model(MODEL_NAME))
 
     return
   })

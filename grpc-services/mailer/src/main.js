@@ -2,6 +2,9 @@ import path from 'path'
 import Mali from 'mali'
 import nodemailer from 'nodemailer'
 
+import * as errorMiddleware from '@malijs/onerror'
+import * as loggerMiddleware from '@malijs/logger'
+
 import { service } from 'grpc-health-check'
 
 import logger from './logger'
@@ -45,6 +48,18 @@ const main = async () => {
   })
   app.addService(service)
 
+  app.use(
+    errorMiddleware((err, ctx) => {
+      logger.error(`${ctx.service}#${ctx.name}.error`, err)
+    })
+  )
+  app.use(
+    loggerMiddleware({
+      timestamp: true,
+      request: true,
+      response: true
+    })
+  )
   app.use({
     MailerService,
     ...healthCheckImpl

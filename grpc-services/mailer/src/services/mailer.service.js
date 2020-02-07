@@ -11,7 +11,7 @@ class MailerService {
   async send({ req, response }) {
     let data = Buffer.from(req.data)
     data = JSON.parse(data.toString())
-    
+
     const email = new Email({
       message: {
         from: 'akzdinglasan@gmail.com' // change to support email later
@@ -29,7 +29,7 @@ class MailerService {
           to: req.to
         },
         locals: {
-          data: data
+          data
         }
       })
 
