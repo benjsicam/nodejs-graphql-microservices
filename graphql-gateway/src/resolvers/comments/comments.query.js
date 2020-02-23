@@ -1,9 +1,9 @@
 const comments = {
-  authRequired: false,
+  authenticate: false,
   beforeResolve: async (parent, args) => {
     let query = {}
 
-    if (args.query) query = { where: { text: { $like: args.query } } }
+    if (args.q) query = { where: { text: { $like: args.q } } }
 
     return {
       query

@@ -4,7 +4,7 @@ const AuthenticationMiddleware = {
   async Mutation(resolve, root, args, context, info) {
     const mutation = info.schema.getMutationType().getFields()[info.fieldName]
 
-    if (mutation.authRequired === true) {
+    if (mutation.authenticate === true) {
       const author = await authUtils.getUser(context.request)
 
       Object.assign(args, { user: author })
@@ -15,7 +15,7 @@ const AuthenticationMiddleware = {
   async Query(resolve, root, args, context, info) {
     const query = info.schema.getQueryType().getFields()[info.fieldName]
 
-    if (query.authRequired === true) {
+    if (query.authenticate === true) {
       const author = await authUtils.getUser(context.request)
 
       Object.assign(args, { user: author })

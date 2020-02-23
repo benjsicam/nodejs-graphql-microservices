@@ -5,7 +5,7 @@ import { isString, isNumber } from 'lodash'
 import authUtils from '../../utils/auth'
 
 const updateProfile = {
-  authRequired: true,
+  authenticate: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       name: yup

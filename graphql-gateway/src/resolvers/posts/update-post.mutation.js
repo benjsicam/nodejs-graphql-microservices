@@ -3,7 +3,7 @@ import * as yup from 'yup'
 import { isString, isBoolean } from 'lodash'
 
 const updatePost = {
-  authRequired: true,
+  authenticate: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       title: yup

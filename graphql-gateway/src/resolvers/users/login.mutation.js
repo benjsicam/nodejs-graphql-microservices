@@ -6,7 +6,7 @@ import { isEmpty, isNil } from 'lodash'
 import authUtils from '../../utils/auth'
 
 const login = {
-  authRequired: false,
+  authenticate: false,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       email: yup

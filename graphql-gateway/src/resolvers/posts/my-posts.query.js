@@ -1,9 +1,9 @@
 const myPosts = {
-  authRequired: true,
+  authenticate: true,
   beforeResolve: async (parent, args, { request }) => {
     let query = { where: { author: args.user } }
 
-    if (args.query) query = { where: { author: args.user, title: { $like: args.query } } }
+    if (args.q) query = { where: { author: args.user, title: { $like: args.q } } }
 
     return { query }
   },

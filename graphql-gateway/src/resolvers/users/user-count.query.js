@@ -1,9 +1,9 @@
 const userCount = {
-  authRequired: false,
+  authenticate: false,
   beforeResolve: async (parent, args) => {
     let query = {}
 
-    if (args.query) query = { where: { name: { $like: args.query } } }
+    if (args.q) query = { where: { name: { $like: args.q } } }
 
     return { query }
   },

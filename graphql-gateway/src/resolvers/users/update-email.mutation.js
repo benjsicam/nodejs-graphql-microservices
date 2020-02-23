@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import authUtils from '../../utils/auth'
 
 const updateEmail = {
-  authRequired: true,
+  authenticate: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       email: yup

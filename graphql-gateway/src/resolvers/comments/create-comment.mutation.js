@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 const createComment = {
-  authRequired: true,
+  authenticate: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       text: yup

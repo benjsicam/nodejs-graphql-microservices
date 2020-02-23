@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 const createPost = {
-  authRequired: true,
+  authenticate: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       title: yup

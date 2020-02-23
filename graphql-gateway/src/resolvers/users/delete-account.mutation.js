@@ -1,5 +1,5 @@
 const deleteAccount = {
-  authRequired: true,
+  authenticate: true,
   beforeResolve: async (args, { request, commentService, postService, userService, logger }) => {
     const user = await userService.findOne({ where: { id: args.user } })
 

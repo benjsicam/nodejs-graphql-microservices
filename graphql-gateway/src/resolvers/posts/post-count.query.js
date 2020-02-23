@@ -1,9 +1,9 @@
 const postCount = {
-  authRequired: false,
+  authenticate: false,
   beforeResolve: async (parent, args) => {
     let query = {}
 
-    if (args.query) query = { where: { title: { $like: args.query } } }
+    if (args.q) query = { where: { title: { $like: args.q } } }
 
     return { query }
   },

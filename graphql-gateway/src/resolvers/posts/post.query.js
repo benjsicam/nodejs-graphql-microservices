@@ -1,5 +1,5 @@
 const post = {
-  authRequired: false,
+  authenticate: false,
   resolve: async (parent, { id }, { postService }) => {
     return postService.findOne({ where: { id } })
   }

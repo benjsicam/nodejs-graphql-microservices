@@ -3,7 +3,7 @@ import * as yup from 'yup'
 import { isString } from 'lodash'
 
 const updateComment = {
-  authRequired: true,
+  authenticate: true,
   validationSchema: yup.object().shape({
     id: yup.string().required('ID is a required field.'),
     data: yup.object().shape({

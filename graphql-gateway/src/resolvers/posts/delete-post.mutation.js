@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 const deletePost = {
-  authRequired: true,
+  authenticate: true,
   validationSchema: yup.object().shape({
     id: yup.string().required('ID is a required field.')
   }),

@@ -5,7 +5,7 @@ import authUtils from '../../utils/auth'
 import passwordUtils from '../../utils/password'
 
 const updatePassword = {
-  authRequired: true,
+  authenticate: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       currentPassword: yup

@@ -1,5 +1,5 @@
 const user = {
-  authRequired: true,
+  authenticate: true,
   resolve: async (parent, { id }, { userService }) => {
     return userService.findOne({ where: { id } })
   }
