@@ -8,6 +8,17 @@ type Comment {
   version: Int!
 }
 
+type CommentsConnection {
+  edges: [CommentEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type CommentEdge {
+  node: Comment!
+  cursor: String!
+}
+
 type CreateCommentPayload {
   errors: [ErrorPayload]
   comment: Comment

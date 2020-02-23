@@ -1,17 +1,21 @@
 type Query {
   # Comments Query
-  comments(query: String, page: Int, limit: Int, orderBy: String): [Comment!]!
-  commentCount(query: String): Int!
+  # comments(query: String, page: Int, limit: Int, orderBy: String): [Comment!]!
+  comments(q: String, first: Int, last: Int, before: String, after: String): CommentsConnection
+  commentCount(q: String): Int!
 
   # Posts Query
   post(id: ID!): Post!
-  posts(query: String, page: Int, limit: Int, orderBy: String): [Post!]!
-  postCount(query: String): Int!
-  myPosts(query: String): [Post!]!
+  # posts(query: String, page: Int, limit: Int, orderBy: String): [Post!]!
+  posts(q: String, first: Int, last: Int, before: String, after: String): PostsConnection
+  postCount(q: String): Int!
+  # myPosts(query: String): [Post!]!
+  myPosts(q: String, first: Int, last: Int, before: String, after: String): PostsConnection
 
   # Users Query
-  users(query: String): [User!]!
-  userCount(query: String): Int!
+  # users(query: String): [User!]!
+  users(q: String, first: Int, last: Int, before: String, after: String): UsersConnection
+  userCount(q: String): Int!
   user(id: ID!): User!
   me: User!
 }

@@ -1,0 +1,17 @@
+type AuthPayload {
+  token: String
+  user: User
+  errors: [ErrorPayload]
+}
+
+type ErrorPayload {
+	field: String
+	message: [String]
+}
+
+type PageInfo {
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+  startCursor: String!
+  endCursor: String!
+}

@@ -5,10 +5,22 @@ type Post {
   body: String!
   published: Boolean!
   author: User!
-  comments(query: String, page: Int, limit: Int, orderBy: String): [Comment!]!
+  # comments(query: String, page: Int, limit: Int, orderBy: String): [Comment!]!
+  comments(q: String, first: Int, last: Int, before: String, after: String): CommentsConnection
   createdAt: DateTime!
   updatedAt: DateTime!
   version: Int!
+}
+
+type PostsConnection {
+  edges: [PostEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PostEdge {
+  node: Post!
+  cursor: String!
 }
 
 type CreatePostPayload {

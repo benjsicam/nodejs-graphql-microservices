@@ -4,11 +4,24 @@ type User {
   name: String!
   email: EmailAddress!
   age: UnsignedInt
-  posts(query: String, page: Int, limit: Int, orderBy: String): [Post!]!
-  comments(query: String, page: Int, limit: Int, orderBy: String): [Comment!]!
+  # posts(query: String, page: Int, limit: Int, orderBy: String): [Post!]!
+  # comments(query: String, page: Int, limit: Int, orderBy: String): [Comment!]!
+  posts(q: String, first: Int, last: Int, before: String, after: String): PostsConnection
+  comments(q: String, first: Int, last: Int, before: String, after: String): CommentsConnection
   createdAt: DateTime!
   updatedAt: DateTime!
   version: Int!
+}
+
+type UsersConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type UserEdge {
+  node: User!
+  cursor: String!
 }
 
 input SignupUserInput {
@@ -47,10 +60,4 @@ input UpdatePasswordInput {
 type DeleteUserPayload {
   errors: [ErrorPayload]
   count: Int
-}
-
-type AuthPayload {
-    token: String
-    user: User
-    errors: [ErrorPayload]
 }
