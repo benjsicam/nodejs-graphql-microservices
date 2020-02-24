@@ -26,7 +26,7 @@ const updatePassword = {
         .max('50', 'Confirm Password should be 50 characters at most.')
     })
   }),
-  beforeResolve: async (args, { request, userService, logger }) => {
+  resolve: async (parent, args, { userService, logger }) => {
     const { data } = args
     const user = await userService.findOne({ where: { id: args.user } })
     const isMatch = await bcrypt.compare(data.currentPassword, user.password)
@@ -41,17 +41,14 @@ const updatePassword = {
 
     const password = await passwordUtils.hashPassword(data.newPassword)
 
-    return { id: args.user, user, password }
-  },
-  resolve: async (parent, { id, user, password }, { userService }) => {
-    const updatedUser = await userService.update(id, {
+    const updatedUser = await userService.update(user.id, {
       ...user,
       password
     })
 
     return {
       user: updatedUser,
-      token: await authUtils.generateToken(user.id)
+      token: await authUtils.generateToken(updatedUser.id)
     }
   }
 }

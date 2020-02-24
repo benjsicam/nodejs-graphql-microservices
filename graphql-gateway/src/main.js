@@ -15,6 +15,7 @@ import LogMiddleware from './middlewares/log.middleware'
 import ValidationMiddleware from './middlewares/validation.middleware'
 import HookMiddleware from './middlewares/hook.middleware'
 import AuthenticationMiddleware from './middlewares/authentication.middleware'
+import AuthorizationMiddleware from './middlewares/authorization.middleware'
 import ErrorMiddleware from './middlewares/error.middleware'
 
 import logger from './logger'
@@ -82,7 +83,7 @@ const main = async () => {
     subscriber
   })
 
-  const hooksRegistry = new HooksRegistry(serviceRegistry.services, logger)
+  const hooksRegistry = new HooksRegistry(serviceRegistry.services, pubsub, logger)
 
   hooksRegistry.register()
 
@@ -99,7 +100,7 @@ const main = async () => {
       pubsub,
       logger
     },
-    [ErrorMiddleware, LogMiddleware, AuthenticationMiddleware, ValidationMiddleware, HookMiddleware]
+    [ErrorMiddleware, LogMiddleware, AuthenticationMiddleware, AuthorizationMiddleware, ValidationMiddleware, HookMiddleware]
   )
 
   const httpServer = await server.start(

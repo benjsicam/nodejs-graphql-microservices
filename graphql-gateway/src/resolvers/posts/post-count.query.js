@@ -1,13 +1,10 @@
 const postCount = {
   authenticate: false,
-  beforeResolve: async (parent, args) => {
+  resolve: async (parent, { q }, { postService }) => {
     let query = {}
 
-    if (args.q) query = { where: { title: { $like: args.q } } }
+    if (q) query = { where: { title: { $like: q } } }
 
-    return { query }
-  },
-  resolve: async (parent, { query }, { postService }) => {
     return postService.count(query)
   }
 }

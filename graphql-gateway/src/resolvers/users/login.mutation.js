@@ -20,9 +20,7 @@ const login = {
         .required('Password is a required field.')
     })
   }),
-  beforeResolve: async (args, { userService, logger }) => {
-    const { data } = args
-
+  resolve: async (parent, { data }, { userService, logger }) => {
     const user = await userService.findOne({
       where: {
         email: data.email
@@ -43,16 +41,9 @@ const login = {
       throw new Error('Unable to login')
     }
 
-    return { user, isMatch }
-  },
-  resolve: async (parent, { user, isMatch }, { userService, logger }) => {
-    if (!isMatch) {
-      throw new Error('Unable to login')
-    } else {
-      return {
-        user,
-        token: await authUtils.generateToken(user.id)
-      }
+    return {
+      user,
+      token: await authUtils.generateToken(user.id)
     }
   }
 }

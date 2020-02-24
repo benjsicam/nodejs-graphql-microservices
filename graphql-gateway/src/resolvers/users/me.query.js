@@ -1,9 +1,7 @@
 const me = {
   authenticate: true,
-  resolve: async (parent, args, { request, userService }) => {
-    const user = await userService.findOne({ where: { id: args.user } })
-
-    return user
+  resolve: async (parent, { user }, { userService }) => {
+    return userService.findOne({ where: { id: user } })
   }
 }
 

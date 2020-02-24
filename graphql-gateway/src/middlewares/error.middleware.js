@@ -1,7 +1,7 @@
 import errorUtils from '../utils/error'
 
 const ErrorMiddleware = {
-  async Mutation(resolve, root, args, context, info) {
+  async Query(resolve, root, args, context, info) {
     const { logger } = context
 
     try {
@@ -16,7 +16,7 @@ const ErrorMiddleware = {
       return { errors }
     }
   },
-  async Query(resolve, root, args, context, info) {
+  async Mutation(resolve, root, args, context, info) {
     const { logger } = context
 
     try {

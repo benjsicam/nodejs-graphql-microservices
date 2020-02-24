@@ -18,8 +18,8 @@ const createPost = {
       published: yup.boolean()
     })
   }),
-  beforeResolve: async (args, { userService, logger }) => {
-    const userExists = (await userService.count({ where: { id: args.user } })) >= 1
+  resolve: async (parent, { data, user }, { postService, userService, logger }) => {
+    const userExists = (await userService.count({ where: { id: user } })) >= 1
 
     logger.info('PostMutation#createPost.check', !userExists)
 
@@ -27,30 +27,10 @@ const createPost = {
       throw new Error('User not found')
     }
 
-    return {
-      data: {
-        ...args.data
-      },
-      author: args.user
-    }
-  },
-  resolve: async (parent, { data, author }, { postService }) => {
     const post = await postService.create({
       ...data,
-      author
+      author: user
     })
-
-    return { data, post }
-  },
-  afterResolve: async ({ data, post }, { pubsub }) => {
-    if (data.published) {
-      pubsub.publish('post', {
-        post: {
-          mutation: 'CREATED',
-          data: post
-        }
-      })
-    }
 
     return { post }
   }

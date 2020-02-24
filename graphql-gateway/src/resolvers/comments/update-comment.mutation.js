@@ -4,6 +4,13 @@ import { isString } from 'lodash'
 
 const updateComment = {
   authenticate: true,
+  authorize: async ({ id, user }, { commentService }) => {
+    const count = await commentService.count({ where: { id, author: user } })
+
+    if (count <= 0) {
+      throw new Error('You are not allowed to edit this comment.')
+    }
+  },
   validationSchema: yup.object().shape({
     id: yup.string().required('ID is a required field.'),
     data: yup.object().shape({
@@ -14,26 +21,18 @@ const updateComment = {
         .max(500, 'Text should be 500 characters at most.')
     })
   }),
-  beforeResolve: async (args, { commentService, logger }) => {
-    const { id, data } = args
-    const comment = await commentService.findOne({ where: { id, author: args.user } })
+  resolve: async (parent, { id, data, user }, { commentService, logger }) => {
+    const comment = await commentService.findOne({ where: { id, author: user } })
 
     logger.info('CommentMutation#updateComment.target', comment)
-
-    if (!comment) {
-      throw new Error('Comment not found or you may not be the owner of the comment')
-    }
 
     if (isString(data.text)) {
       comment.text = data.text
     }
 
-    return { id, comment }
-  },
-  resolve: async (parent, { id, comment }, { commentService }) => {
     const updatedComment = await commentService.update(id, comment)
 
-    return { updatedComment }
+    return { comment: updatedComment }
   }
 }
 

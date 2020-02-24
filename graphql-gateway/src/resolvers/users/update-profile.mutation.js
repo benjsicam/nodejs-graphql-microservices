@@ -2,8 +2,6 @@ import * as yup from 'yup'
 
 import { isString, isNumber } from 'lodash'
 
-import authUtils from '../../utils/auth'
-
 const updateProfile = {
   authenticate: true,
   validationSchema: yup.object().shape({
@@ -19,7 +17,7 @@ const updateProfile = {
         .moreThan('17', 'Age should at least be 18 years old.')
     })
   }),
-  beforeResolve: async (args, { request, userService, logger }) => {
+  resolve: async (parent, args, { userService, logger }) => {
     const { data } = args
     const user = await userService.findOne({ where: { id: args.user } })
 
@@ -37,10 +35,7 @@ const updateProfile = {
       user.age = data.age
     }
 
-    return { id: args.user, user }
-  },
-  resolve: async (parent, { id, user }, { userService }) => {
-    const updatedUser = await userService.update(id, user)
+    const updatedUser = await userService.update(user.id, user)
 
     return { user: updatedUser }
   }

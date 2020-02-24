@@ -1,54 +1,52 @@
 class UserHooks {
-  constructor(eventsBus, services, logger) {
-    this._services = services
+  constructor(services, pubsub, logger) {
+    this._eventBus = services.eventsBus
+    this._pubsub = pubsub
     this._logger = logger
 
-    eventsBus.on('mutation#signup', this.onSignup())
-    eventsBus.on('mutation#updateEmail', this.onUpdateEmail())
-    eventsBus.on('mutation#updatePassword', this.onUpdatePassword())
+    this._eventsBus.on('mutation#signup', this.onSignup())
+    this._eventsBus.on('mutation#updateEmail', this.onUpdateEmail())
+    this._eventsBus.on('mutation#updatePassword', this.onUpdatePassword())
   }
 
   onSignup() {
-    return async user => {
-      const logger = this._logger
+    return async ({ result }) => {
+      this._logger.info('UserHooks#onSignup.call', result.user)
 
-      logger.info(user)
       const { mailerService } = this._services
 
       return mailerService.send({
         template: 'signup',
-        to: user.user.email,
-        data: Buffer.from(JSON.stringify(user.user))
+        to: result.user.email,
+        data: Buffer.from(JSON.stringify(result.user))
       })
     }
   }
 
   onUpdateEmail() {
-    return async user => {
-      const logger = this._logger
+    return async ({ result }) => {
+      this._logger.info('UserHooks#onUpdateEmail.call', result.user)
 
-      logger.info(user)
       const { mailerService } = this._services
 
       return mailerService.send({
         template: 'update-email',
-        to: user.user.email,
-        data: Buffer.from(JSON.stringify(user.user))
+        to: result.user.email,
+        data: Buffer.from(JSON.stringify(result.user))
       })
     }
   }
 
   onUpdatePassword() {
-    return async user => {
-      const logger = this._logger
+    return async ({ result }) => {
+      this._logger.info('UserHooks#onUpdatePassword.call', result.user)
 
-      logger.info(user)
       const { mailerService } = this._services
 
       return mailerService.send({
         template: 'update-password',
-        to: user.user.email,
-        data: Buffer.from(JSON.stringify(user.user))
+        to: result.user.email,
+        data: Buffer.from(JSON.stringify(result.user))
       })
     }
   }

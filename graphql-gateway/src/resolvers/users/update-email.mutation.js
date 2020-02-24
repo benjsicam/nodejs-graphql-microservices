@@ -18,7 +18,7 @@ const updateEmail = {
         .required('Password is a required field.')
     })
   }),
-  beforeResolve: async (args, { request, userService, logger }) => {
+  resolve: async (parent, args, { userService, logger }) => {
     const { data } = args
     const user = await userService.findOne({ where: { id: args.user } })
     const isMatch = await bcrypt.compare(data.currentPassword, user.password)
@@ -40,14 +40,11 @@ const updateEmail = {
 
     user.email = data.email
 
-    return { id: args.user, user }
-  },
-  resolve: async (parent, { id, user }, { userService }) => {
-    const updatedUser = await userService.update(id, user)
+    const updatedUser = await userService.update(user.id, user)
 
     return {
       user: updatedUser,
-      token: await authUtils.generateToken(user.id)
+      token: await authUtils.generateToken(updatedUser.id)
     }
   }
 }

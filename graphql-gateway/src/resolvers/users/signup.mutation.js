@@ -30,8 +30,8 @@ const signup = {
         .moreThan('17', 'Age should at least be 18 years old.')
     })
   }),
-  beforeResolve: async (args, { userService, logger }) => {
-    const userExists = (await userService.count({ where: { email: args.data.email } })) >= 1
+  resolve: async (parent, { data }, { userService, logger }) => {
+    const userExists = (await userService.count({ where: { email: data.email } })) >= 1
 
     logger.info('UserMutation#signup.check', userExists)
 
@@ -39,17 +39,12 @@ const signup = {
       throw new Error('Email taken')
     }
 
-    const password = await passwordUtils.hashPassword(args.data.password)
+    const password = await passwordUtils.hashPassword(data.password)
 
-    return {
-      data: {
-        ...args.data,
-        password
-      }
-    }
-  },
-  resolve: async (parent, { data }, { userService }) => {
-    const user = await userService.create(data)
+    const user = await userService.create({
+      ...data,
+      password
+    })
 
     return {
       user,

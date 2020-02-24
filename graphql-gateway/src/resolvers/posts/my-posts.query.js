@@ -1,13 +1,10 @@
 const myPosts = {
   authenticate: true,
-  beforeResolve: async (parent, args, { request }) => {
-    let query = { where: { author: args.user } }
+  resolve: async (parent, { q, user }, { postService }) => {
+    let query = { where: { author: user } }
 
-    if (args.q) query = { where: { author: args.user, title: { $like: args.q } } }
+    if (q) query = { where: { author: user, title: { $like: q } } }
 
-    return { query }
-  },
-  resolve: async (parent, { query }, { postService }) => {
     return postService.findAll(query)
   }
 }

@@ -13,27 +13,19 @@ const createComment = {
       post: yup.string().required('Post is a required field.')
     })
   }),
-  beforeResolve: async (args, { postService, userService, logger }) => {
-    const userExists = (await userService.count({ where: { id: args.user } })) >= 1
-    const postExists = (await postService.count({ where: { id: args.data.post, published: true } })) >= 1
+  resolve: async (parent, { data, user }, { userService, postService, commentService, logger }) => {
+    const userExists = (await userService.count({ where: { id: user } })) >= 1
+    const postExists = (await postService.count({ where: { id: data.post, published: true } })) >= 1
 
     logger.info('CommentMutation#createComment.check', !userExists, !postExists)
 
     if (!userExists || !postExists) {
-      throw new Error('Unable to find user and post')
+      throw new Error('Unable to find user or post')
     }
 
-    return {
-      data: {
-        ...args.data
-      },
-      author: args.user
-    }
-  },
-  resolve: async (parent, { data, author }, { commentService, logger }) => {
     const comment = await commentService.create({
       ...data,
-      author
+      author: user
     })
 
     return {

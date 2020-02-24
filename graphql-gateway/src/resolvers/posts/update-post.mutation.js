@@ -4,6 +4,13 @@ import { isString, isBoolean } from 'lodash'
 
 const updatePost = {
   authenticate: true,
+  authorize: async ({ id, user }, { postService }) => {
+    const count = await postService.count({ where: { id, author: user } })
+
+    if (count <= 0) {
+      throw new Error('You are not allowed to update this post.')
+    }
+  },
   validationSchema: yup.object().shape({
     data: yup.object().shape({
       title: yup
@@ -18,17 +25,10 @@ const updatePost = {
       published: yup.boolean()
     })
   }),
-  beforeResolve: async (args, { request, postService, logger }) => {
-    const { id, data } = args
-
-    const post = await postService.findOne({ where: { id, author: args.user } })
-    const originalPost = { ...post }
+  resolve: async (parent, { id, data, user }, { postService, logger }) => {
+    const post = await postService.findOne({ where: { id, author: user } })
 
     logger.info('PostMutation#updatePost.target', post)
-
-    if (!post) {
-      throw new Error('Post not found or you may not be the owner of the post')
-    }
 
     if (isString(data.title)) {
       post.title = data.title
@@ -42,42 +42,7 @@ const updatePost = {
       post.published = data.published
     }
 
-    return { id, post, originalPost }
-  },
-  resolve: async (parent, { id, post, originalPost }, { postService }) => {
     const updatedPost = await postService.update(id, post)
-
-    return { post, originalPost, updatedPost }
-  },
-  afterResolve: async ({ post, originalPost, updatedPost }, { pubsub, logger }) => {
-    if (originalPost.published && !post.published) {
-      logger.info('PostMutation#updatePost.event', 'DELETED')
-
-      pubsub.publish('post', {
-        post: {
-          mutation: 'DELETED',
-          data: originalPost
-        }
-      })
-    } else if (!originalPost.published && post.published) {
-      logger.info('PostMutation#updatePost.event', 'CREATED')
-
-      pubsub.publish('post', {
-        post: {
-          mutation: 'CREATED',
-          data: updatedPost
-        }
-      })
-    } else if (post.published) {
-      logger.info('PostMutation#updatePost.event', 'UPDATED')
-
-      pubsub.publish('post', {
-        post: {
-          mutation: 'UPDATED',
-          data: updatedPost
-        }
-      })
-    }
 
     return { post: updatedPost }
   }

@@ -1,15 +1,10 @@
 const commentCount = {
   authenticate: false,
-  beforeResolve: async (parent, args) => {
+  resolve: async (parent, { q }, { commentService }) => {
     let query = {}
 
-    if (args.q) query = { where: { text: { $like: args.q } } }
+    if (q) query = { where: { text: { $like: q } } }
 
-    return {
-      query
-    }
-  },
-  resolve: async (parent, { query }, { commentService }) => {
     return commentService.count(query)
   }
 }

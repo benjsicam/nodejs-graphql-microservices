@@ -1,19 +1,19 @@
-import { omit } from 'lodash'
-
 import CommentHooks from './comment.hooks'
+import PostHooks from './post.hooks'
 import UserHooks from './user.hooks'
 
 class HooksRegistry {
-  constructor(services, logger) {
-    this._eventsBus = services.eventsBus
+  constructor(services, pubsub, logger) {
+    this._services = services
+    this._pubsub = pubsub
     this._logger = logger
-    this._services = omit(services, ['eventsBus'])
   }
 
   async register() {
     this._hooks = {
-      user: new UserHooks(this._eventsBus, this._services, this._logger),
-      comment: new CommentHooks(this._eventsBus, this._services, this._logger)
+      comment: new CommentHooks(this._services, this._pubsub, this._logger),
+      post: new PostHooks(this._services, this._pubsub, this._logger),
+      user: new UserHooks(this._services, this._pubsub, this._logger)
     }
 
     return this._hooks
