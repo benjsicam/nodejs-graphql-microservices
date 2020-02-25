@@ -160,7 +160,7 @@ describe('Database Testing', () => {
         return comment.toJSON()
       }))
 
-      const { list } = await repo.findAll({
+      const { list } = await repo.find({
         req: {
           query: JSON.stringify({})
         },
@@ -208,7 +208,7 @@ describe('Database Testing', () => {
         return comment.toJSON()
       }))
 
-      const { list } = await repo.findAll({
+      const { list } = await repo.find({
         req: {
           query: JSON.stringify({
             where: {

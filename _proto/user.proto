@@ -27,15 +27,17 @@ message UpdateUserInput {
   User data = 2;
 }
 
-message UserList {
-  repeated User list = 1;
+message FindUsersPayload {
+  repeated User results = 1;
+  commons.PageInfo pageInfo = 2;
 }
 
 service UserService {
-  rpc findAll (commons.Query) returns (UserList) {}
+  rpc find (commons.Query) returns (FindUsersPayload) {}
+  rpc findById (commons.Id) returns (User) {}
   rpc findOne (commons.Query) returns (User) {}
   rpc count (commons.Query) returns (commons.Count) {}
   rpc create (CreateUserInput) returns (User) {}
   rpc update (UpdateUserInput) returns (User) {}
-  rpc destroy (commons.Id) returns (commons.Count) {}
+  rpc destroy (commons.Query) returns (commons.Count) {}
 }

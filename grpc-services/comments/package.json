@@ -47,7 +47,8 @@
     "pg": "^7.18.1",
     "pg-hstore": "^2.3.3",
     "pino": "^5.16.0",
-    "sequelize": "^5.21.3"
+    "sequelize": "^5.21.3",
+    "sequelize-cursor-pagination": "^1.7.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",

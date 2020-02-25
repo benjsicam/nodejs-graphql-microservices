@@ -64,7 +64,8 @@ const main = async () => {
   const cacheMiddleware = new CacheMiddleware(cacheService, logger)
 
   const CommentService = {
-    findAll: [cacheMiddleware.find('comments'), repo.findAll.bind(repo)],
+    find: [cacheMiddleware.find('comments'), repo.find.bind(repo)],
+    findById: [cacheMiddleware.read('comments'), repo.findById.bind(repo)],
     findOne: [cacheMiddleware.read('comments'), repo.findOne.bind(repo)],
     count: repo.count.bind(repo),
     create: [cacheMiddleware.write('comments'), repo.create.bind(repo)],

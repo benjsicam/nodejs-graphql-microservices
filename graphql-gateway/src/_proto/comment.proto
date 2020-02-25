@@ -25,15 +25,16 @@ message UpdateCommentInput {
   Comment data = 2;
 }
 
-message CommentList {
-  repeated Comment list = 1;
+message FindCommentsPayload {
+  repeated Comment results = 1;
+  commons.PageInfo pageInfo = 2;
 }
 
 service CommentService {
-  rpc findAll (commons.Query) returns (CommentList) {}
+  rpc find (commons.Query) returns (FindCommentsPayload) {}
   rpc findOne (commons.Query) returns (Comment) {}
   rpc count (commons.Query) returns (commons.Count) {}
   rpc create (CreateCommentInput) returns (Comment) {}
   rpc update (UpdateCommentInput) returns (Comment) {}
-  rpc destroy (commons.Id) returns (commons.Count) {}
+  rpc destroy (commons.Query) returns (commons.Count) {}
 }

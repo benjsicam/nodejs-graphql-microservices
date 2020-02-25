@@ -1,30 +1,49 @@
+import { isEmpty } from 'lodash'
+
 class AbstractCrudRepository {
   constructor(model) {
     this._model = model
   }
 
-  async findAll({ req, response }) {
-    const query = Buffer.from(req.query)
+  async find({ req, response }) {
+    const { results, cursors } = await this._model.findAndPaginate({
+      attributes: !isEmpty(req.select) ? req.select : undefined,
+      where: !isEmpty(req.where) ? req.where : undefined,
+      order: !isEmpty(req.orderBy) ? req.orderBy : undefined,
+      limit: req.limit ? req.limit : 25,
+      before: !isEmpty(req.before) ? req.before : undefined,
+      after: !isEmpty(req.after) ? req.after : undefined,
+      raw: true,
+      paranoid: false
+    })
 
-    const result = await this._model.findAll(
-      Object.assign(JSON.parse(query.toString()), {
-        raw: true
-      })
-    )
+    response.res = {
+      results,
+      pageInfo: {
+        startCursor: cursors.before || '',
+        endCursor: cursors.after || '',
+        hasNextPage: cursors.hasNext || false,
+        hasPreviousPage: cursors.hasPrevious || false
+      }
+    }
 
-    response.res = { list: result }
+    return response.res
+  }
+
+  async findById({ req, response }) {
+    const result = await this._model.findByPk(req.id)
+
+    response.res = result
 
     return response.res
   }
 
   async findOne({ req, response }) {
-    const query = Buffer.from(req.query)
-
-    const result = await this._model.findOne(
-      Object.assign(JSON.parse(query.toString()), {
-        raw: true
-      })
-    )
+    const result = await this._model.findOne({
+      attributes: !isEmpty(req.select) ? req.select : undefined,
+      where: !isEmpty(req.where) ? req.where : undefined,
+      raw: true
+    })
 
     response.res = result
 
@@ -32,9 +51,9 @@ class AbstractCrudRepository {
   }
 
   async count({ req, response }) {
-    const query = Buffer.from(req.query)
-
-    const count = await this._model.count(JSON.parse(query.toString()))
+    const count = await this._model.count({
+      where: !isEmpty(req.where) ? req.where : undefined
+    })
 
     response.res = { count }
 
@@ -50,17 +69,15 @@ class AbstractCrudRepository {
   }
 
   async update({ req, response }) {
-    await this._model.update(req.data, {
+    const model = await this._model.findOne({
       where: {
         id: req.id
       }
     })
 
-    const result = await this._model.findOne({
-      where: {
-        id: req.id
-      }
-    })
+    model.set(req.data)
+
+    const result = await model.save()
 
     response.res = result
 
@@ -69,9 +86,7 @@ class AbstractCrudRepository {
 
   async destroy({ req, response }) {
     const count = await this._model.destroy({
-      where: {
-        id: req.id
-      }
+      where: !isEmpty(req.where) ? req.where : undefined
     })
 
     response.res = { count }

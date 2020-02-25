@@ -11,7 +11,7 @@ class CacheMiddleware {
   find(prefix) {
     return async ({ req, response }, next) => {
       const hash = crypto.createHash('sha1')
-      const key = hash.update(req.query).digest('hex')
+      const key = hash.update(req).digest('hex')
 
       this._logger.info('CacheMiddleware#find.key', `${prefix}-find-${key}`)
 
@@ -38,7 +38,7 @@ class CacheMiddleware {
   read(prefix) {
     return async ({ req, response }, next) => {
       const hash = crypto.createHash('sha1')
-      const key = hash.update(req.query).digest('hex')
+      const key = hash.update(req).digest('hex')
 
       this._logger.info('CacheMiddleware#read.key', `${prefix}-read-${key}`)
 

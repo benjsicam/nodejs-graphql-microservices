@@ -8,10 +8,10 @@ message SendMailInput {
   bytes data = 3;
 }
 
-message SendMailOutput {
+message SendMailPayload {
   bool isSent = 1;
 }
 
 service MailerService {
-  rpc send (SendMailInput) returns (SendMailOutput) {}
+  rpc send (SendMailInput) returns (SendMailPayload) {}
 }

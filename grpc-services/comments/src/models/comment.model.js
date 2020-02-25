@@ -1,13 +1,15 @@
 import * as Sequelize from 'sequelize'
 
+import { withPagination } from 'sequelize-cursor-pagination'
+
 export default function(sequelize, DataTypes) {
-  return sequelize.define(
+  const Model = sequelize.define(
     'comment',
     {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
-        defaultValue: Sequelize.UUIDV4,
+        defaultValue: Sequelize.UUIDV1,
         comment: 'The comment id.'
       },
       text: {
@@ -31,4 +33,9 @@ export default function(sequelize, DataTypes) {
       version: true
     }
   )
+
+  withPagination({
+    methodName: 'paginate',
+    primaryKeyField: 'id'
+  })(Model)
 }

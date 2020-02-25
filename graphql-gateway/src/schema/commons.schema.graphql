@@ -10,8 +10,8 @@ type ErrorPayload {
 }
 
 type PageInfo {
-  hasPreviousPage: Boolean!
-  hasNextPage: Boolean!
   startCursor: String!
   endCursor: String!
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
 }

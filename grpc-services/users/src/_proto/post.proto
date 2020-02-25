@@ -27,15 +27,16 @@ message UpdatePostInput {
   Post data = 2;
 }
 
-message PostList {
-  repeated Post list = 1;
+message FindPostsPayload {
+  repeated Post results = 1;
+  commons.PageInfo pageInfo = 2;
 }
 
 service PostService {
-  rpc findAll (commons.Query) returns (PostList) {}
+  rpc find (commons.Query) returns (FindPostsPayload) {}
   rpc findOne (commons.Query) returns (Post) {}
   rpc count (commons.Query) returns (commons.Count) {}
   rpc create (CreatePostInput) returns (Post) {}
   rpc update (UpdatePostInput) returns (Post) {}
-  rpc destroy (commons.Id) returns (commons.Count) {}
+  rpc destroy (commons.Query) returns (commons.Count) {}
 }
