@@ -1,6 +1,6 @@
 class CommentHooks {
   constructor(services, pubsub, logger) {
-    this._eventBus = services.eventsBus
+    this._eventsBus = services.eventsBus
     this._pubsub = pubsub
     this._logger = logger
 

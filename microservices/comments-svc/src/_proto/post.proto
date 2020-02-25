@@ -15,6 +15,11 @@ message Post {
   int32 version = 8;
 }
 
+message PostEdge {
+  Post node = 1;
+  string cursor = 2;
+}
+
 message CreatePostInput {
   string title = 2;
   string body = 3;
@@ -28,7 +33,7 @@ message UpdatePostInput {
 }
 
 message FindPostsPayload {
-  repeated Post results = 1;
+  repeated PostEdge edges = 1;
   commons.PageInfo pageInfo = 2;
 }
 

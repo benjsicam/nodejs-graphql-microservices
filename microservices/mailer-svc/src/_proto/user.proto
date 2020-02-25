@@ -15,6 +15,11 @@ message User {
   int32 version = 8;
 }
 
+message UserEdge {
+  User node = 1;
+  string cursor = 2;
+}
+
 message CreateUserInput {
   string name = 1;
   string email = 2;
@@ -28,7 +33,7 @@ message UpdateUserInput {
 }
 
 message FindUsersPayload {
-  repeated User results = 1;
+  repeated UserEdge edges = 1;
   commons.PageInfo pageInfo = 2;
 }
 

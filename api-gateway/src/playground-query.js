@@ -69,9 +69,19 @@ mutation createPost {
         id
         name
       }
-      comments {
-        id
-        text
+      comments(first: 50) {
+        edges {
+          node {
+            id
+            text
+          }
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
       }
     }
   }
@@ -97,9 +107,19 @@ mutation updatePost {
         id
         name
       }
-      comments {
-        id
-        text
+      comments(first: 50) {
+        edges {
+          node {
+            id
+            text
+          }
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
       }
     }
   }
@@ -172,164 +192,310 @@ query me {
     createdAt
     updatedAt
     version
-    posts {
-      id
-      title
-      body
+    posts(first: 50) {
+      edges {
+        node {
+          id
+          title
+          body
+        }
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
     }
-    comments {
-      id
-      text
-    }
-  }
-}
-
-query myPosts {
-  myPosts {
-    id
-    title
-    body
-    createdAt
-    updatedAt
-    version
-  }
-}
-
-query findEverything {
-  users: users {
-    id
-    name
-    email
-    age
-    createdAt
-    updatedAt
-    version
-  }
-  posts: posts {
-    id
-    title
-    body
-    published
-    createdAt
-    updatedAt
-    version
-  }
-  comments: comments {
-    id
-    text
-    createdAt
-    updatedAt
-    version
-  }
-}
-
-query findUsers {
-  users {
-    id
-    name
-    email
-    age
-    createdAt
-    updatedAt
-    version
-  }
-}
-
-query findPosts {
-  posts {
-    id
-    title
-    body
-    published
-    createdAt
-    updatedAt
-    version
-  }
-}
-
-query findComments {
-  comments {
-    id
-    text
-    createdAt
-    updatedAt
-    version
-  }
-}
-
-query findUsersIncludingPostsAndComments {
-  users {
-    id
-    name
-    email
-    age
-    createdAt
-    updatedAt
-    version
-    posts {
-      id
-      title
-      body
-      published
-      createdAt
-      updatedAt
-      version
-    }
-    comments {
-      id
-      text
-      createdAt
-      updatedAt
-      version
-    }
-  }
-}
-
-query findPostsIncludingCommentsWithAuthor {
-  posts {
-    id
-    title
-    body
-    published
-    createdAt
-    updatedAt
-    version
-    author {
-      id
-      name
-      createdAt
-      updatedAt
-      version
-    }
-    comments {
-      id
-      text
-      author {
-        id
-        name
-        createdAt
-        updatedAt
-        version
+    comments(first: 50) {
+      edges {
+        node {
+          id
+          text
+        }
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
       }
     }
   }
 }
 
+query myPosts {
+  myPosts(first: 50) {
+    edges {
+      node {
+        id
+        title
+        body
+        createdAt
+        updatedAt
+        version
+      }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}
+
+query findEverything {
+  users: users(first: 50) {
+    edges {
+      node {
+        id
+        name
+        email
+        age
+        createdAt
+        updatedAt
+        version
+      }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+  posts: posts(first: 50) {
+    edges {
+      node {
+        id
+        title
+        body
+        published
+        createdAt
+        updatedAt
+        version
+      }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+  comments: comments(first: 50) {
+    edges {
+      node {
+        id
+        text
+        createdAt
+        updatedAt
+        version
+      }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}
+
+query findUsers {
+  users(first: 50) {
+    edges {
+      node {
+        id
+        name
+        email
+        age
+        createdAt
+        updatedAt
+        version
+      }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}
+
+query findPosts {
+  posts(first: 50) {
+    edges {
+      node {
+        id
+        title
+        body
+        published
+        createdAt
+        updatedAt
+        version
+      }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}
+
+query findComments {
+  comments(first: 50) {
+    edges {
+      node {
+        id
+        text
+        createdAt
+        updatedAt
+        version
+      }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}
+
+query findUsersIncludingPostsAndComments {
+  users(first: 50) {
+    edges {
+      node {
+        id
+        name
+        email
+        age
+        createdAt
+        updatedAt
+        version
+        posts(first: 50) {
+          edges {
+            node {
+              id
+              title
+              body
+              published
+              createdAt
+              updatedAt
+              version
+            }
+          }
+          pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+          }
+        }
+        comments(first: 50) {
+          edges {
+            node {
+              id
+              text
+              createdAt
+              updatedAt
+              version
+            }
+          }
+          pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+          }
+        }
+      }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}
+
+query findPostsIncludingCommentsWithAuthor {
+  posts(first: 50) {
+    edges {
+      node {
+        id
+        title
+        body
+        published
+        createdAt
+        updatedAt
+        version
+        author {
+          id
+          name
+          createdAt
+          updatedAt
+          version
+        }
+        comments(first: 50) {
+          edges {
+            node {
+              id
+              text
+              createdAt
+              updatedAt
+              version
+            }
+          }
+          pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+          }
+        }
+      }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}
+
 query findCommentsIncludingAuthor {
-  comments {
-    id
-    text
-    createdAt
-    updatedAt
-    version
-    author {
-      id
-      name
-      email
-      age
-      createdAt
-      updatedAt
-      version
+  comments(first: 50) {
+    edges {
+      node {
+        id
+        text
+        createdAt
+        updatedAt
+        version
+        author {
+          id
+          name
+          email
+          age
+          createdAt
+          updatedAt
+          version
+        }
+      }
+    }
+    pageInfo {
+      startCursor
+      endCursor
+      hasNextPage
+      hasPreviousPage
     }
   }
 }

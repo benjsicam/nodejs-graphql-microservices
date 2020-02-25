@@ -4,7 +4,7 @@ import { isString } from 'lodash'
 
 const updateComment = {
   authenticate: true,
-  authorize: async ({ id, user }, { commentService }) => {
+  authorize: async (parent, { id, user }, { commentService }) => {
     const count = await commentService.count({ where: { id, author: user } })
 
     if (count <= 0) {

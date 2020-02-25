@@ -4,7 +4,7 @@ import { isString, isBoolean } from 'lodash'
 
 const updatePost = {
   authenticate: true,
-  authorize: async ({ id, user }, { postService }) => {
+  authorize: async (parent, { id, user }, { postService }) => {
     const count = await postService.count({ where: { id, author: user } })
 
     if (count <= 0) {

@@ -1,4 +1,5 @@
-import { isEmpty } from 'lodash'
+import Aigle from 'aigle'
+import { isEmpty, isNil } from 'lodash'
 
 class AbstractCrudRepository {
   constructor(model) {
@@ -10,7 +11,7 @@ class AbstractCrudRepository {
       attributes: !isEmpty(req.select) ? req.select : undefined,
       where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined,
       order: !isEmpty(req.orderBy) ? JSON.parse(req.orderBy) : undefined,
-      limit: req.limit ? req.limit : 25,
+      limit: !isNil(req.limit) ? req.limit : 25,
       before: !isEmpty(req.before) ? req.before : undefined,
       after: !isEmpty(req.after) ? req.after : undefined,
       raw: true,
@@ -18,7 +19,12 @@ class AbstractCrudRepository {
     })
 
     response.res = {
-      results,
+      edges: await Aigle.map(results, async node => {
+        return {
+          node,
+          cursor: Buffer.from(JSON.stringify([node.id])).toString('base64')
+        }
+      }),
       pageInfo: {
         startCursor: cursors.before || '',
         endCursor: cursors.after || '',
@@ -41,7 +47,7 @@ class AbstractCrudRepository {
   async findOne({ req, response }) {
     const result = await this._model.findOne({
       attributes: !isEmpty(req.select) ? req.select : undefined,
-      where: !isEmpty(req.where) ? req.where : undefined,
+      where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined,
       raw: true
     })
 
@@ -52,7 +58,7 @@ class AbstractCrudRepository {
 
   async count({ req, response }) {
     const count = await this._model.count({
-      where: !isEmpty(req.where) ? req.where : undefined
+      where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined
     })
 
     response.res = { count }
@@ -86,7 +92,7 @@ class AbstractCrudRepository {
 
   async destroy({ req, response }) {
     const count = await this._model.destroy({
-      where: !isEmpty(req.where) ? req.where : undefined
+      where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined
     })
 
     response.res = { count }

@@ -1,5 +1,3 @@
-import crypto from 'crypto'
-
 import { isEmpty } from 'lodash'
 
 class CacheMiddleware {
@@ -10,8 +8,7 @@ class CacheMiddleware {
 
   find(prefix) {
     return async ({ req, response }, next) => {
-      const hash = crypto.createHash('sha1')
-      const key = hash.update(JSON.stringify(req)).digest('hex')
+      const key = Buffer.from(JSON.stringify(req)).toString('base64')
 
       this._logger.info('CacheMiddleware#find.key', `${prefix}-find-${key}`)
 
@@ -37,8 +34,7 @@ class CacheMiddleware {
 
   read(prefix) {
     return async ({ req, response }, next) => {
-      const hash = crypto.createHash('sha1')
-      const key = hash.update(JSON.stringify(req)).digest('hex')
+      const key = Buffer.from(JSON.stringify(req)).toString('base64')
 
       this._logger.info('CacheMiddleware#read.key', `${prefix}-read-${key}`)
 

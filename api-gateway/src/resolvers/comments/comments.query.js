@@ -7,10 +7,12 @@ const comments = {
 
     if (!isEmpty(q)) Object.assign(query, { where: { text: { $like: q } } })
 
+    if (!isNil(first)) Object.assign(query, { limit: first })
+
     if (!isEmpty(after)) {
-      Object.assign(query, { after, limit: !isNil(first) ? first : 25 })
+      Object.assign(query, { after, limit: first })
     } else if (!isEmpty(before)) {
-      Object.assign(query, { before, limit: !isNil(last) ? last : 25 })
+      Object.assign(query, { before, limit: last })
     }
 
     return commentService.find(query)

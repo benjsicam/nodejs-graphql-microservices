@@ -1,6 +1,6 @@
 import Aigle from 'aigle'
 
-import { isEmpty } from 'lodash'
+import { isEmpty, isNil } from 'lodash'
 
 class AbstractCrudService {
   constructor(serviceName, client, logger) {
@@ -12,27 +12,27 @@ class AbstractCrudService {
   async find(query) {
     this._logger.info(`${this._serviceName}#find.call`, query)
 
-    const result = await this._client.findAsync({
+    const { edges, pageInfo } = await this._client.findAsync({
       select: !isEmpty(query.select) ? query.select : undefined,
       where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined,
       orderBy: !isEmpty(query.orderBy) ? JSON.stringify(query.orderBy) : undefined,
-      limit: query.limit ? query.limit : 25,
+      limit: !isNil(query.limit) ? query.limit : 25,
       before: !isEmpty(query.before) ? query.before : undefined,
       after: !isEmpty(query.after) ? query.after : undefined
     })
 
-    this._logger.info(`${this._serviceName}#find.result`, result)
+    this._logger.info(`${this._serviceName}#find.result`, edges, pageInfo)
 
-    return result
+    return {
+      edges,
+      pageInfo
+    }
   }
 
-  async findById(query) {
-    this._logger.info(`${this._serviceName}#findById.call`, query)
+  async findById(id) {
+    this._logger.info(`${this._serviceName}#findById.call`, { id })
 
-    const result = await this._client.findByIdAsync({
-      select: !isEmpty(query.select) ? query.select : undefined,
-      where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined
-    })
+    const result = await this._client.findByIdAsync({ id })
 
     this._logger.info(`${this._serviceName}#findById.result`, result)
 

@@ -14,6 +14,11 @@ message Comment {
   int32 version = 7;
 }
 
+message CommentEdge {
+  Comment node = 1;
+  string cursor = 2;
+}
+
 message CreateCommentInput {
   string text = 1;
   string author = 2;
@@ -26,7 +31,7 @@ message UpdateCommentInput {
 }
 
 message FindCommentsPayload {
-  repeated Comment results = 1;
+  repeated CommentEdge edges = 1;
   commons.PageInfo pageInfo = 2;
 }
 
