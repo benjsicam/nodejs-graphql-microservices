@@ -1,40 +1,49 @@
+import { isEmpty } from 'lodash'
+
 class AbstractCrudRepository {
-  constructor(serviceName, model, logger) {
-    this._serviceName = serviceName
+  constructor(model) {
     this._model = model
-    this._logger = logger
   }
 
-  async findAll({ req, response }) {
-    this._logger.info(`${this._serviceName}#findAll.call`, req)
+  async find({ req, response }) {
+    const { results, cursors } = await this._model.findAndPaginate({
+      attributes: !isEmpty(req.select) ? req.select : undefined,
+      where: !isEmpty(req.where) ? req.where : undefined,
+      order: !isEmpty(req.orderBy) ? req.orderBy : undefined,
+      limit: req.limit ? req.limit : 25,
+      before: !isEmpty(req.before) ? req.before : undefined,
+      after: !isEmpty(req.after) ? req.after : undefined,
+      raw: true,
+      paranoid: false
+    })
 
-    const query = Buffer.from(req.query)
+    response.res = {
+      results,
+      pageInfo: {
+        startCursor: cursors.before || '',
+        endCursor: cursors.after || '',
+        hasNextPage: cursors.hasNext || false,
+        hasPreviousPage: cursors.hasPrevious || false
+      }
+    }
 
-    const result = await this._model.findAll(
-      Object.assign(JSON.parse(query.toString()), {
-        raw: true
-      })
-    )
+    return response.res
+  }
 
-    this._logger.info(`${this._serviceName}#findAll.result`, { list: result })
+  async findById({ req, response }) {
+    const result = await this._model.findByPk(req.id)
 
-    response.res = { list: result }
+    response.res = result
 
     return response.res
   }
 
   async findOne({ req, response }) {
-    this._logger.info(`${this._serviceName}#findOne.call`, req)
-
-    const query = Buffer.from(req.query)
-
-    const result = await this._model.findOne(
-      Object.assign(JSON.parse(query.toString()), {
-        raw: true
-      })
-    )
-
-    this._logger.info(`${this._serviceName}#findOne.result`, result)
+    const result = await this._model.findOne({
+      attributes: !isEmpty(req.select) ? req.select : undefined,
+      where: !isEmpty(req.where) ? req.where : undefined,
+      raw: true
+    })
 
     response.res = result
 
@@ -42,13 +51,9 @@ class AbstractCrudRepository {
   }
 
   async count({ req, response }) {
-    this._logger.info(`${this._serviceName}#count.call`, req)
-
-    const query = Buffer.from(req.query)
-
-    const count = await this._model.count(JSON.parse(query.toString()))
-
-    this._logger.info(`${this._serviceName}#count.result`, { count })
+    const count = await this._model.count({
+      where: !isEmpty(req.where) ? req.where : undefined
+    })
 
     response.res = { count }
 
@@ -56,11 +61,7 @@ class AbstractCrudRepository {
   }
 
   async create({ req, response }) {
-    this._logger.info(`${this._serviceName}#create.call`, req)
-
     const result = await this._model.create(req)
-
-    this._logger.info(`${this._serviceName}#create.result`, result)
 
     response.res = result
 
@@ -68,21 +69,15 @@ class AbstractCrudRepository {
   }
 
   async update({ req, response }) {
-    this._logger.info(`${this._serviceName}#update.call`, req)
-
-    await this._model.update(req.data, {
+    const model = await this._model.findOne({
       where: {
         id: req.id
       }
     })
 
-    const result = await this._model.findOne({
-      where: {
-        id: req.id
-      }
-    })
+    model.set(req.data)
 
-    this._logger.info(`${this._serviceName}#update.result`, result)
+    const result = await model.save()
 
     response.res = result
 
@@ -90,15 +85,9 @@ class AbstractCrudRepository {
   }
 
   async destroy({ req, response }) {
-    this._logger.info(`${this._serviceName}#destroy.call`, req)
-
     const count = await this._model.destroy({
-      where: {
-        id: req.id
-      }
+      where: !isEmpty(req.where) ? req.where : undefined
     })
-
-    this._logger.info(`${this._serviceName}#destroy.result`, { count })
 
     response.res = { count }
 

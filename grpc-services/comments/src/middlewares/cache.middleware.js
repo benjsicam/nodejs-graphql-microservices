@@ -10,10 +10,8 @@ class CacheMiddleware {
 
   find(prefix) {
     return async ({ req, response }, next) => {
-      this._logger.info('CacheMiddleware#find.call')
-
       const hash = crypto.createHash('sha1')
-      const key = hash.update(req.query).digest('hex')
+      const key = hash.update(req).digest('hex')
 
       this._logger.info('CacheMiddleware#find.key', `${prefix}-find-${key}`)
 
@@ -39,10 +37,8 @@ class CacheMiddleware {
 
   read(prefix) {
     return async ({ req, response }, next) => {
-      this._logger.info('CacheMiddleware#read.call')
-
       const hash = crypto.createHash('sha1')
-      const key = hash.update(req.query).digest('hex')
+      const key = hash.update(req).digest('hex')
 
       this._logger.info('CacheMiddleware#read.key', `${prefix}-read-${key}`)
 
@@ -68,8 +64,6 @@ class CacheMiddleware {
 
   write(prefix) {
     return async (ctx, next) => {
-      this._logger.info('CacheMiddleware#write.call')
-
       await next()
 
       return this._cacheService.flush(`${prefix}*`)
@@ -78,8 +72,6 @@ class CacheMiddleware {
 
   remove(prefix) {
     return async ({ response }, next) => {
-      this._logger.info('CacheMiddleware#remove.call')
-
       await next()
 
       if (response.res.count > 0) {

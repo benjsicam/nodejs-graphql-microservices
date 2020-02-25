@@ -2,13 +2,13 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: graphql-gateway
+  name: api-gateway
   namespace: dev
   labels:
-    app: graphql-gateway
+    app: api-gateway
 spec:
   selector:
-    app: graphql-gateway
+    app: api-gateway
   ports:
     - name: http
       port: 80
@@ -18,7 +18,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: graphql-gateway
+  name: api-gateway
   namespace: dev
   annotations:
     kubernetes.io/ingress.class: "nginx"
@@ -42,6 +42,6 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: graphql-gateway
+          serviceName: api-gateway
           servicePort: http
         path: /
