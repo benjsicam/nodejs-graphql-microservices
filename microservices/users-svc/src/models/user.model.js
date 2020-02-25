@@ -1,13 +1,14 @@
+import paginate from 'sequelize-cursor-pagination'
 import * as Sequelize from 'sequelize'
 
 export default function(sequelize, DataTypes) {
-  return sequelize.define(
+  const model = sequelize.define(
     'user',
     {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
-        defaultValue: Sequelize.UUIDV4,
+        defaultValue: Sequelize.UUIDV1,
         comment: 'The user id.'
       },
       name: {
@@ -35,4 +36,11 @@ export default function(sequelize, DataTypes) {
       version: true
     }
   )
+
+  paginate({
+    methodName: 'findAndPaginate',
+    primaryKeyField: 'id'
+  })(model)
+
+  return model
 }
