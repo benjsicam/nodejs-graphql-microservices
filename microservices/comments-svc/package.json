@@ -1,0 +1,109 @@
+{
+  "name": "comments-svc",
+  "version": "1.0.0",
+  "description": "gRPC microservice back-end for comments. Used for learning/trial purposes only.",
+  "scripts": {
+    "lint": "eslint --max-warnings=0 ./src",
+    "lint:fix": "eslint --fix ./src",
+    "compile": "rimraf dist && babel src --out-dir dist -s inline --copy-files",
+    "compile:test": "rimraf dist-test && babel src --out-dir dist-test/src -s inline --copy-files && babel test --out-dir dist-test/test -s inline --copy-files",
+    "build:compose": "docker-compose -f docker-compose.test.yaml build",
+    "start": "nodemon --exec babel-node ./src/index.js",
+    "test": "jest --detectOpenHandles",
+    "test:compose": "docker-compose -f docker-compose.test.yaml run --rm comments-svc npm test",
+    "e2e:local": "npm run lint:fix && npm run compile && npm test",
+    "e2e:compose": "npm run lint:fix && npm run compile:test && npm run build:compose && npm run test:compose",
+    "copy:protos": "cpy ../../_proto ./src/_proto",
+    "precommit": "npm run lint:fix",
+    "prepush": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benjsicam/node-graphql-microservices.git"
+  },
+  "keywords": [
+    "graphql",
+    "microservices",
+    "grpc"
+  ],
+  "author": "Benj Sicam",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benjsicam/node-graphql-microservices/issues"
+  },
+  "homepage": "https://github.com/benjsicam/node-graphql-microservices#readme",
+  "dependencies": {
+    "@babel/runtime": "^7.8.4",
+    "@grpc/proto-loader": "^0.5.3",
+    "@malijs/logger": "^0.5.0",
+    "@malijs/onerror": "^0.3.1",
+    "core-js": "^3.6.4",
+    "glob": "^7.1.6",
+    "grpc": "^1.24.2",
+    "grpc-health-check": "^1.7.0",
+    "ioredis": "^4.16.0",
+    "lodash": "^4.17.15",
+    "mali": "^0.20.0",
+    "pg": "^7.18.2",
+    "pg-hstore": "^2.3.3",
+    "pino": "^5.16.0",
+    "sequelize": "^5.21.5",
+    "sequelize-cursor-pagination": "^1.7.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/node": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "babel-eslint": "^10.0.3",
+    "babel-jest": "^25.1.0",
+    "babel-plugin-inline-dotenv": "^1.5.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "cpy-cli": "^3.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jest": "^23.8.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "faker": "^4.1.0",
+    "jest-extended": "^0.11.5",
+    "nodemon": "^2.0.2",
+    "pino-pretty": "^3.6.0",
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.2"
+  },
+  "jest": {
+    "globals": {},
+    "testRegex": "test/*.+(test.js)",
+    "setupFilesAfterEnv": [
+      "jest-extended"
+    ],
+    "collectCoverage": true,
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    },
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/app.js",
+      "!src/db.js",
+      "!src/index.js",
+      "!src/logger.js",
+      "!src/main.js",
+      "!src/models/*.js",
+      "!src/services/health-check.service.js",
+      "!**/node_modules/**"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "node"
+    ],
+    "testEnvironment": "node"
+  }
+}
