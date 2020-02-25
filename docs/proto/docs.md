@@ -5,8 +5,8 @@
 
 - [comment.proto](#comment.proto)
     - [Comment](#comment.Comment)
-    - [CommentList](#comment.CommentList)
     - [CreateCommentInput](#comment.CreateCommentInput)
+    - [FindCommentsPayload](#comment.FindCommentsPayload)
     - [UpdateCommentInput](#comment.UpdateCommentInput)
   
   
@@ -17,16 +17,26 @@
 - [commons.proto](#commons.proto)
     - [Count](#commons.Count)
     - [Id](#commons.Id)
+    - [PageInfo](#commons.PageInfo)
     - [Query](#commons.Query)
   
   
   
   
 
+- [mailer.proto](#mailer.proto)
+    - [SendMailInput](#mailer.SendMailInput)
+    - [SendMailPayload](#mailer.SendMailPayload)
+  
+  
+  
+    - [MailerService](#mailer.MailerService)
+  
+
 - [post.proto](#post.proto)
     - [CreatePostInput](#post.CreatePostInput)
+    - [FindPostsPayload](#post.FindPostsPayload)
     - [Post](#post.Post)
-    - [PostList](#post.PostList)
     - [UpdatePostInput](#post.UpdatePostInput)
   
   
@@ -36,9 +46,9 @@
 
 - [user.proto](#user.proto)
     - [CreateUserInput](#user.CreateUserInput)
+    - [FindUsersPayload](#user.FindUsersPayload)
     - [UpdateUserInput](#user.UpdateUserInput)
     - [User](#user.User)
-    - [UserList](#user.UserList)
   
   
   
@@ -77,21 +87,6 @@
 
 
 
-<a name="comment.CommentList"></a>
-
-### CommentList
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| list | [Comment](#comment.Comment) | repeated |  |
-
-
-
-
-
-
 <a name="comment.CreateCommentInput"></a>
 
 ### CreateCommentInput
@@ -103,6 +98,22 @@
 | text | [string](#string) |  |  |
 | author | [string](#string) |  |  |
 | post | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="comment.FindCommentsPayload"></a>
+
+### FindCommentsPayload
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| results | [Comment](#comment.Comment) | repeated |  |
+| pageInfo | [commons.PageInfo](#commons.PageInfo) |  |  |
 
 
 
@@ -138,12 +149,13 @@
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| findAll | [.commons.Query](#commons.Query) | [CommentList](#comment.CommentList) |  |
+| find | [.commons.Query](#commons.Query) | [FindCommentsPayload](#comment.FindCommentsPayload) |  |
+| findById | [.commons.Id](#commons.Id) | [Comment](#comment.Comment) |  |
 | findOne | [.commons.Query](#commons.Query) | [Comment](#comment.Comment) |  |
 | count | [.commons.Query](#commons.Query) | [.commons.Count](#commons.Count) |  |
 | create | [CreateCommentInput](#comment.CreateCommentInput) | [Comment](#comment.Comment) |  |
 | update | [UpdateCommentInput](#comment.UpdateCommentInput) | [Comment](#comment.Comment) |  |
-| destroy | [.commons.Id](#commons.Id) | [.commons.Count](#commons.Count) |  |
+| destroy | [.commons.Query](#commons.Query) | [.commons.Count](#commons.Count) |  |
 
  
 
@@ -186,6 +198,24 @@
 
 
 
+<a name="commons.PageInfo"></a>
+
+### PageInfo
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| startCursor | [string](#string) |  |  |
+| endCursor | [string](#string) |  |  |
+| hasNextPage | [bool](#bool) |  |  |
+| hasPreviousPage | [bool](#bool) |  |  |
+
+
+
+
+
+
 <a name="commons.Query"></a>
 
 ### Query
@@ -194,7 +224,12 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| query | [string](#string) |  | Should&#39;ve been google.protobuf.Struct type but still not supported https://groups.google.com/d/msg/protobuf/1772tpAr3N4/pngSAwmIBgAJ |
+| select | [string](#string) | repeated |  |
+| where | [string](#string) |  |  |
+| orderBy | [string](#string) |  |  |
+| limit | [int32](#int32) |  |  |
+| before | [string](#string) |  |  |
+| after | [string](#string) |  |  |
 
 
 
@@ -205,6 +240,64 @@
  
 
  
+
+ 
+
+
+
+<a name="mailer.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## mailer.proto
+
+
+
+<a name="mailer.SendMailInput"></a>
+
+### SendMailInput
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| template | [string](#string) |  |  |
+| to | [string](#string) |  |  |
+| data | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="mailer.SendMailPayload"></a>
+
+### SendMailPayload
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| isSent | [bool](#bool) |  |  |
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+<a name="mailer.MailerService"></a>
+
+### MailerService
+
+
+| Method Name | Request Type | Response Type | Description |
+| ----------- | ------------ | ------------- | ------------|
+| send | [SendMailInput](#mailer.SendMailInput) | [SendMailPayload](#mailer.SendMailPayload) |  |
 
  
 
@@ -235,6 +328,22 @@
 
 
 
+<a name="post.FindPostsPayload"></a>
+
+### FindPostsPayload
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| results | [Post](#post.Post) | repeated |  |
+| pageInfo | [commons.PageInfo](#commons.PageInfo) |  |  |
+
+
+
+
+
+
 <a name="post.Post"></a>
 
 ### Post
@@ -251,21 +360,6 @@
 | createdAt | [string](#string) |  |  |
 | updatedAt | [string](#string) |  |  |
 | version | [int32](#int32) |  |  |
-
-
-
-
-
-
-<a name="post.PostList"></a>
-
-### PostList
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| list | [Post](#post.Post) | repeated |  |
 
 
 
@@ -301,12 +395,13 @@
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| findAll | [.commons.Query](#commons.Query) | [PostList](#post.PostList) |  |
+| find | [.commons.Query](#commons.Query) | [FindPostsPayload](#post.FindPostsPayload) |  |
+| findById | [.commons.Id](#commons.Id) | [Post](#post.Post) |  |
 | findOne | [.commons.Query](#commons.Query) | [Post](#post.Post) |  |
 | count | [.commons.Query](#commons.Query) | [.commons.Count](#commons.Count) |  |
 | create | [CreatePostInput](#post.CreatePostInput) | [Post](#post.Post) |  |
 | update | [UpdatePostInput](#post.UpdatePostInput) | [Post](#post.Post) |  |
-| destroy | [.commons.Id](#commons.Id) | [.commons.Count](#commons.Count) |  |
+| destroy | [.commons.Query](#commons.Query) | [.commons.Count](#commons.Count) |  |
 
  
 
@@ -331,6 +426,22 @@
 | email | [string](#string) |  |  |
 | password | [string](#string) |  |  |
 | age | [int32](#int32) |  |  |
+
+
+
+
+
+
+<a name="user.FindUsersPayload"></a>
+
+### FindUsersPayload
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| results | [User](#user.User) | repeated |  |
+| pageInfo | [commons.PageInfo](#commons.PageInfo) |  |  |
 
 
 
@@ -374,21 +485,6 @@
 
 
 
-
-<a name="user.UserList"></a>
-
-### UserList
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| list | [User](#user.User) | repeated |  |
-
-
-
-
-
  
 
  
@@ -403,12 +499,13 @@
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| findAll | [.commons.Query](#commons.Query) | [UserList](#user.UserList) |  |
+| find | [.commons.Query](#commons.Query) | [FindUsersPayload](#user.FindUsersPayload) |  |
+| findById | [.commons.Id](#commons.Id) | [User](#user.User) |  |
 | findOne | [.commons.Query](#commons.Query) | [User](#user.User) |  |
 | count | [.commons.Query](#commons.Query) | [.commons.Count](#commons.Count) |  |
 | create | [CreateUserInput](#user.CreateUserInput) | [User](#user.User) |  |
 | update | [UpdateUserInput](#user.UpdateUserInput) | [User](#user.User) |  |
-| destroy | [.commons.Id](#commons.Id) | [.commons.Count](#commons.Count) |  |
+| destroy | [.commons.Query](#commons.Query) | [.commons.Count](#commons.Count) |  |
 
  
 

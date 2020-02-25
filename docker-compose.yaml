@@ -5,7 +5,7 @@ services:
     image: "comments-svc:dev"
     container_name: "comments-svc"
     build:
-      context: "./grpc-services/comments"
+      context: "./microservices/comments-svc"
     networks:
       - "frontend"
       - "backend"
@@ -37,7 +37,7 @@ services:
     image: "posts-svc:dev"
     container_name: "posts-svc"
     build:
-      context: "./grpc-services/posts"
+      context: "./microservices/posts-svc"
     networks:
       - "frontend"
       - "backend"
@@ -69,7 +69,7 @@ services:
     image: "users-svc:dev"
     container_name: "users-svc"
     build:
-      context: "./grpc-services/users"
+      context: "./microservices/users-svc"
     networks:
       - "frontend"
       - "backend"
@@ -101,7 +101,7 @@ services:
     image: "mailer-svc:dev"
     container_name: "mailer-svc"
     build:
-      context: "./grpc-services/mailer"
+      context: "./microservices/mailer-svc"
     networks:
       - "frontend"
       - "mailerdomain"
@@ -123,11 +123,11 @@ services:
       retries: 5
     restart: "on-failure"
 
-  graphql-gateway:
-    image: "graphql-gateway:dev"
-    container_name: "graphql-gateway"
+  api-gateway:
+    image: "api-gateway:dev"
+    container_name: "api-gateway"
     build:
-      context: "./graphql-gateway"
+      context: "./api-gateway"
     networks:
       - "frontend"
     ports:

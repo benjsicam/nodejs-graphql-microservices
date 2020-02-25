@@ -1,7 +1,7 @@
 {
   "name": "react-ui",
   "version": "1.0.0",
-  "description": "A sample React application to act as front-end for the graphql-gateway. Used for learning/trial purposes only.",
+  "description": "A sample React application to act as front-end for the api-gateway. Used for learning/trial purposes only.",
   "scripts": {},
   "repository": {
     "type": "git",

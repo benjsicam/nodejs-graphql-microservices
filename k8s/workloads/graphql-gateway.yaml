@@ -2,15 +2,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: graphql-gateway
+  name: api-gateway
   namespace: dev
   labels:
-    app: graphql-gateway
+    app: api-gateway
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: graphql-gateway
+      app: api-gateway
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -19,7 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        app: graphql-gateway
+        app: api-gateway
     spec:
       affinity:
         nodeAffinity:
@@ -31,8 +31,8 @@ spec:
                   values:
                     - internal
       containers:
-        - name: graphql-gateway
-          image: "graphql-gateway:latest"
+        - name: api-gateway
+          image: "api-gateway:latest"
           imagePullPolicy: Always
           resources:
             requests:
@@ -43,7 +43,7 @@ spec:
               memory: 300Mi
           envFrom:
             - configMapRef:
-                name: graphql-gateway
+                name: api-gateway
             - secretRef:
                 name: cache
             - secretRef:
@@ -74,14 +74,14 @@ spec:
 # apiVersion: autoscaling/v2beta1
 # kind: HorizontalPodAutoscaler
 # metadata:
-#   name: graphql-gateway
+#   name: api-gateway
 #   namespace: dev
 #   labels:
-#     app: graphql-gateway
+#     app: api-gateway
 # spec:
 #   scaleTargetRef:
 #     apiVersion: apps/v1
-#     name: graphql-gateway
+#     name: api-gateway
 #     kind: Deployment
 #   minReplicas: 3
 #   maxReplicas: 10

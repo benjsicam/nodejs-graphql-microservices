@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: graphql-gateway
+  name: api-gateway
   namespace: dev
   labels:
-    app: graphql-gateway
+    app: api-gateway
 data:
   NODE_ENV: "development"
   HOST: "0.0.0.0"
