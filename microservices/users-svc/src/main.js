@@ -17,7 +17,7 @@ import CacheMiddleware from './middlewares/cache.middleware'
 import HealthCheckService from './services/health-check.service'
 import UserRepository from './repositories/user.repository'
 
-const MODEL_NAME = 'user'
+const MODEL_NAME = 'User'
 const SERVICE_NAME = 'UserService'
 
 const SERVICE_PROTO = path.resolve(__dirname, '_proto/user.proto')

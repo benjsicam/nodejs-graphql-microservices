@@ -17,7 +17,7 @@ import CacheMiddleware from './middlewares/cache.middleware'
 import HealthCheckService from './services/health-check.service'
 import CommentRepository from './repositories/comment.repository'
 
-const MODEL_NAME = 'comment'
+const MODEL_NAME = 'Comment'
 const SERVICE_NAME = 'CommentService'
 
 const SERVICE_PROTO = path.resolve(__dirname, '_proto/comment.proto')

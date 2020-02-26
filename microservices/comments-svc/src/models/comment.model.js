@@ -3,7 +3,7 @@ import * as Sequelize from 'sequelize'
 
 export default function(sequelize, DataTypes) {
   const model = sequelize.define(
-    'comment',
+    'Comment',
     {
       id: {
         type: DataTypes.UUID,

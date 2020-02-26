@@ -17,7 +17,7 @@ import CacheMiddleware from './middlewares/cache.middleware'
 import HealthCheckService from './services/health-check.service'
 import PostRepository from './repositories/post.repository'
 
-const MODEL_NAME = 'post'
+const MODEL_NAME = 'Post'
 const SERVICE_NAME = 'PostService'
 
 const SERVICE_PROTO = path.resolve(__dirname, '_proto/post.proto')
