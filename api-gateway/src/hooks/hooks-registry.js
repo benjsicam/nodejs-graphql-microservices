@@ -4,19 +4,11 @@ import UserHooks from './user.hooks'
 
 class HooksRegistry {
   constructor(services, pubsub, logger) {
-    this._services = services
-    this._pubsub = pubsub
-    this._logger = logger
-  }
-
-  async register() {
     this._hooks = {
-      comment: new CommentHooks(this._services, this._pubsub, this._logger),
-      post: new PostHooks(this._services, this._pubsub, this._logger),
-      user: new UserHooks(this._services, this._pubsub, this._logger)
+      comment: new CommentHooks(services, pubsub, logger),
+      post: new PostHooks(services, pubsub, logger),
+      user: new UserHooks(services, pubsub, logger)
     }
-
-    return this._hooks
   }
 
   get hooks() {

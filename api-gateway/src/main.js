@@ -83,9 +83,7 @@ const main = async () => {
     subscriber
   })
 
-  const hooksRegistry = new HooksRegistry(serviceRegistry.services, pubsub, logger)
-
-  hooksRegistry.register()
+  new HooksRegistry(serviceRegistry.services, pubsub, logger)
 
   const server = await Server.init(
     schema,
