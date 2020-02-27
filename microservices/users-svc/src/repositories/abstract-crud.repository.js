@@ -4,6 +4,7 @@ import { isEmpty, isNil } from 'lodash'
 class AbstractCrudRepository {
   constructor(model) {
     this._model = model
+    this._jsonFields = []
   }
 
   async find({ req, response }) {
@@ -19,7 +20,13 @@ class AbstractCrudRepository {
     })
 
     response.res = {
-      edges: await Aigle.map(results, async node => {
+      edges: await Aigle.map(results, async result => {
+        const node = result
+
+        await Aigle.forEach(this._jsonFields, async field => {
+          if (!isEmpty(node[field])) node[field] = Buffer.from(JSON.stringify(node[field]))
+        })
+
         return {
           node,
           cursor: Buffer.from(JSON.stringify([node.id])).toString('base64')
@@ -39,6 +46,10 @@ class AbstractCrudRepository {
   async findById({ req, response }) {
     const result = await this._model.findByPk(req.id)
 
+    await Aigle.forEach(this._jsonFields, async field => {
+      if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
+    })
+
     response.res = result
 
     return response.res
@@ -49,6 +60,10 @@ class AbstractCrudRepository {
       attributes: !isEmpty(req.select) ? req.select : undefined,
       where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined,
       raw: true
+    })
+
+    await Aigle.forEach(this._jsonFields, async field => {
+      if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
     })
 
     response.res = result
@@ -67,7 +82,21 @@ class AbstractCrudRepository {
   }
 
   async create({ req, response }) {
-    const result = await this._model.create(req)
+    const data = req
+
+    await Aigle.forEach(this._jsonFields, async field => {
+      if (Buffer.isBuffer(data[field])) {
+        const json = data[field].toString()
+
+        if (!isEmpty(json)) data[field] = JSON.parse(json)
+      }
+    })
+
+    const result = await this._model.create(data)
+
+    await Aigle.forEach(this._jsonFields, async field => {
+      if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
+    })
 
     response.res = result
 
@@ -75,15 +104,29 @@ class AbstractCrudRepository {
   }
 
   async update({ req, response }) {
+    const { data } = req
+
+    await Aigle.forEach(this._jsonFields, async field => {
+      if (Buffer.isBuffer(data[field])) {
+        const json = data[field].toString()
+
+        if (!isEmpty(json)) data[field] = JSON.parse(json)
+      }
+    })
+
     const model = await this._model.findOne({
       where: {
         id: req.id
       }
     })
 
-    model.set(req.data)
+    model.set(data)
 
     const result = await model.save()
+
+    await Aigle.forEach(this._jsonFields, async field => {
+      if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
+    })
 
     response.res = result
 

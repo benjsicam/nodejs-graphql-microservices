@@ -7,12 +7,13 @@ class AbstractCrudService {
     this._serviceName = serviceName
     this._client = Aigle.promisifyAll(client)
     this._logger = logger
+    this._jsonFields = []
   }
 
   async find(query) {
     this._logger.info(`${this._serviceName}#find.call`, query)
 
-    const { edges, pageInfo } = await this._client.findAsync({
+    const findResult = await this._client.findAsync({
       select: !isEmpty(query.select) ? query.select : undefined,
       where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined,
       orderBy: !isEmpty(query.orderBy) ? JSON.stringify(query.orderBy) : undefined,
@@ -21,11 +22,32 @@ class AbstractCrudService {
       after: !isEmpty(query.after) ? query.after : undefined
     })
 
-    this._logger.info(`${this._serviceName}#find.result`, edges, pageInfo)
+    let { edges } = findResult
+
+    if (!isEmpty(this._jsonFields)) {
+      edges = await Aigle.map(edges, async edge => {
+        const { node, cursor } = edge
+
+        await Aigle.forEach(this._jsonFields, async field => {
+          if (Buffer.isBuffer(node[field])) {
+            const json = node[field].toString()
+
+            if (!isEmpty(json)) node[field] = JSON.parse(json)
+          }
+        })
+
+        return {
+          node,
+          cursor
+        }
+      })
+    }
+
+    this._logger.info(`${this._serviceName}#find.result`, edges, findResult.pageInfo)
 
     return {
       edges,
-      pageInfo
+      pageInfo: findResult.pageInfo
     }
   }
 
@@ -33,6 +55,16 @@ class AbstractCrudService {
     this._logger.info(`${this._serviceName}#findById.call`, { id })
 
     const result = await this._client.findByIdAsync({ id })
+
+    if (!isEmpty(this._jsonFields)) {
+      await Aigle.forEach(this._jsonFields, async field => {
+        if (Buffer.isBuffer(result[field])) {
+          const json = result[field].toString()
+
+          if (!isEmpty(json)) result[field] = JSON.parse(json)
+        }
+      })
+    }
 
     this._logger.info(`${this._serviceName}#findById.result`, result)
 
@@ -46,6 +78,16 @@ class AbstractCrudService {
       select: !isEmpty(query.select) ? query.select : undefined,
       where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined
     })
+
+    if (!isEmpty(this._jsonFields)) {
+      await Aigle.forEach(this._jsonFields, async field => {
+        if (Buffer.isBuffer(result[field])) {
+          const json = result[field].toString()
+
+          if (!isEmpty(json)) result[field] = JSON.parse(json)
+        }
+      })
+    }
 
     this._logger.info(`${this._serviceName}#findOne.result`, result)
 
@@ -67,7 +109,25 @@ class AbstractCrudService {
   async create(data) {
     this._logger.info(`${this._serviceName}#create.call`, data)
 
-    const result = await this._client.createAsync(data)
+    const model = data
+
+    if (!isEmpty(this._jsonFields)) {
+      await Aigle.forEach(this._jsonFields, async field => {
+        if (!isEmpty(model[field])) model[field] = Buffer.from(JSON.stringify(model[field]))
+      })
+    }
+
+    const result = await this._client.createAsync(model)
+
+    if (!isEmpty(this._jsonFields)) {
+      await Aigle.forEach(this._jsonFields, async field => {
+        if (Buffer.isBuffer(result[field])) {
+          const json = result[field].toString()
+
+          if (!isEmpty(json)) result[field] = JSON.parse(json)
+        }
+      })
+    }
 
     this._logger.info(`${this._serviceName}#create.result`, result)
 
@@ -77,7 +137,25 @@ class AbstractCrudService {
   async update(id, data) {
     this._logger.info(`${this._serviceName}#update.call`, { id, data })
 
-    const result = await this._client.updateAsync({ id, data })
+    const model = data
+
+    if (!isEmpty(this._jsonFields)) {
+      await Aigle.forEach(this._jsonFields, async field => {
+        if (!isEmpty(model[field])) model[field] = Buffer.from(JSON.stringify(model[field]))
+      })
+    }
+
+    const result = await this._client.updateAsync({ id, data: model })
+
+    if (!isEmpty(this._jsonFields)) {
+      await Aigle.forEach(this._jsonFields, async field => {
+        if (Buffer.isBuffer(result[field])) {
+          const json = result[field].toString()
+
+          if (!isEmpty(json)) result[field] = JSON.parse(json)
+        }
+      })
+    }
 
     this._logger.info(`${this._serviceName}#update.result`, result)
 
