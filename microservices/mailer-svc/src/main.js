@@ -51,6 +51,7 @@ const main = async () => {
   app.use(
     errorMiddleware((err, ctx) => {
       logger.error(`${ctx.service}#${ctx.name}.error`, err)
+      throw err
     })
   )
   app.use(

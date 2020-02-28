@@ -11,9 +11,7 @@ const ErrorMiddleware = {
     } catch (error) {
       logger.error(error)
 
-      const errors = await errorUtils.buildError(error)
-
-      return { errors }
+      throw error
     }
   },
   async Mutation(resolve, root, args, context, info) {
@@ -29,6 +27,19 @@ const ErrorMiddleware = {
       const errors = await errorUtils.buildError(error)
 
       return { errors }
+    }
+  },
+  async Subscription(resolve, root, args, context, info) {
+    const { logger } = context
+
+    try {
+      const result = await resolve(root, args, context, info)
+
+      return result
+    } catch (error) {
+      logger.error(error)
+
+      throw error
     }
   }
 }
