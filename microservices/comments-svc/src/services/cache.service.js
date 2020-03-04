@@ -5,9 +5,9 @@ class RedisCacheService {
   }
 
   async get(key) {
-    this._logger.info('Cache#get.call', key)
+    this._logger.info('Cache#get.call', `${key}`.toLowerCase())
 
-    let result = await this._cache.get(key)
+    let result = await this._cache.get(`${key}`.toLowerCase())
 
     this._logger.info('Cache#get.result', result)
 
@@ -22,7 +22,7 @@ class RedisCacheService {
   }
 
   async set(key, value) {
-    this._logger.info('Cache#set.call', key, value)
+    this._logger.info('Cache#set.call', `${key}`.toLowerCase(), value)
 
     let val
 
@@ -33,13 +33,13 @@ class RedisCacheService {
       val = ''
     }
 
-    return this._cache.set(key, val)
+    return this._cache.set(`${key}`.toLowerCase(), val)
   }
 
   async remove(key) {
-    this._logger.info('Cache#remove.call', key)
+    this._logger.info('Cache#remove.call', `${key}`.toLowerCase())
 
-    return this._cache.del(key)
+    return this._cache.del(`${key}`.toLowerCase())
   }
 
   async flush(pattern) {
@@ -47,7 +47,7 @@ class RedisCacheService {
 
     return new Promise((resolve, reject) => {
       const stream = this._cache.scanStream({
-        match: pattern,
+        match: `${pattern}`.toLowerCase(),
         count: 99999
       })
       const pipeline = this._cache.pipeline()
