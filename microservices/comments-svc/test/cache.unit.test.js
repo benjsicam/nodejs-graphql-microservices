@@ -1,4 +1,3 @@
-import crypto from 'crypto'
 import Redis from 'ioredis'
 import faker from 'faker'
 
@@ -337,8 +336,7 @@ describe('Cache Testing', () => {
 
       await cacheMiddleware.read(PREFIX)(args, () => true)
 
-      const hash = crypto.createHash('sha1')
-      const key = hash.update(args.req.query).digest('hex')
+      const key = Buffer.from(JSON.stringify(args.req)).toString('base64')
       let cachedResult = await cacheService.get(`${PREFIX}-read-${key}`)
 
       expect(cachedResult).not.toBeNil()
@@ -374,8 +372,7 @@ describe('Cache Testing', () => {
 
       await cacheMiddleware.read(PREFIX)(args, () => true)
 
-      const hash = crypto.createHash('sha1')
-      const key = hash.update(args.req.query).digest('hex')
+      const key = Buffer.from(JSON.stringify(args.req)).toString('base64')
       let cachedResult = await cacheService.get(`${PREFIX}-read-${key}`)
 
       expect(cachedResult).not.toBeNil()
