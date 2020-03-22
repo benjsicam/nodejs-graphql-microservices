@@ -10,11 +10,11 @@ const deleteAccount = {
     }
 
     const count = await userService.destroy({
-      where: { id: user.id }
+      where: { id: user.id },
     })
 
     return { count }
-  }
+  },
 }
 
 export default { deleteAccount }

@@ -9,22 +9,15 @@ const login = {
   authenticate: false,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
-      email: yup
-        .string()
-        .trim()
-        .required('Email is a required field.')
-        .email('Email field should contain a valid email.'),
-      password: yup
-        .string()
-        .trim()
-        .required('Password is a required field.')
-    })
+      email: yup.string().trim().required('Email is a required field.').email('Email field should contain a valid email.'),
+      password: yup.string().trim().required('Password is a required field.'),
+    }),
   }),
   resolve: async (parent, { data }, { userService, logger }) => {
     const user = await userService.findOne({
       where: {
-        email: data.email
-      }
+        email: data.email,
+      },
     })
 
     logger.info('UserQuery#login.check1', isEmpty(user))
@@ -43,9 +36,9 @@ const login = {
 
     return {
       user,
-      token: await authUtils.generateToken(user.id)
+      token: await authUtils.generateToken(user.id),
     }
-  }
+  },
 }
 
 export default { login }

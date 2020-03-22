@@ -8,8 +8,7 @@ import Db from '../src/db'
 import logger from '../src/logger'
 import UserRepository from '../src/repositories/user.repository'
 
-const MODEL_NAME = 'user'
-const SERVICE_NAME = 'UserService'
+const MODEL_NAME = 'User'
 
 describe('Database Testing', () => {
   let db, repo
@@ -59,8 +58,9 @@ describe('Database Testing', () => {
 
   describe('UserRepository', () => {
     beforeEach(async () => {
-      return db.model(MODEL_NAME).destroy({
-        where: {}
+      return repo.destroy({
+        req: { where: {} },
+        response: {}
       })
     })
 
@@ -170,17 +170,28 @@ describe('Database Testing', () => {
         return user.toJSON()
       }))
 
-      const { list } = await repo.findAll({
+      const { edges, pageInfo } = await repo.find({
         req: {
-          query: JSON.stringify({})
+          where: JSON.stringify({})
         },
         response: {}
       })
 
-      expect(list).not.toBeNil()
+      expect(edges).not.toBeNil()
+      expect(pageInfo).not.toBeNil()
 
       // Stucture check/s
-      expect(list[0]).toContainAllKeys([
+      expect(edges[0]).toContainAllKeys([
+        'node',
+        'cursor'
+      ])
+      expect(pageInfo).toContainAllKeys([
+        'startCursor',
+        'endCursor',
+        'hasNextPage',
+        'hasPreviousPage'
+      ])
+      expect(edges[0].node).toContainAllKeys([
         'id',
         'name',
         'email',
@@ -192,18 +203,18 @@ describe('Database Testing', () => {
       ])
 
       // Type check/s
-      expect(list).toBeArray()
-      expect(list[0].id).toBeString()
-      expect(list[0].name).toBeString()
-      expect(list[0].email).toBeString()
-      expect(list[0].password).toBeString()
-      expect(list[0].age).toBeNumber()
-      expect(list[0].createdAt).toBeDate()
-      expect(list[0].updatedAt).toBeDate()
-      expect(list[0].version).toBeNumber()
+      expect(edges).toBeArray()
+      expect(edges[0].node.id).toBeString()
+      expect(edges[0].node.name).toBeString()
+      expect(edges[0].node.email).toBeString()
+      expect(edges[0].node.password).toBeString()
+      expect(edges[0].node.age).toBeNumber()
+      expect(edges[0].node.createdAt).toBeDate()
+      expect(edges[0].node.updatedAt).toBeDate()
+      expect(edges[0].node.version).toBeNumber()
 
       // Value checks
-      expect(list).toBeArrayOfSize(3)
+      expect(edges).toBeArrayOfSize(3)
 
       return true
     })
@@ -220,21 +231,30 @@ describe('Database Testing', () => {
         return user.toJSON()
       }))
 
-      const { list } = await repo.findAll({
+      const { edges, pageInfo } = await repo.find({
         req: {
-          query: JSON.stringify({
-            where: {
-              id: { $in: map(entries, entry => entry.id) }
-            }
+          where: JSON.stringify({
+            id: { $in: map(entries, entry => entry.id) }
           })
         },
         response: {}
       })
 
-      expect(list).not.toBeNil()
+      expect(edges).not.toBeNil()
+      expect(pageInfo).not.toBeNil()
 
       // Stucture check/s
-      expect(list[0]).toContainAllKeys([
+      expect(edges[0]).toContainAllKeys([
+        'node',
+        'cursor'
+      ])
+      expect(pageInfo).toContainAllKeys([
+        'startCursor',
+        'endCursor',
+        'hasNextPage',
+        'hasPreviousPage'
+      ])
+      expect(edges[0].node).toContainAllKeys([
         'id',
         'name',
         'email',
@@ -246,19 +266,19 @@ describe('Database Testing', () => {
       ])
 
       // Type check/s
-      expect(list).toBeArray()
-      expect(list[0].id).toBeString()
-      expect(list[0].name).toBeString()
-      expect(list[0].email).toBeString()
-      expect(list[0].password).toBeString()
-      expect(list[0].age).toBeNumber()
-      expect(list[0].createdAt).toBeDate()
-      expect(list[0].updatedAt).toBeDate()
-      expect(list[0].version).toBeNumber()
+      expect(edges).toBeArray()
+      expect(edges[0].node.id).toBeString()
+      expect(edges[0].node.name).toBeString()
+      expect(edges[0].node.email).toBeString()
+      expect(edges[0].node.password).toBeString()
+      expect(edges[0].node.age).toBeNumber()
+      expect(edges[0].node.createdAt).toBeDate()
+      expect(edges[0].node.updatedAt).toBeDate()
+      expect(edges[0].node.version).toBeNumber()
 
       // Value checks
-      expect(list).toBeArrayOfSize(3)
-      expect(list.map(entry => entry.text)).toIncludeSameMembers(data.map(entry => entry.text))
+      expect(edges).toBeArrayOfSize(3)
+      expect(map(edges, entry => entry.text)).toIncludeSameMembers(map(data, entry => entry.text))
 
       return true
     })
@@ -275,10 +295,8 @@ describe('Database Testing', () => {
 
       const result = await repo.findOne({
         req: {
-          query: JSON.stringify({
-            where: {
-              id: user.id
-            }
+          where: JSON.stringify({
+            id: user.id
           })
         },
         response: {}
@@ -327,10 +345,8 @@ describe('Database Testing', () => {
 
       const result = await repo.count({
         req: {
-          query: JSON.stringify({
-            where: {
-              id: user.id
-            }
+          where: JSON.stringify({
+            id: user.id
           })
         },
         response: {}
@@ -357,17 +373,17 @@ describe('Database Testing', () => {
 
       await repo.destroy({
         req: {
-          id: user.id
+          where: JSON.stringify({
+            id: user.id
+          })
         },
         response: {}
       })
 
       const result = await repo.count({
         req: {
-          query: JSON.stringify({
-            where: {
-              id: user.id
-            }
+          where: JSON.stringify({
+            id: user.id
           })
         },
         response: {}

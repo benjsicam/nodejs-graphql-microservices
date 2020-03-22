@@ -11,7 +11,7 @@ class AbstractCrudRepository {
     const { results, cursors } = await this._model.findAndPaginate({
       attributes: !isEmpty(req.select) ? req.select : undefined,
       where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined,
-      order: !isEmpty(req.orderBy) ? JSON.parse(req.orderBy) : undefined,
+      order: !isEmpty(req.orderBy) ? req.orderBy : undefined,
       limit: !isNil(req.limit) ? req.limit : 25,
       before: !isEmpty(req.before) ? req.before : undefined,
       after: !isEmpty(req.after) ? req.after : undefined,
@@ -44,7 +44,9 @@ class AbstractCrudRepository {
   }
 
   async findById({ req, response }) {
-    const result = await this._model.findByPk(req.id)
+    const result = await this._model.findByPk(req.id, {
+      raw: true
+    })
 
     await Aigle.forEach(this._jsonFields, async field => {
       if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
@@ -135,7 +137,7 @@ class AbstractCrudRepository {
 
   async destroy({ req, response }) {
     const count = await this._model.destroy({
-      where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined
+      where: !isEmpty(req.where) ? JSON.parse(req.where) : {}
     })
 
     response.res = { count }

@@ -22,7 +22,7 @@ const SERVICE_NAME = 'UserService'
 
 const SERVICE_PROTO = path.resolve(__dirname, '_proto/user.proto')
 
-const HOST_PORT = `${process.env.HOST}:${process.env.PORT}`
+const HOST_PORT = `${process.env.GRPC_HOST}:${process.env.GRPC_PORT}`
 
 const main = async () => {
   const modelPaths = glob.sync(path.resolve(__dirname, '../**/*.model.js'))
@@ -104,7 +104,7 @@ const main = async () => {
 
   await app.start(HOST_PORT)
 
-  logger.info(`gRPC Server is now listening on port ${process.env.PORT}`)
+  logger.info(`gRPC Server is now listening on port ${process.env.GRPC_PORT}`)
 
   return {
     app,

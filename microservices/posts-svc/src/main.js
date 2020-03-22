@@ -22,7 +22,7 @@ const SERVICE_NAME = 'PostService'
 
 const SERVICE_PROTO = path.resolve(__dirname, '_proto/post.proto')
 
-const HOST_PORT = `${process.env.HOST}:${process.env.PORT}`
+const HOST_PORT = `${process.env.GRPC_HOST}:${process.env.GRPC_PORT}`
 
 const main = async () => {
   const modelPaths = glob.sync(path.resolve(__dirname, '../**/*.model.js'))
@@ -35,26 +35,26 @@ const main = async () => {
   let redisOptions = {}
 
   if (redisHostConfig.length > 1) {
-    const redisNodes = map(redisHostConfig, host => {
+    const redisNodes = map(redisHostConfig, (host) => {
       return {
         host,
-        port: process.env.REDIS_PORT
+        port: process.env.REDIS_PORT,
       }
     })
 
     redisOptions = {
-      password: process.env.REDIS_PASSWORD
+      password: process.env.REDIS_PASSWORD,
     }
 
     cache = new Redis.Cluster(redisNodes, {
       slotsRefreshTimeout: 20000,
-      redisOptions
+      redisOptions,
     })
   } else {
     redisOptions = {
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
-      password: process.env.REDIS_PASSWORD
+      password: process.env.REDIS_PASSWORD,
     }
 
     cache = new Redis(redisOptions)
@@ -70,7 +70,7 @@ const main = async () => {
     count: repo.count.bind(repo),
     create: [cacheMiddleware.write('posts'), repo.create.bind(repo)],
     update: [cacheMiddleware.write('posts'), repo.update.bind(repo)],
-    destroy: [cacheMiddleware.remove('posts'), repo.destroy.bind(repo)]
+    destroy: [cacheMiddleware.remove('posts'), repo.destroy.bind(repo)],
   }
 
   const app = new Mali()
@@ -80,7 +80,7 @@ const main = async () => {
   app.addService(SERVICE_PROTO, null, {
     enums: String,
     objects: true,
-    arrays: true
+    arrays: true,
   })
   app.addService(service)
 
@@ -94,22 +94,22 @@ const main = async () => {
     loggerMiddleware({
       timestamp: true,
       request: true,
-      response: true
+      response: true,
     })
   )
   app.use({
     PostService,
-    ...healthCheckImpl
+    ...healthCheckImpl,
   })
 
   await app.start(HOST_PORT)
 
-  logger.info(`gRPC Server is now listening on port ${process.env.PORT}`)
+  logger.info(`gRPC Server is now listening on port ${process.env.GRPC_PORT}`)
 
   return {
     app,
     cache,
-    db
+    db,
   }
 }
 

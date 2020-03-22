@@ -35,19 +35,22 @@ const Server = {
           resolvers.GraphResolvers,
           (res, val, key) => {
             const obj = {}
-            obj[startCase(key.substr(key.lastIndexOf('$') + 1))] = val
+            const graph = startCase(key.substr(key.lastIndexOf('$') + 1)).replace(/\s/, '')
+
+            obj[graph] = val
+
             return assign(res, obj)
           },
           {}
-        )
+        ),
       },
       context(req) {
         return {
           ...req,
-          ...services
+          ...services,
         }
       },
-      middlewares
+      middlewares,
     })
 
     server.express.get('/healthz', (req, res) => {
@@ -55,7 +58,7 @@ const Server = {
     })
 
     return server
-  }
+  },
 }
 
 export default Server

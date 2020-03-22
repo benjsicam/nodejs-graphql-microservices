@@ -30,7 +30,7 @@ const LogMiddleware = {
     logger.info(`subscription#${operation}.call`, args)
 
     return resolve(root, args, context, info)
-  }
+  },
 }
 
 export default LogMiddleware

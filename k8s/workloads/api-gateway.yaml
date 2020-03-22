@@ -21,25 +21,16 @@ spec:
       labels:
         app: api-gateway
     spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                - key: node-pool
-                  operator: In
-                  values:
-                    - internal
       containers:
         - name: api-gateway
           image: "api-gateway:latest"
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: 100m
-              memory: 200Mi
+              cpu: 50m
+              memory: 150Mi
             limits:
-              cpu: 300m
+              cpu: 100m
               memory: 300Mi
           envFrom:
             - configMapRef:
@@ -70,6 +61,15 @@ spec:
             successThreshold: 1
             failureThreshold: 3
             timeoutSeconds: 10
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #         - matchExpressions:
+      #           - key: node-pool
+      #             operator: In
+      #             values:
+      #               - dev
 # ---
 # apiVersion: autoscaling/v2beta1
 # kind: HorizontalPodAutoscaler
@@ -89,8 +89,8 @@ spec:
 #     - type: Resource
 #       resource:
 #         name: cpu
-#         targetAverageUtilization: 60
+#         targetAverageUtilization: 80
 #     - type: Resource
 #       resource:
 #         name: memory
-#         targetAverageUtilization: 85
+#         targetAverageUtilization: 80

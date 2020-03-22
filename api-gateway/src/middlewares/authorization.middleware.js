@@ -27,7 +27,7 @@ const AuthorizationMiddleware = {
     }
 
     return resolve(root, args, context, info)
-  }
+  },
 }
 
 export default AuthorizationMiddleware

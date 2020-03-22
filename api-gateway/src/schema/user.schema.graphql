@@ -4,8 +4,8 @@ type User {
   name: String!
   email: EmailAddress!
   age: UnsignedInt
-  posts(q: String, first: Int, last: Int, before: String, after: String): PostsConnection
-  comments(q: String, first: Int, last: Int, before: String, after: String): CommentsConnection
+  posts(q: String, first: Int, last: Int, before: String, after: String, orderBy: String): PostsConnection
+  comments(q: String, first: Int, last: Int, before: String, after: String, orderBy: String): CommentsConnection
   createdAt: DateTime!
   updatedAt: DateTime!
   version: Int!

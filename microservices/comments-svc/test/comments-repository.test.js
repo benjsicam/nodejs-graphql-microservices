@@ -8,8 +8,7 @@ import Db from '../src/db'
 import logger from '../src/logger'
 import CommentRepository from '../src/repositories/comment.repository'
 
-const MODEL_NAME = 'comment'
-const SERVICE_NAME = 'CommentService'
+const MODEL_NAME = 'Comment'
 
 describe('Database Testing', () => {
   let db, repo
@@ -55,8 +54,9 @@ describe('Database Testing', () => {
 
   describe('CommentRepository', () => {
     beforeEach(async () => {
-      return db.model(MODEL_NAME).destroy({
-        where: {}
+      return repo.destroy({
+        req: { where: {} },
+        response: {}
       })
     })
 
@@ -160,17 +160,26 @@ describe('Database Testing', () => {
         return comment.toJSON()
       }))
 
-      const { list } = await repo.find({
-        req: {
-          query: JSON.stringify({})
-        },
+      const { edges, pageInfo } = await repo.find({
+        req: {},
         response: {}
       })
 
-      expect(list).not.toBeNil()
+      expect(edges).not.toBeNil()
+      expect(pageInfo).not.toBeNil()
 
       // Stucture check/s
-      expect(list[0]).toContainAllKeys([
+      expect(edges[0]).toContainAllKeys([
+        'node',
+        'cursor'
+      ])
+      expect(pageInfo).toContainAllKeys([
+        'startCursor',
+        'endCursor',
+        'hasNextPage',
+        'hasPreviousPage'
+      ])
+      expect(edges[0].node).toContainAllKeys([
         'id',
         'text',
         'post',
@@ -181,17 +190,17 @@ describe('Database Testing', () => {
       ])
 
       // Type check/s
-      expect(list).toBeArray()
-      expect(list[0].id).toBeString()
-      expect(list[0].text).toBeString()
-      expect(list[0].post).toBeString()
-      expect(list[0].author).toBeString()
-      expect(list[0].createdAt).toBeDate()
-      expect(list[0].updatedAt).toBeDate()
-      expect(list[0].version).toBeNumber()
+      expect(edges).toBeArray()
+      expect(edges[0].node.id).toBeString()
+      expect(edges[0].node.text).toBeString()
+      expect(edges[0].node.post).toBeString()
+      expect(edges[0].node.author).toBeString()
+      expect(edges[0].node.createdAt).toBeDate()
+      expect(edges[0].node.updatedAt).toBeDate()
+      expect(edges[0].node.version).toBeNumber()
 
       // Value checks
-      expect(list).toBeArrayOfSize(3)
+      expect(edges).toBeArrayOfSize(3)
 
       return true
     })
@@ -208,21 +217,30 @@ describe('Database Testing', () => {
         return comment.toJSON()
       }))
 
-      const { list } = await repo.find({
+      const { edges, pageInfo } = await repo.find({
         req: {
-          query: JSON.stringify({
-            where: {
-              id: { $in: map(entries, entry => entry.id) }
-            }
+          where: JSON.stringify({
+            id: { $in: map(entries, entry => entry.id) }
           })
         },
         response: {}
       })
 
-      expect(list).not.toBeNil()
+      expect(edges).not.toBeNil()
+      expect(pageInfo).not.toBeNil()
 
       // Stucture check/s
-      expect(list[0]).toContainAllKeys([
+      expect(edges[0]).toContainAllKeys([
+        'node',
+        'cursor'
+      ])
+      expect(pageInfo).toContainAllKeys([
+        'startCursor',
+        'endCursor',
+        'hasNextPage',
+        'hasPreviousPage'
+      ])
+      expect(edges[0].node).toContainAllKeys([
         'id',
         'text',
         'post',
@@ -233,20 +251,65 @@ describe('Database Testing', () => {
       ])
 
       // Type check/s
-      expect(list).toBeArray()
-      expect(list[0].id).toBeString()
-      expect(list[0].text).toBeString()
-      expect(list[0].post).toBeString()
-      expect(list[0].author).toBeString()
-      expect(list[0].createdAt).toBeDate()
-      expect(list[0].updatedAt).toBeDate()
-      expect(list[0].version).toBeNumber()
+      expect(edges).toBeArray()
+      expect(edges[0].node.id).toBeString()
+      expect(edges[0].node.text).toBeString()
+      expect(edges[0].node.post).toBeString()
+      expect(edges[0].node.author).toBeString()
+      expect(edges[0].node.createdAt).toBeDate()
+      expect(edges[0].node.updatedAt).toBeDate()
+      expect(edges[0].node.version).toBeNumber()
 
       // Value checks
-      expect(list).toBeArrayOfSize(3)
-      expect(list.map(entry => entry.text)).toIncludeSameMembers(data.map(entry => entry.text))
+      expect(edges).toBeArrayOfSize(3)
+      expect(map(edges, entry => entry.node.name)).toIncludeSameMembers(map(data, entry => entry.name))
 
       return true
+    })
+
+    it('should return a single row by its id', async () => {
+      const data = await generateMockData(true)
+
+      let comment = await repo.create({
+        req: data,
+        response: {}
+      })
+
+      comment = comment.toJSON()
+
+      const result = await repo.findById({
+        req: {
+          id: comment.id
+        },
+        response: {}
+      })
+
+      expect(result).not.toBeNil()
+
+      // Stucture check/s
+      expect(result).toContainAllKeys([
+        'id',
+        'text',
+        'post',
+        'author',
+        'createdAt',
+        'updatedAt',
+        'version'
+      ])
+
+      // Type check/s
+      expect(result.id).toBeString()
+      expect(result.text).toBeString()
+      expect(result.post).toBeString()
+      expect(result.author).toBeString()
+      expect(result.createdAt).toBeDate()
+      expect(result.updatedAt).toBeDate()
+      expect(result.version).toBeNumber()
+
+      // Value Checks
+      expect(result.text).toBe(data.text)
+      expect(result.post).toBe(data.post)
+      expect(result.author).toBe(data.author)
     })
 
     it('should return a single row that matches a query', async () => {
@@ -261,10 +324,8 @@ describe('Database Testing', () => {
 
       const result = await repo.findOne({
         req: {
-          query: JSON.stringify({
-            where: {
-              id: comment.id
-            }
+          where: JSON.stringify({
+            id: comment.id
           })
         },
         response: {}
@@ -310,10 +371,8 @@ describe('Database Testing', () => {
 
       const result = await repo.count({
         req: {
-          query: JSON.stringify({
-            where: {
-              id: comment.id
-            }
+          where: JSON.stringify({
+            id: comment.id
           })
         },
         response: {}
@@ -340,17 +399,17 @@ describe('Database Testing', () => {
 
       await repo.destroy({
         req: {
-          id: comment.id
+          where: JSON.stringify({
+            id: comment.id
+          })
         },
         response: {}
       })
 
       const result = await repo.count({
         req: {
-          query: JSON.stringify({
-            where: {
-              id: comment.id
-            }
+          where: JSON.stringify({
+            id: comment.id
           })
         },
         response: {}

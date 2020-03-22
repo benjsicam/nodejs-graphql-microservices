@@ -18,7 +18,7 @@ class UserHooks {
       return mailerService.send({
         template: 'signup',
         to: result.user.email,
-        data: Buffer.from(JSON.stringify(result.user))
+        data: Buffer.from(JSON.stringify(result.user)),
       })
     }
   }
@@ -32,7 +32,7 @@ class UserHooks {
       return mailerService.send({
         template: 'update-email',
         to: result.user.email,
-        data: Buffer.from(JSON.stringify(result.user))
+        data: Buffer.from(JSON.stringify(result.user)),
       })
     }
   }
@@ -46,7 +46,7 @@ class UserHooks {
       return mailerService.send({
         template: 'update-password',
         to: result.user.email,
-        data: Buffer.from(JSON.stringify(result.user))
+        data: Buffer.from(JSON.stringify(result.user)),
       })
     }
   }

@@ -7,7 +7,7 @@ class HooksRegistry {
     this._hooks = {
       comment: new CommentHooks(services, pubsub, logger),
       post: new PostHooks(services, pubsub, logger),
-      user: new UserHooks(services, pubsub, logger)
+      user: new UserHooks(services, pubsub, logger),
     }
   }
 

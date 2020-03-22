@@ -8,7 +8,7 @@ class HealthCheckService {
   async getServiceImpl() {
     const serviceName = this._serviceName
     const statusMap = {
-      '': proto.grpc.health.v1.HealthCheckResponse.ServingStatus.NOT_SERVING
+      '': proto.grpc.health.v1.HealthCheckResponse.ServingStatus.NOT_SERVING,
     }
 
     statusMap[serviceName] = proto.grpc.health.v1.HealthCheckResponse.ServingStatus.SERVING
@@ -21,7 +21,7 @@ class HealthCheckService {
           const result = await new Promise((resolve, reject) => {
             healthCheckImpl.check(
               {
-                request: { getService: () => serviceName }
+                request: { getService: () => serviceName },
               },
               (err, res) => {
                 if (err) return reject(err)
@@ -32,8 +32,8 @@ class HealthCheckService {
           })
 
           response.res = result
-        }
-      }
+        },
+      },
     }
   }
 }

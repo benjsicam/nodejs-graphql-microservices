@@ -15,7 +15,7 @@ class PostHooks {
 
       this._pubsub.publish('post', {
         mutation: 'CREATED',
-        data: result
+        data: result,
       })
     }
   }
@@ -26,7 +26,7 @@ class PostHooks {
 
       this._pubsub.publish('post', {
         mutation: 'UPDATED',
-        data: result
+        data: result,
       })
     }
   }
@@ -39,8 +39,8 @@ class PostHooks {
         this._pubsub.publish('post', {
           mutation: 'DELETED',
           data: {
-            id: args.id
-          }
+            id: args.id,
+          },
         })
       }
     }

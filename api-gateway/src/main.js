@@ -30,7 +30,7 @@ const main = async () => {
     schemaPaths,
     (schemaContents, filePath) => {
       const fileContents = fs.readFileSync(filePath, {
-        encoding: 'utf8'
+        encoding: 'utf8',
       })
 
       return schemaContents.concat(fileContents)
@@ -46,32 +46,32 @@ const main = async () => {
   let redisOptions = {}
 
   if (redisHostConfig.length > 1) {
-    const redisNodes = map(redisHostConfig, host => {
+    const redisNodes = map(redisHostConfig, (host) => {
       return {
         host,
-        port: process.env.REDIS_PORT
+        port: process.env.REDIS_PORT,
       }
     })
 
     redisOptions = {
       password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV
+      keyPrefix: process.env.NODE_ENV,
     }
 
     publisher = new Redis.Cluster(redisNodes, {
       slotsRefreshTimeout: 20000,
-      redisOptions
+      redisOptions,
     })
     subscriber = new Redis.Cluster(redisNodes, {
       slotsRefreshTimeout: 20000,
-      redisOptions
+      redisOptions,
     })
   } else {
     redisOptions = {
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
       password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV
+      keyPrefix: process.env.NODE_ENV,
     }
 
     publisher = new Redis(redisOptions)
@@ -80,10 +80,10 @@ const main = async () => {
 
   const pubsub = new RedisPubSub({
     publisher,
-    subscriber
+    subscriber,
   })
 
-  new HooksRegistry(serviceRegistry.services, pubsub, logger)
+  new HooksRegistry(serviceRegistry.services, pubsub, logger) // eslint-disable-line
 
   const server = await Server.init(
     schema,
@@ -91,12 +91,12 @@ const main = async () => {
       QueryResolvers,
       MutationResolvers,
       SubscriptionResolvers,
-      GraphResolvers
+      GraphResolvers,
     },
     {
       ...serviceRegistry.services,
       pubsub,
-      logger
+      logger,
     },
     [ErrorMiddleware, LogMiddleware, AuthenticationMiddleware, AuthorizationMiddleware, ValidationMiddleware, HookMiddleware]
   )
@@ -104,7 +104,7 @@ const main = async () => {
   const httpServer = await server.start(
     {
       defaultPlaygroundQuery,
-      port: process.env.PORT || 3000
+      port: process.env.GRAPHQL_PORT || 3000,
     },
     ({ port }) => {
       logger.info(`GraphQL Server is now running on port ${port}`)
@@ -114,7 +114,7 @@ const main = async () => {
   return {
     publisher,
     subscriber,
-    httpServer
+    httpServer,
   }
 }
 

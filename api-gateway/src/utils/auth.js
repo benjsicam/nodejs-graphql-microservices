@@ -21,7 +21,7 @@ const authUtils = {
   },
   async generateToken(userId) {
     return jwt.sign({ userId }, process.env.JWT_SECRET)
-  }
+  },
 }
 
 export default authUtils

@@ -7,15 +7,15 @@ class UserService extends AbstractCrudService {
   constructor(client, logger) {
     super('UserService', client, logger)
 
-    this._loader = new Dataloader(async keys => {
+    this._loader = new Dataloader(async (keys) => {
       this._logger.info(`Loading keys from ${this._serviceName}`, keys)
       const { edges } = await this.find({
         where: {
           id: {
-            $in: keys
-          }
+            $in: keys,
+          },
         },
-        limit: keys.length
+        limit: keys.length,
       })
 
       return Aigle.map(keys, async (key) => {

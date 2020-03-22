@@ -6,7 +6,7 @@ import * as protoLoader from '@grpc/proto-loader'
 const proto = protoLoader.loadSync(path.resolve(__dirname, '../../_proto/user.proto'), {
   enums: String,
   objects: true,
-  arrays: true
+  arrays: true,
 })
 const UserServiceClient = grpc.loadPackageDefinition(proto).user.UserService
 

@@ -8,7 +8,7 @@ const commentCount = {
     if (!isEmpty(q)) Object.assign(query, { where: { text: { $like: q } } })
 
     return commentService.count(query)
-  }
+  },
 }
 
 export default { commentCount }

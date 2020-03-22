@@ -16,20 +16,20 @@ class CommentHooks {
       const { mailerService, postService, userService } = this._services
 
       const post = await postService.findOne({
-        where: { id: result.post }
+        where: { id: result.post },
       })
 
       const postAuthor = await userService.findOne({
-        where: { id: post.author }
+        where: { id: post.author },
       })
 
       const commentAuthor = await userService.findOne({
-        where: { id: result.author }
+        where: { id: result.author },
       })
 
       this._pubsub.publish('comment', {
         mutation: 'CREATED',
-        data: result
+        data: result,
       })
 
       return mailerService.send({
@@ -40,9 +40,9 @@ class CommentHooks {
             comment: result,
             post,
             postAuthor,
-            commentAuthor
+            commentAuthor,
           })
-        )
+        ),
       })
     }
   }
@@ -53,7 +53,7 @@ class CommentHooks {
 
       this._pubsub.publish('comment', {
         mutation: 'UPDATED',
-        data: result
+        data: result,
       })
     }
   }
@@ -66,8 +66,8 @@ class CommentHooks {
         this._pubsub.publish('comment', {
           mutation: 'DELETED',
           data: {
-            id: args.id
-          }
+            id: args.id,
+          },
         })
       }
     }

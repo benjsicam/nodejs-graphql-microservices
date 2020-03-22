@@ -17,7 +17,7 @@ const SERVICE_NAME = 'MailerService'
 
 const SERVICE_PROTO = path.resolve(__dirname, '_proto/mailer.proto')
 
-const HOST_PORT = `${process.env.HOST}:${process.env.PORT}`
+const HOST_PORT = `${process.env.GRPC_HOST}:${process.env.GRPC_PORT}`
 
 const main = async () => {
   const transporter = nodemailer.createTransport({
@@ -68,7 +68,7 @@ const main = async () => {
 
   await app.start(HOST_PORT)
 
-  logger.info(`gRPC Server is now listening on port ${process.env.PORT}`)
+  logger.info(`gRPC Server is now listening on port ${process.env.GRPC_PORT}`)
 
   return {
     app

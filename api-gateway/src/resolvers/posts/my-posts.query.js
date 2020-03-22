@@ -1,8 +1,9 @@
 import { isEmpty, isNil } from 'lodash'
+import queryUtils from '../../utils/query'
 
 const myPosts = {
   authenticate: true,
-  resolve: async (parent, { q, first, last, before, after, user }, { postService }) => {
+  resolve: async (parent, { q, first, last, before, after, user, orderBy }, { postService }) => {
     const query = { where: { author: user } }
 
     if (!isEmpty(q)) Object.assign(query.where, { author: user, title: { $like: q } })
@@ -15,8 +16,14 @@ const myPosts = {
       Object.assign(query, { before, limit: last })
     }
 
+    if (!isEmpty(orderBy)) {
+      const order = await queryUtils.getOrder(orderBy)
+
+      Object.assign(query, { orderBy: order })
+    }
+
     return postService.find(query)
-  }
+  },
 }
 
 export default { myPosts }

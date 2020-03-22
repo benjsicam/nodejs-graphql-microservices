@@ -6,16 +6,9 @@ const updateProfile = {
   authenticate: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
-      name: yup
-        .string()
-        .trim()
-        .min('2', 'Name should at least be 2 characters.')
-        .max('100', 'Name should be 100 characters at most.'),
-      age: yup
-        .number()
-        .integer()
-        .moreThan('17', 'Age should at least be 18 years old.')
-    })
+      name: yup.string().trim().min('2', 'Name should at least be 2 characters.').max('100', 'Name should be 100 characters at most.'),
+      age: yup.number().integer().moreThan('17', 'Age should at least be 18 years old.'),
+    }),
   }),
   resolve: async (parent, args, { userService, logger }) => {
     const { data } = args
@@ -38,7 +31,7 @@ const updateProfile = {
     const updatedUser = await userService.update(user.id, user)
 
     return { user: updatedUser }
-  }
+  },
 }
 
 export default { updateProfile }

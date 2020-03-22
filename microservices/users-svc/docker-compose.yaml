@@ -31,22 +31,32 @@ services:
     restart: "on-failure"
 
   db:
-    image: "postgres:11.4-alpine"
+    image: "postgres:12.2-alpine"
     networks:
-      - "users-svc"
+      - "comments-svc"
     expose:
       - "5432"
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
+    healthcheck:
+      test: ["CMD-SHELL", "su -c 'pg_isready -U postgres'"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
     restart: "on-failure"
 
   cache:
-    image: "redis:5.0.5-alpine"
+    image: "redis:5.0.8-alpine"
     networks:
-      - "users-svc"
+      - "comments-svc"
     expose:
       - "6379"
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'redis-cli PING'"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
     restart: "on-failure"
 
 networks:

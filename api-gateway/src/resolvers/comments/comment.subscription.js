@@ -11,8 +11,8 @@ const comment = {
       }
 
       return pubsub.asyncIterator(`comment#${post}`)
-    }
-  }
+    },
+  },
 }
 
 export default { comment }

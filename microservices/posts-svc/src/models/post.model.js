@@ -1,7 +1,7 @@
 import paginate from 'sequelize-cursor-pagination'
 import * as Sequelize from 'sequelize'
 
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
   const model = sequelize.define(
     'Post',
     {
@@ -9,38 +9,38 @@ export default function(sequelize, DataTypes) {
         type: DataTypes.UUID,
         primaryKey: true,
         defaultValue: Sequelize.UUIDV1,
-        comment: 'The post id.'
+        comment: 'The post id.',
       },
       title: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: 'The post title.'
+        comment: 'The post title.',
       },
       body: {
         type: DataTypes.TEXT,
         allowNull: false,
-        comment: 'The post body.'
+        comment: 'The post body.',
       },
       published: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-        comment: 'Denotes if the post is published or not.'
+        comment: 'Denotes if the post is published or not.',
       },
       author: {
         type: Sequelize.UUID,
         allowNull: false,
-        comment: 'The author/user who created the post.'
-      }
+        comment: 'The author/user who created the post.',
+      },
     },
     {
       timestamps: true,
-      version: true
+      version: true,
     }
   )
 
   paginate({
     methodName: 'findAndPaginate',
-    primaryKeyField: 'id'
+    primaryKeyField: 'id',
   })(model)
 
   return model

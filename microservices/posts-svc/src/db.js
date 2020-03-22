@@ -35,7 +35,7 @@ const operatorsAliases = {
   $any: Op.any,
   $all: Op.all,
   $values: Op.values,
-  $col: Op.col
+  $col: Op.col,
 }
 
 const Db = {
@@ -48,19 +48,19 @@ const Db = {
       benchmark: true,
       retry: {
         max: 3,
-        typeValidation: true
+        typeValidation: true,
       },
-      operatorsAliases
+      operatorsAliases,
     })
 
-    modelPaths.forEach(modelPath => {
+    modelPaths.forEach((modelPath) => {
       db.import(modelPath)
     })
 
     await db.sync()
 
     return db
-  }
+  },
 }
 
 export default Db

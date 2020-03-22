@@ -41,7 +41,7 @@ const ErrorMiddleware = {
 
       throw error
     }
-  }
+  },
 }
 
 export default ErrorMiddleware

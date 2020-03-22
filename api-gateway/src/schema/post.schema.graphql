@@ -5,7 +5,7 @@ type Post {
   body: String!
   published: Boolean!
   author: User!
-  comments(q: String, first: Int, last: Int, before: String, after: String): CommentsConnection
+  comments(q: String, first: Int, last: Int, before: String, after: String, orderBy: String): CommentsConnection
   createdAt: DateTime!
   updatedAt: DateTime!
   version: Int!

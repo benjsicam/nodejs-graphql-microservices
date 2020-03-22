@@ -10,15 +10,15 @@ const deleteComment = {
     }
   },
   validationSchema: yup.object().shape({
-    id: yup.string().required('ID is a required field.')
+    id: yup.string().required('ID is a required field.'),
   }),
   resolve: async (parent, { id }, { commentService }) => {
     const count = await commentService.destroy({
-      where: { id }
+      where: { id },
     })
 
     return { count }
-  }
+  },
 }
 
 export default { deleteComment }

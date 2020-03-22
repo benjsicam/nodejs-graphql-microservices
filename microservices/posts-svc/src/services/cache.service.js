@@ -48,14 +48,14 @@ class RedisCacheService {
     return new Promise((resolve, reject) => {
       const stream = this._cache.scanStream({
         match: pattern,
-        count: 99999
+        count: 99999,
       })
       const pipeline = this._cache.pipeline()
 
-      stream.on('data', keys => {
+      stream.on('data', (keys) => {
         this._logger.info('Cache#flush.keys', keys.join(', '))
 
-        keys.forEach(key => {
+        keys.forEach((key) => {
           pipeline.del(key)
         })
       })
@@ -65,7 +65,7 @@ class RedisCacheService {
         resolve()
       })
 
-      stream.on('error', err => {
+      stream.on('error', (err) => {
         /* istanbul ignore next */
         reject(err)
       })

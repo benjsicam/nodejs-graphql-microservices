@@ -26,7 +26,7 @@ class ServiceRegistry {
       commentService: new CommentService(commentServiceClient, logger),
       postService: new PostService(postServiceClient, logger),
       userService: new UserService(userServiceClient, logger),
-      mailerService: new MailerService(mailerServiceClient, logger)
+      mailerService: new MailerService(mailerServiceClient, logger),
     }
   }
 

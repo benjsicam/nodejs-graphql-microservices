@@ -17,8 +17,8 @@ services:
       - "cache"
     environment:
       NODE_ENV: "test"
-      HOST: "0.0.0.0"
-      PORT: "50051"
+      GRPC_HOST: "0.0.0.0"
+      GRPC_PORT: "50051"
       DB_NAME: "postgres"
       DB_HOST: "comments-db"
       DB_PORT: "5432"
@@ -49,8 +49,8 @@ services:
       - "cache"
     environment:
       NODE_ENV: "test"
-      HOST: "0.0.0.0"
-      PORT: "50051"
+      GRPC_HOST: "0.0.0.0"
+      GRPC_PORT: "50051"
       DB_NAME: "postgres"
       DB_HOST: "posts-db"
       DB_PORT: "5432"
@@ -81,8 +81,8 @@ services:
       - "cache"
     environment:
       NODE_ENV: "test"
-      HOST: "0.0.0.0"
-      PORT: "50051"
+      GRPC_HOST: "0.0.0.0"
+      GRPC_PORT: "50051"
       DB_NAME: "postgres"
       DB_HOST: "users-db"
       DB_PORT: "5432"
@@ -109,8 +109,8 @@ services:
       - "50051"
     environment:
       NODE_ENV: "test"
-      HOST: "0.0.0.0"
-      PORT: "50051"
+      GRPC_HOST: "0.0.0.0"
+      GRPC_PORT: "50051"
       SMTP_HOST:
       SMTP_PORT:
       SMTP_SECURE:
@@ -140,8 +140,7 @@ services:
       - "mailer-svc"
     environment:
       NODE_ENV: "test"
-      HOST: "0.0.0.0"
-      PORT: "3000"
+      GRAPHQL_PORT: "3000"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
       JWT_SECRET: "47YNbpelXTd2gAi+6r1C4bDj4NSlxUDS"
@@ -157,49 +156,75 @@ services:
     restart: "on-failure"
 
   comments-db:
-    image: "postgres:11.4-alpine"
+    image: "postgres:12.2-alpine"
     container_name: "comments-db"
     networks:
       - "commentsdomain"
     expose:
       - "5432"
+    volumes:
+      - commentsdata:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
+    healthcheck:
+      test: ["CMD-SHELL", "su -c 'pg_isready -U postgres'"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
     restart: "on-failure"
 
   posts-db:
-    image: "postgres:11.4-alpine"
+    image: "postgres:12.2-alpine"
     container_name: "posts-db"
     networks:
       - "postsdomain"
     expose:
       - "5432"
+    volumes:
+      - postsdata:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
+    healthcheck:
+      test: ["CMD-SHELL", "su -c 'pg_isready -U postgres'"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
     restart: "on-failure"
 
   users-db:
-    image: "postgres:11.4-alpine"
+    image: "postgres:12.2-alpine"
     container_name: "users-db"
     networks:
       - "usersdomain"
     expose:
       - "5432"
+    volumes:
+      - usersdata:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
+    healthcheck:
+      test: ["CMD-SHELL", "su -c 'pg_isready -U postgres'"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
     restart: "on-failure"
 
   cache:
-    image: "redis:5.0.5-alpine"
+    image: "redis:5.0.8-alpine"
     container_name: "redis-cache"
     networks:
       - "frontend"
       - "backend"
     expose:
       - "6379"
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'redis-cli PING'"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
     restart: "on-failure"
 
 networks:
@@ -209,3 +234,8 @@ networks:
   postsdomain:
   usersdomain:
   mailerdomain:
+
+volumes:
+  commentsdata:
+  postsdata:
+  usersdata:

@@ -4,14 +4,9 @@ const createComment = {
   authenticate: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
-      text: yup
-        .string()
-        .trim()
-        .required('Text is a required field.')
-        .min(5, 'Text should at least be 5 characters.')
-        .max(500, 'Text should be 500 characters at most.'),
-      post: yup.string().required('Post is a required field.')
-    })
+      text: yup.string().trim().required('Text is a required field.').min(5, 'Text should at least be 5 characters.').max(500, 'Text should be 500 characters at most.'),
+      post: yup.string().required('Post is a required field.'),
+    }),
   }),
   resolve: async (parent, { data, user }, { userService, postService, commentService, logger }) => {
     const userExists = (await userService.count({ where: { id: user } })) >= 1
@@ -25,13 +20,13 @@ const createComment = {
 
     const comment = await commentService.create({
       ...data,
-      author: user
+      author: user,
     })
 
     return {
-      comment
+      comment,
     }
-  }
+  },
 }
 
 export default { createComment }

@@ -5,6 +5,7 @@
 
 - [comment.proto](#comment.proto)
     - [Comment](#comment.Comment)
+    - [CommentEdge](#comment.CommentEdge)
     - [CreateCommentInput](#comment.CreateCommentInput)
     - [FindCommentsPayload](#comment.FindCommentsPayload)
     - [UpdateCommentInput](#comment.UpdateCommentInput)
@@ -37,6 +38,7 @@
     - [CreatePostInput](#post.CreatePostInput)
     - [FindPostsPayload](#post.FindPostsPayload)
     - [Post](#post.Post)
+    - [PostEdge](#post.PostEdge)
     - [UpdatePostInput](#post.UpdatePostInput)
   
   
@@ -49,6 +51,7 @@
     - [FindUsersPayload](#user.FindUsersPayload)
     - [UpdateUserInput](#user.UpdateUserInput)
     - [User](#user.User)
+    - [UserEdge](#user.UserEdge)
   
   
   
@@ -87,6 +90,22 @@
 
 
 
+<a name="comment.CommentEdge"></a>
+
+### CommentEdge
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| node | [Comment](#comment.Comment) |  |  |
+| cursor | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="comment.CreateCommentInput"></a>
 
 ### CreateCommentInput
@@ -112,7 +131,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| results | [Comment](#comment.Comment) | repeated |  |
+| edges | [CommentEdge](#comment.CommentEdge) | repeated |  |
 | pageInfo | [commons.PageInfo](#commons.PageInfo) |  |  |
 
 
@@ -226,7 +245,7 @@
 | ----- | ---- | ----- | ----------- |
 | select | [string](#string) | repeated |  |
 | where | [string](#string) |  |  |
-| orderBy | [string](#string) |  |  |
+| orderBy | [string](#string) | repeated |  |
 | limit | [int32](#int32) |  |  |
 | before | [string](#string) |  |  |
 | after | [string](#string) |  |  |
@@ -336,7 +355,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| results | [Post](#post.Post) | repeated |  |
+| edges | [PostEdge](#post.PostEdge) | repeated |  |
 | pageInfo | [commons.PageInfo](#commons.PageInfo) |  |  |
 
 
@@ -360,6 +379,22 @@
 | createdAt | [string](#string) |  |  |
 | updatedAt | [string](#string) |  |  |
 | version | [int32](#int32) |  |  |
+
+
+
+
+
+
+<a name="post.PostEdge"></a>
+
+### PostEdge
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| node | [Post](#post.Post) |  |  |
+| cursor | [string](#string) |  |  |
 
 
 
@@ -440,7 +475,7 @@
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| results | [User](#user.User) | repeated |  |
+| edges | [UserEdge](#user.UserEdge) | repeated |  |
 | pageInfo | [commons.PageInfo](#commons.PageInfo) |  |  |
 
 
@@ -480,6 +515,22 @@
 | createdAt | [string](#string) |  |  |
 | updatedAt | [string](#string) |  |  |
 | version | [int32](#int32) |  |  |
+
+
+
+
+
+
+<a name="user.UserEdge"></a>
+
+### UserEdge
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| node | [User](#user.User) |  |  |
+| cursor | [string](#string) |  |  |
 
 
 

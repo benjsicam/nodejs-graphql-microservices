@@ -7,16 +7,9 @@ const updateEmail = {
   authenticate: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
-      email: yup
-        .string()
-        .trim()
-        .required('Email is a required field.')
-        .email('Email field should contain a valid email.'),
-      currentPassword: yup
-        .string()
-        .trim()
-        .required('Password is a required field.')
-    })
+      email: yup.string().trim().required('Email is a required field.').email('Email field should contain a valid email.'),
+      currentPassword: yup.string().trim().required('Password is a required field.'),
+    }),
   }),
   resolve: async (parent, args, { userService, logger }) => {
     const { data } = args
@@ -44,9 +37,9 @@ const updateEmail = {
 
     return {
       user: updatedUser,
-      token: await authUtils.generateToken(updatedUser.id)
+      token: await authUtils.generateToken(updatedUser.id),
     }
-  }
+  },
 }
 
 export default { updateEmail }

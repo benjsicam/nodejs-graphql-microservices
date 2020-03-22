@@ -8,7 +8,7 @@ const ValidationMiddleware = {
     }
 
     return resolve(root, args, context, info)
-  }
+  },
 }
 
 export default ValidationMiddleware

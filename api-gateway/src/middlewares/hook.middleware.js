@@ -9,7 +9,7 @@ const HookMiddleware = {
     eventsBus.publish(`mutation#${operation}`, { args, result })
 
     return result
-  }
+  },
 }
 
 export default HookMiddleware
