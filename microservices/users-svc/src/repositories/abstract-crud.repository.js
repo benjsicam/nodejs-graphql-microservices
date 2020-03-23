@@ -1,5 +1,5 @@
 import Aigle from 'aigle'
-import { isEmpty, isNil } from 'lodash'
+import { isEmpty, isNil, omit } from 'lodash'
 
 class AbstractCrudRepository {
   constructor(model) {
@@ -11,7 +11,7 @@ class AbstractCrudRepository {
     const { results, cursors } = await this._model.findAndPaginate({
       attributes: !isEmpty(req.select) ? req.select : undefined,
       where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined,
-      order: !isEmpty(req.orderBy) ? req.orderBy : undefined,
+      order: !isEmpty(req.orderBy) ? JSON.parse(req.orderBy) : undefined,
       limit: !isNil(req.limit) ? req.limit : 25,
       before: !isEmpty(req.before) ? req.before : undefined,
       after: !isEmpty(req.after) ? req.after : undefined,
@@ -116,13 +116,11 @@ class AbstractCrudRepository {
       }
     })
 
-    const model = await this._model.findOne({
-      where: {
-        id: req.id
-      }
-    })
+    const model = await this._model.findByPk(req.id)
 
-    model.set(data)
+    if (isEmpty(model)) throw new Error('Record not found.')
+
+    model.set(omit(data, ['id']))
 
     const result = await model.save()
 
