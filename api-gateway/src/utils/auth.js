@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import { get } from 'lodash'
 
 const authUtils = {
-  async getUser(request, requireAuth = true) {
+  async getUser (request, requireAuth = true) {
     const header = get(request, 'headers.authorization') || get(request, 'connection.context.Authorization')
 
     if (header) {
@@ -19,9 +19,9 @@ const authUtils = {
 
     return null
   },
-  async generateToken(userId) {
+  async generateToken (userId) {
     return jwt.sign({ userId }, process.env.JWT_SECRET)
-  },
+  }
 }
 
 export default authUtils

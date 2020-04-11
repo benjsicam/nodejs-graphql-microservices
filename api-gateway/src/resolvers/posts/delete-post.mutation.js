@@ -10,15 +10,15 @@ const deletePost = {
     }
   },
   validationSchema: yup.object().shape({
-    id: yup.string().required('ID is a required field.'),
+    id: yup.string().required('ID is a required field.')
   }),
   resolve: async (parent, { id }, { postService }) => {
     const count = await postService.destroy({
-      where: { id },
+      where: { id }
     })
 
     return { count }
-  },
+  }
 }
 
 export default { deletePost }

@@ -1,12 +1,12 @@
 import { isEmpty } from 'lodash'
 
 class CacheMiddleware {
-  constructor(cacheService, logger) {
+  constructor (cacheService, logger) {
     this._cacheService = cacheService
     this._logger = logger
   }
 
-  find(prefix) {
+  find (prefix) {
     return async ({ req, response }, next) => {
       const key = Buffer.from(JSON.stringify(req)).toString('base64')
 
@@ -32,7 +32,7 @@ class CacheMiddleware {
     }
   }
 
-  read(prefix) {
+  read (prefix) {
     return async ({ req, response }, next) => {
       const key = Buffer.from(JSON.stringify(req)).toString('base64')
 
@@ -58,7 +58,7 @@ class CacheMiddleware {
     }
   }
 
-  write(prefix) {
+  write (prefix) {
     return async (ctx, next) => {
       await next()
 
@@ -66,7 +66,7 @@ class CacheMiddleware {
     }
   }
 
-  remove(prefix) {
+  remove (prefix) {
     return async ({ response }, next) => {
       await next()
 

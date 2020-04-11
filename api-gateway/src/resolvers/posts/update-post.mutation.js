@@ -15,8 +15,8 @@ const updatePost = {
     data: yup.object().shape({
       title: yup.string().trim().min(5, 'Title should at least be 5 characters.').max(100, 'Title should be 100 characters at most.'),
       body: yup.string().trim().min(5, 'Body should at least be 5 characters.'),
-      published: yup.boolean(),
-    }),
+      published: yup.boolean()
+    })
   }),
   resolve: async (parent, { id, data, user }, { postService, logger }) => {
     const post = await postService.findOne({ where: { id, author: user } })
@@ -38,7 +38,7 @@ const updatePost = {
     const updatedPost = await postService.update(id, post)
 
     return { post: updatedPost }
-  },
+  }
 }
 
 export default { updatePost }

@@ -11,7 +11,8 @@ import PostRepository from '../src/repositories/post.repository'
 const MODEL_NAME = 'Post'
 
 describe('Database Testing', () => {
-  let db, repo
+  let db,
+    repo
 
   const generateMockData = async (isSingle = false) => {
     if (isSingle) {
@@ -21,24 +22,23 @@ describe('Database Testing', () => {
         published: faker.random.boolean(),
         author: faker.random.uuid()
       }
-    } else {
-      return [{
-        title: faker.random.words(),
-        body: faker.lorem.paragraphs(),
-        published: faker.random.boolean(),
-        author: faker.random.uuid()
-      }, {
-        title: faker.random.words(),
-        body: faker.lorem.paragraphs(),
-        published: faker.random.boolean(),
-        author: faker.random.uuid()
-      }, {
-        title: faker.random.words(),
-        body: faker.lorem.paragraphs(),
-        published: faker.random.boolean(),
-        author: faker.random.uuid()
-      }]
     }
+    return [{
+      title: faker.random.words(),
+      body: faker.lorem.paragraphs(),
+      published: faker.random.boolean(),
+      author: faker.random.uuid()
+    }, {
+      title: faker.random.words(),
+      body: faker.lorem.paragraphs(),
+      published: faker.random.boolean(),
+      author: faker.random.uuid()
+    }, {
+      title: faker.random.words(),
+      body: faker.lorem.paragraphs(),
+      published: faker.random.boolean(),
+      author: faker.random.uuid()
+    }]
   }
 
   beforeAll(async () => {
@@ -47,8 +47,6 @@ describe('Database Testing', () => {
 
     db = await Db.init(modelPaths, logger)
     repo = new PostRepository(db.model(MODEL_NAME))
-
-    return
   })
 
   afterAll(async () => {
@@ -57,22 +55,18 @@ describe('Database Testing', () => {
   })
 
   describe('PostRepository', () => {
-    beforeEach(async () => {
-      return repo.destroy({
-        req: { where: {} },
-        response: {}
-      })
-    })
+    beforeEach(async () => repo.destroy({
+      req: { where: {} },
+      response: {}
+    }))
 
     it('should return a new db entry on create', async () => {
       const data = await generateMockData(true)
 
-      let result = await repo.create({
+      const result = await repo.create({
         req: data,
         response: {}
       })
-
-      result = result.toJSON()
 
       expect(result).not.toBeNil()
 
@@ -109,22 +103,18 @@ describe('Database Testing', () => {
       const data = await generateMockData(true)
       const updateData = await generateMockData(true)
 
-      let post = await repo.create({
+      const post = await repo.create({
         req: data,
         response: {}
       })
 
-      post = post.toJSON()
-
-      let result = await repo.update({
+      const result = await repo.update({
         req: {
           id: post.id,
           data: Object.assign(post, updateData)
         },
         response: {}
       })
-
-      result = result.toJSON()
 
       expect(result).not.toBeNil()
 
@@ -167,7 +157,7 @@ describe('Database Testing', () => {
           response: {}
         })
 
-        return post.toJSON()
+        return post
       }))
 
       const { edges, pageInfo } = await repo.find({
@@ -223,7 +213,7 @@ describe('Database Testing', () => {
           response: {}
         })
 
-        return post.toJSON()
+        return post
       }))
 
       const { edges, pageInfo } = await repo.find({
@@ -281,12 +271,10 @@ describe('Database Testing', () => {
     it('should return a single row by its id', async () => {
       const data = await generateMockData(true)
 
-      let post = await repo.create({
+      const post = await repo.create({
         req: data,
         response: {}
       })
-
-      post = post.toJSON()
 
       const result = await repo.findById({
         req: {
@@ -314,7 +302,7 @@ describe('Database Testing', () => {
       expect(result.title).toBeString()
       expect(result.body).toBeString()
       expect(result.published).toBeBoolean()
-      expect(result.author). toBeString()
+      expect(result.author).toBeString()
       expect(result.createdAt).toBeDate()
       expect(result.updatedAt).toBeDate()
       expect(result.version).toBeNumber()
@@ -329,12 +317,10 @@ describe('Database Testing', () => {
     it('should return a single row that matches a query', async () => {
       const data = await generateMockData(true)
 
-      let post = await repo.create({
+      const post = await repo.create({
         req: data,
         response: {}
       })
-
-      post = post.toJSON()
 
       const result = await repo.findOne({
         req: {
@@ -379,12 +365,10 @@ describe('Database Testing', () => {
     it('should return the correct count that matches a query', async () => {
       const data = await generateMockData(true)
 
-      let post = await repo.create({
+      const post = await repo.create({
         req: data,
         response: {}
       })
-
-      post = post.toJSON()
 
       const result = await repo.count({
         req: {
@@ -407,12 +391,10 @@ describe('Database Testing', () => {
     it('should delete records properly on destroy', async () => {
       const data = await generateMockData(true)
 
-      let post = await repo.create({
+      const post = await repo.create({
         req: data,
         response: {}
       })
-
-      post = post.toJSON()
 
       await repo.destroy({
         req: {

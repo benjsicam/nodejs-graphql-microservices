@@ -13,7 +13,7 @@ import MailerService from './mailer/mailer.service'
 import EventsBus from './events-bus.service'
 
 class ServiceRegistry {
-  constructor(logger) {
+  constructor (logger) {
     const grpcCredentials = grpc.credentials.createInsecure()
 
     const commentServiceClient = new CommentServiceClient(process.env.COMMENTS_SVC_URL, grpcCredentials)
@@ -26,11 +26,11 @@ class ServiceRegistry {
       commentService: new CommentService(commentServiceClient, logger),
       postService: new PostService(postServiceClient, logger),
       userService: new UserService(userServiceClient, logger),
-      mailerService: new MailerService(mailerServiceClient, logger),
+      mailerService: new MailerService(mailerServiceClient, logger)
     }
   }
 
-  get services() {
+  get services () {
     return this._services
   }
 }

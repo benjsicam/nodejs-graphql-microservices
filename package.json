@@ -16,7 +16,10 @@
     "type": "git",
     "url": "git+ssh://git@github.com:benjsicam/node-graphql-microservices.git"
   },
-  "author": "Benj Sicam",
+  "author": "Benj Sicam <benjsicam@gmail.com> (https://github.com/benjsicam)",
+  "contributors": [
+    "Achilles Dinglasan <akzdinglasan@gmail.com> (https://github.com/akzdinglasan)"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/benjsicam/node-graphql-microservices/issues"

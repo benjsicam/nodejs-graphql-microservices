@@ -3,7 +3,9 @@ import queryUtils from '../../utils/query'
 
 const myPosts = {
   authenticate: true,
-  resolve: async (parent, { q, first, last, before, after, user, orderBy }, { postService }) => {
+  resolve: async (parent, {
+    q, first, last, before, after, user, orderBy
+  }, { postService }) => {
     const query = { where: { author: user } }
 
     if (!isEmpty(q)) Object.assign(query.where, { author: user, title: { $like: q } })
@@ -23,7 +25,7 @@ const myPosts = {
     }
 
     return postService.find(query)
-  },
+  }
 }
 
 export default { myPosts }

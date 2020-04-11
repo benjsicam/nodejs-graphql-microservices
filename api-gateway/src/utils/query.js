@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash'
 
 const queryUtils = {
-  async getOrder(orderBy) {
+  async getOrder (orderBy) {
     let result = []
 
     if (!isEmpty(orderBy)) {
@@ -10,7 +10,7 @@ const queryUtils = {
     }
 
     return result
-  },
+  }
 }
 
 export default queryUtils

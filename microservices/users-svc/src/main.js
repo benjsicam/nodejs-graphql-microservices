@@ -35,12 +35,10 @@ const main = async () => {
   let redisOptions = {}
 
   if (redisHostConfig.length > 1) {
-    const redisNodes = map(redisHostConfig, host => {
-      return {
-        host,
-        port: process.env.REDIS_PORT
-      }
-    })
+    const redisNodes = map(redisHostConfig, host => ({
+      host,
+      port: process.env.REDIS_PORT
+    }))
 
     redisOptions = {
       password: process.env.REDIS_PASSWORD

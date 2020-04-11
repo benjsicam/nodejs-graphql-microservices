@@ -76,4 +76,15 @@ Deployment is done with containers in mind. A Docker Compose file along with Doc
 
 ## How to Run
 
+### Pre-requisites
+
+You must install the following on your local machine:
+
+1. Node.js (v12.x recommended)
+2. Docker
+3. Docker Compose
+4. PostgreSQL Client (libpq as required by [pg-native](https://www.npmjs.com/package/pg-native#install))
+
+### Video Demo
+
 [![GraphQL + gRPC Microservices](https://raw.githubusercontent.com/benjsicam/node-graphql-microservices/master/docs/img/vid-preview.jpg)](https://youtu.be/SuH2K92FOaE)

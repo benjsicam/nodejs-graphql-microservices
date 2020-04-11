@@ -6,7 +6,7 @@ const userCount = {
     if (q) Object.assign(query, { where: { name: { $like: q } } })
 
     return userService.count(query)
-  },
+  }
 }
 
 export default { userCount }

@@ -11,12 +11,12 @@ services:
       - "50054:50051"
     environment:
       NODE_ENV: "test"
-      HOST: "0.0.0.0"
-      PORT: "50051"
+      GRPC_HOST: "0.0.0.0"
+      GRPC_PORT: "50051"
       SMTP_HOST: "smtp.gmail.com"
       SMTP_PORT: "587"
       SMTP_SECURE: "true"
-      SMTP_USER: "username"
+      SMTP_USER: "username@gmail.com"
       SMTP_PASS: "password"
     healthcheck:
       test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]

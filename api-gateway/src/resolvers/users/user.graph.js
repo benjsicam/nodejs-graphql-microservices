@@ -3,7 +3,9 @@ import queryUtils from '../../utils/query'
 
 const UserGraph = {
   posts: {
-    resolve: async (parent, { q, first, last, before, after, orderBy }, { postService }) => {
+    resolve: async (parent, {
+      q, first, last, before, after, orderBy
+    }, { postService }) => {
       const query = {}
 
       if (!isEmpty(q)) Object.assign(query, { where: { title: { $like: q } } })
@@ -23,10 +25,12 @@ const UserGraph = {
       }
 
       return postService.find(query)
-    },
+    }
   },
   comments: {
-    resolve: async (parent, { q, first, last, before, after, orderBy }, { commentService }) => {
+    resolve: async (parent, {
+      q, first, last, before, after, orderBy
+    }, { commentService }) => {
       const query = {}
 
       if (!isEmpty(q)) Object.assign(query, { where: { text: { $like: q } } })
@@ -46,8 +50,8 @@ const UserGraph = {
       }
 
       return commentService.find(query)
-    },
-  },
+    }
+  }
 }
 
 export default UserGraph

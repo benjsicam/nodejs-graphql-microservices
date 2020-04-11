@@ -1,5 +1,5 @@
 class CommentHooks {
-  constructor(services, pubsub, logger) {
+  constructor (services, pubsub, logger) {
     this._eventsBus = services.eventsBus
     this._pubsub = pubsub
     this._logger = logger
@@ -9,27 +9,27 @@ class CommentHooks {
     this._eventsBus.on('mutation#deleteComment', this.onDelete())
   }
 
-  onCreate() {
+  onCreate () {
     return async ({ result }) => {
       this._logger.info('CommentHooks#onCreate.call', result)
 
       const { mailerService, postService, userService } = this._services
 
       const post = await postService.findOne({
-        where: { id: result.post },
+        where: { id: result.post }
       })
 
       const postAuthor = await userService.findOne({
-        where: { id: post.author },
+        where: { id: post.author }
       })
 
       const commentAuthor = await userService.findOne({
-        where: { id: result.author },
+        where: { id: result.author }
       })
 
       this._pubsub.publish('comment', {
         mutation: 'CREATED',
-        data: result,
+        data: result
       })
 
       return mailerService.send({
@@ -40,25 +40,25 @@ class CommentHooks {
             comment: result,
             post,
             postAuthor,
-            commentAuthor,
+            commentAuthor
           })
-        ),
+        )
       })
     }
   }
 
-  onUpdate() {
+  onUpdate () {
     return async ({ result }) => {
       this._logger.info('CommentHooks#onCreate.call', result)
 
       this._pubsub.publish('comment', {
         mutation: 'UPDATED',
-        data: result,
+        data: result
       })
     }
   }
 
-  onDelete() {
+  onDelete () {
     return async ({ args, result }) => {
       this._logger.info('CommentHooks#onDelete.call', result)
 
@@ -66,8 +66,8 @@ class CommentHooks {
         this._pubsub.publish('comment', {
           mutation: 'DELETED',
           data: {
-            id: args.id,
-          },
+            id: args.id
+          }
         })
       }
     }

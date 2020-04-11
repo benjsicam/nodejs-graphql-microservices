@@ -3,7 +3,9 @@ import queryUtils from '../../utils/query'
 
 const users = {
   authenticate: true,
-  resolve: async (parent, { q, first, last, before, after, orderBy }, { userService }) => {
+  resolve: async (parent, {
+    q, first, last, before, after, orderBy
+  }, { userService }) => {
     const query = {}
 
     if (!isEmpty(q)) Object.assign(query, { where: { name: { $like: q } } })
@@ -23,7 +25,7 @@ const users = {
     }
 
     return userService.find(query)
-  },
+  }
 }
 
 export default { users }

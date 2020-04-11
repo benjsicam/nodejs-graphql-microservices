@@ -11,7 +11,8 @@ import UserRepository from '../src/repositories/user.repository'
 const MODEL_NAME = 'User'
 
 describe('Database Testing', () => {
-  let db, repo
+  let db,
+    repo
 
   const generateMockData = async (isSingle = false) => {
     if (isSingle) {
@@ -21,24 +22,23 @@ describe('Database Testing', () => {
         password: faker.internet.password(),
         age: faker.random.number()
       }
-    } else {
-      return [{
-        name: faker.fake('{{name.firstName}} {{name.lastName}}'),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        age: faker.random.number()
-      }, {
-        name: faker.fake('{{name.firstName}} {{name.lastName}}'),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        age: faker.random.number()
-      }, {
-        name: faker.fake('{{name.firstName}} {{name.lastName}}'),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        age: faker.random.number()
-      }]
     }
+    return [{
+      name: faker.fake('{{name.firstName}} {{name.lastName}}'),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+      age: faker.random.number()
+    }, {
+      name: faker.fake('{{name.firstName}} {{name.lastName}}'),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+      age: faker.random.number()
+    }, {
+      name: faker.fake('{{name.firstName}} {{name.lastName}}'),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+      age: faker.random.number()
+    }]
   }
 
   beforeAll(async () => {
@@ -47,8 +47,6 @@ describe('Database Testing', () => {
 
     db = await Db.init(modelPaths, logger)
     repo = new UserRepository(db.model(MODEL_NAME))
-
-    return
   })
 
   afterAll(async () => {
@@ -57,22 +55,18 @@ describe('Database Testing', () => {
   })
 
   describe('UserRepository', () => {
-    beforeEach(async () => {
-      return repo.destroy({
-        req: { where: {} },
-        response: {}
-      })
-    })
+    beforeEach(async () => repo.destroy({
+      req: { where: {} },
+      response: {}
+    }))
 
     it('should return a new db entry on create', async () => {
       const data = await generateMockData(true)
 
-      let result = await repo.create({
+      const result = await repo.create({
         req: data,
         response: {}
       })
-
-      result = result.toJSON()
 
       expect(result).not.toBeNil()
 
@@ -109,22 +103,18 @@ describe('Database Testing', () => {
       const data = await generateMockData(true)
       const updateData = await generateMockData(true)
 
-      let user = await repo.create({
+      const user = await repo.create({
         req: data,
         response: {}
       })
 
-      user = user.toJSON()
-
-      let result = await repo.update({
+      const result = await repo.update({
         req: {
           id: user.id,
           data: Object.assign(user, updateData)
         },
         response: {}
       })
-
-      result = result.toJSON()
 
       expect(result).not.toBeNil()
 
@@ -167,7 +157,7 @@ describe('Database Testing', () => {
           response: {}
         })
 
-        return user.toJSON()
+        return user
       }))
 
       const { edges, pageInfo } = await repo.find({
@@ -228,7 +218,7 @@ describe('Database Testing', () => {
           response: {}
         })
 
-        return user.toJSON()
+        return user
       }))
 
       const { edges, pageInfo } = await repo.find({
@@ -291,8 +281,6 @@ describe('Database Testing', () => {
         response: {}
       })
 
-      user = user.toJSON()
-
       const result = await repo.findOne({
         req: {
           where: JSON.stringify({
@@ -336,12 +324,10 @@ describe('Database Testing', () => {
     it('should return the correct count that matches a query', async () => {
       const data = await generateMockData(true)
 
-      let user = await repo.create({
+      const user = await repo.create({
         req: data,
         response: {}
       })
-
-      user = user.toJSON()
 
       const result = await repo.count({
         req: {
@@ -364,12 +350,10 @@ describe('Database Testing', () => {
     it('should delete records properly on destroy', async () => {
       const data = await generateMockData(true)
 
-      let user = await repo.create({
+      const user = await repo.create({
         req: data,
         response: {}
       })
-
-      user = user.toJSON()
 
       await repo.destroy({
         req: {

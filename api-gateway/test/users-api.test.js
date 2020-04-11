@@ -6,7 +6,12 @@ import main from '../src/main'
 import logger from '../src/logger'
 
 describe('Users API Testing', () => {
-  let server, client, publisher, subscriber, loggedInUser, password
+  let server,
+    client,
+    publisher,
+    subscriber,
+    loggedInUser,
+    password
 
   const generateMockData = async (isSingle = false) => {
     if (isSingle) {
@@ -16,24 +21,23 @@ describe('Users API Testing', () => {
         password: faker.internet.password(),
         age: faker.random.number({ min: 20, max: 80 })
       }
-    } else {
-      return [{
-        name: faker.fake('{{name.firstName}} {{name.lastName}}'),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        age: faker.random.number({ min: 20, max: 80 })
-      }, {
-        name: faker.fake('{{name.firstName}} {{name.lastName}}'),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        age: faker.random.number({ min: 20, max: 80 })
-      }, {
-        name: faker.fake('{{name.firstName}} {{name.lastName}}'),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-        age: faker.random.number({ min: 20, max: 80 })
-      }]
     }
+    return [{
+      name: faker.fake('{{name.firstName}} {{name.lastName}}'),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+      age: faker.random.number({ min: 20, max: 80 })
+    }, {
+      name: faker.fake('{{name.firstName}} {{name.lastName}}'),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+      age: faker.random.number({ min: 20, max: 80 })
+    }, {
+      name: faker.fake('{{name.firstName}} {{name.lastName}}'),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+      age: faker.random.number({ min: 20, max: 80 })
+    }]
   }
 
   beforeAll(async () => {
@@ -72,8 +76,7 @@ describe('Users API Testing', () => {
             message
           }
         }
-      }`
-    )
+      }`)
 
     const result = response.signup
 
@@ -85,17 +88,13 @@ describe('Users API Testing', () => {
         authorization: `Bearer ${result.token}`
       }
     })
-
-    return
   })
 
-  afterAll(async () => {
-    return Promise.all([
-      server.close(),
-      publisher.quit(),
-      subscriber.quit()
-    ])
-  })
+  afterAll(async () => Promise.all([
+    server.close(),
+    publisher.quit(),
+    subscriber.quit()
+  ]))
 
   it('should login a user', async () => {
     const response = await client.request(`
@@ -497,7 +496,7 @@ describe('Users API Testing', () => {
     expect(result.token).not.toBeNil()
     expect(result.user).not.toBeNil()
 
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       setTimeout(resolve, 3000)
     })
 

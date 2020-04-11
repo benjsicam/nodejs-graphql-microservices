@@ -11,7 +11,8 @@ import CommentRepository from '../src/repositories/comment.repository'
 const MODEL_NAME = 'Comment'
 
 describe('Database Testing', () => {
-  let db, repo
+  let db,
+    repo
 
   const generateMockData = async (isSingle = false) => {
     if (isSingle) {
@@ -20,21 +21,20 @@ describe('Database Testing', () => {
         post: faker.random.uuid(),
         author: faker.random.uuid()
       }
-    } else {
-      return [{
-        text: faker.random.alphaNumeric(24),
-        post: faker.random.uuid(),
-        author: faker.random.uuid()
-      }, {
-        text: faker.random.alphaNumeric(24),
-        post: faker.random.uuid(),
-        author: faker.random.uuid()
-      }, {
-        text: faker.random.alphaNumeric(24),
-        post: faker.random.uuid(),
-        author: faker.random.uuid()
-      }]
     }
+    return [{
+      text: faker.random.alphaNumeric(24),
+      post: faker.random.uuid(),
+      author: faker.random.uuid()
+    }, {
+      text: faker.random.alphaNumeric(24),
+      post: faker.random.uuid(),
+      author: faker.random.uuid()
+    }, {
+      text: faker.random.alphaNumeric(24),
+      post: faker.random.uuid(),
+      author: faker.random.uuid()
+    }]
   }
 
   beforeAll(async () => {
@@ -43,8 +43,6 @@ describe('Database Testing', () => {
 
     db = await Db.init(modelPaths, logger)
     repo = new CommentRepository(db.model(MODEL_NAME))
-
-    return
   })
 
   afterAll(async () => {
@@ -53,22 +51,18 @@ describe('Database Testing', () => {
   })
 
   describe('CommentRepository', () => {
-    beforeEach(async () => {
-      return repo.destroy({
-        req: { where: {} },
-        response: {}
-      })
-    })
+    beforeEach(async () => repo.destroy({
+      req: { where: {} },
+      response: {}
+    }))
 
     it('should return a new db entry on create', async () => {
       const data = await generateMockData(true)
 
-      let result = await repo.create({
+      const result = await repo.create({
         req: data,
         response: {}
       })
-
-      result = result.toJSON()
 
       expect(result).not.toBeNil()
 
@@ -102,22 +96,18 @@ describe('Database Testing', () => {
       const data = await generateMockData(true)
       const updateData = await generateMockData(true)
 
-      let comment = await repo.create({
+      const comment = await repo.create({
         req: data,
         response: {}
       })
 
-      comment = comment.toJSON()
-
-      let result = await repo.update({
+      const result = await repo.update({
         req: {
           id: comment.id,
           data: Object.assign(comment, updateData)
         },
         response: {}
       })
-
-      result = result.toJSON()
 
       expect(result).not.toBeNil()
 
@@ -157,7 +147,7 @@ describe('Database Testing', () => {
           response: {}
         })
 
-        return comment.toJSON()
+        return comment
       }))
 
       const { edges, pageInfo } = await repo.find({
@@ -214,7 +204,7 @@ describe('Database Testing', () => {
           response: {}
         })
 
-        return comment.toJSON()
+        return comment
       }))
 
       const { edges, pageInfo } = await repo.find({
@@ -270,12 +260,10 @@ describe('Database Testing', () => {
     it('should return a single row by its id', async () => {
       const data = await generateMockData(true)
 
-      let comment = await repo.create({
+      const comment = await repo.create({
         req: data,
         response: {}
       })
-
-      comment = comment.toJSON()
 
       const result = await repo.findById({
         req: {
@@ -315,12 +303,10 @@ describe('Database Testing', () => {
     it('should return a single row that matches a query', async () => {
       const data = await generateMockData(true)
 
-      let comment = await repo.create({
+      const comment = await repo.create({
         req: data,
         response: {}
       })
-
-      comment = comment.toJSON()
 
       const result = await repo.findOne({
         req: {
@@ -362,12 +348,10 @@ describe('Database Testing', () => {
     it('should return the correct count that matches a query', async () => {
       const data = await generateMockData(true)
 
-      let comment = await repo.create({
+      const comment = await repo.create({
         req: data,
         response: {}
       })
-
-      comment = comment.toJSON()
 
       const result = await repo.count({
         req: {
@@ -390,12 +374,10 @@ describe('Database Testing', () => {
     it('should delete records properly on destroy', async () => {
       const data = await generateMockData(true)
 
-      let comment = await repo.create({
+      const comment = await repo.create({
         req: data,
         response: {}
       })
-
-      comment = comment.toJSON()
 
       await repo.destroy({
         req: {

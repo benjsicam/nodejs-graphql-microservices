@@ -14,13 +14,14 @@ services:
       - "cache"
     environment:
       NODE_ENV: "test"
-      HOST: "0.0.0.0"
-      PORT: "50051"
+      GRPC_HOST: "0.0.0.0"
+      GRPC_PORT: "50051"
       DB_NAME: "postgres"
       DB_HOST: "db"
       DB_PORT: "5432"
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
+      DB_SCHEMA: "public"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
     healthcheck:

@@ -6,7 +6,11 @@ import main from '../src/main'
 import logger from '../src/logger'
 
 describe('Posts API Testing', () => {
-  let server, client, publisher, subscriber, loggedInUser
+  let server,
+    client,
+    publisher,
+    subscriber,
+    loggedInUser
 
   const generateMockData = async (isSingle = false) => {
     if (isSingle) {
@@ -16,24 +20,23 @@ describe('Posts API Testing', () => {
         published: faker.random.boolean(),
         author: faker.random.uuid()
       }
-    } else {
-      return [{
-        title: faker.random.words(),
-        body: faker.lorem.sentence(),
-        published: faker.random.boolean(),
-        author: faker.random.uuid()
-      }, {
-        title: faker.random.words(),
-        body: faker.lorem.sentence(),
-        published: faker.random.boolean(),
-        author: faker.random.uuid()
-      }, {
-        title: faker.random.words(),
-        body: faker.lorem.sentence(),
-        published: faker.random.boolean(),
-        author: faker.random.uuid()
-      }]
     }
+    return [{
+      title: faker.random.words(),
+      body: faker.lorem.sentence(),
+      published: faker.random.boolean(),
+      author: faker.random.uuid()
+    }, {
+      title: faker.random.words(),
+      body: faker.lorem.sentence(),
+      published: faker.random.boolean(),
+      author: faker.random.uuid()
+    }, {
+      title: faker.random.words(),
+      body: faker.lorem.sentence(),
+      published: faker.random.boolean(),
+      author: faker.random.uuid()
+    }]
   }
 
   beforeAll(async () => {
@@ -77,8 +80,7 @@ describe('Posts API Testing', () => {
             message
           }
         }
-      }`
-    )
+      }`)
 
     const result = response.signup
 
@@ -89,17 +91,13 @@ describe('Posts API Testing', () => {
         authorization: `Bearer ${result.token}`
       }
     })
-
-    return
   })
 
-  afterAll(async () => {
-    return Promise.all([
-      server.close(),
-      publisher.quit(),
-      subscriber.quit()
-    ])
-  })
+  afterAll(async () => Promise.all([
+    server.close(),
+    publisher.quit(),
+    subscriber.quit()
+  ]))
 
   it('should create a post', async () => {
     const data = await generateMockData(true)
@@ -512,7 +510,7 @@ describe('Posts API Testing', () => {
     `)
 
     const result = response.createPost
-    const id = result.post.id
+    const { id } = result.post
 
     expect(result).not.toBeNil()
     expect(result.post).not.toBeNil()

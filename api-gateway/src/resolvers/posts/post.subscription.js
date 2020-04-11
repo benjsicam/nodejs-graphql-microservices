@@ -1,10 +1,8 @@
 const post = {
   subscribe: {
     authenticate: false,
-    resolve: async (parent, args, { pubsub }) => {
-      return pubsub.asyncIterator('post')
-    },
-  },
+    resolve: async (parent, args, { pubsub }) => pubsub.asyncIterator('post')
+  }
 }
 
 export default { post }

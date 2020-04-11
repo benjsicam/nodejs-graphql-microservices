@@ -39,21 +39,22 @@ const operatorsAliases = {
 }
 
 const Db = {
-  async init(modelPaths, logger) {
+  async init (modelPaths, logger) {
     const db = new Sequelize.Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
       dialect: 'postgres',
       host: process.env.DB_HOST,
       port: process.env.DB_PORT,
-      logging: logger.info.bind(logger),
+      logging: process.env.NODE_ENV !== 'test' ? logger.info.bind(logger) : false,
       benchmark: true,
       retry: {
         max: 3,
         typeValidation: true
       },
+      native: true,
       operatorsAliases
     })
 
-    modelPaths.forEach(modelPath => {
+    modelPaths.forEach((modelPath) => {
       db.import(modelPath)
     })
 

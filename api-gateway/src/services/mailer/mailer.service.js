@@ -1,13 +1,15 @@
 import Aigle from 'aigle'
 
+const { promisifyAll } = Aigle
+
 class MailerService {
-  constructor(client, logger) {
+  constructor (client, logger) {
     this._serviceName = 'MailerService'
-    this._client = Aigle.promisifyAll(client)
+    this._client = promisifyAll(client)
     this._logger = logger
   }
 
-  async send(details) {
+  async send (details) {
     this._logger.info(`${this._serviceName}#sendMail.call`, details)
 
     const result = await this._client.sendAsync(details)

@@ -14,8 +14,8 @@ const updateComment = {
   validationSchema: yup.object().shape({
     id: yup.string().required('ID is a required field.'),
     data: yup.object().shape({
-      text: yup.string().trim().min(5, 'Text should at least be 5 characters.').max(500, 'Text should be 500 characters at most.'),
-    }),
+      text: yup.string().trim().min(5, 'Text should at least be 5 characters.').max(500, 'Text should be 500 characters at most.')
+    })
   }),
   resolve: async (parent, { id, data, user }, { commentService, logger }) => {
     const comment = await commentService.findOne({ where: { id, author: user } })
@@ -29,7 +29,7 @@ const updateComment = {
     const updatedComment = await commentService.update(id, comment)
 
     return { comment: updatedComment }
-  },
+  }
 }
 
 export default { updateComment }

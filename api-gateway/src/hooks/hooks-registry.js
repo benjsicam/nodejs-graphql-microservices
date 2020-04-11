@@ -3,15 +3,15 @@ import PostHooks from './post.hooks'
 import UserHooks from './user.hooks'
 
 class HooksRegistry {
-  constructor(services, pubsub, logger) {
+  constructor (services, pubsub, logger) {
     this._hooks = {
       comment: new CommentHooks(services, pubsub, logger),
       post: new PostHooks(services, pubsub, logger),
-      user: new UserHooks(services, pubsub, logger),
+      user: new UserHooks(services, pubsub, logger)
     }
   }
 
-  get hooks() {
+  get hooks () {
     return this._hooks
   }
 }

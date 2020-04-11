@@ -1,36 +1,40 @@
+import Aigle from 'aigle'
+
 import * as yup from 'yup'
 
-import { forEach, groupBy, keys } from 'lodash'
+import { keys } from 'lodash'
+
+const { each, groupBy } = Aigle
 
 const errorUtils = {
-  async buildError(error) {
+  async buildError (error) {
     const errors = []
 
     if (error instanceof yup.ValidationError) {
-      const fieldErrors = groupBy(error.inner, 'path')
+      const fieldErrors = await groupBy(error.inner, 'path')
       const fields = keys(fieldErrors)
 
-      forEach(fields, async (field) => {
+      await each(fields, async (field) => {
         const errorsHolder = []
 
-        forEach(fieldErrors[field], (fieldError) => {
+        await each(fieldErrors[field], (fieldError) => {
           errorsHolder.push(fieldError.errors[0])
         })
 
         errors.push({
           field,
-          message: errorsHolder,
+          message: errorsHolder
         })
       })
     } else {
       errors.push({
         field: '',
-        message: [error.message],
+        message: [error.message]
       })
     }
 
     return errors
-  },
+  }
 }
 
 export default errorUtils

@@ -1,37 +1,35 @@
+import Aigle from 'aigle'
+
 import { GraphQLServer } from 'graphql-yoga'
-import { assign, reduce, startCase } from 'lodash'
+import { assign, startCase } from 'lodash'
 import { DateTimeResolver, EmailAddressResolver, UnsignedIntResolver } from 'graphql-scalars'
 
+const { reduce } = Aigle
+
 const Server = {
-  async init(schema, resolvers, services, middlewares) {
+  async init (schema, resolvers, services, middlewares) {
     const server = new GraphQLServer({
       typeDefs: schema,
       resolvers: {
         DateTime: DateTimeResolver,
         EmailAddress: EmailAddressResolver,
         UnsignedInt: UnsignedIntResolver,
-        Query: reduce(
+        Query: await reduce(
           resolvers.QueryResolvers,
-          (res, val) => {
-            return assign(res, val)
-          },
+          (res, val) => assign(res, val),
           {}
         ),
-        Mutation: reduce(
+        Mutation: await reduce(
           resolvers.MutationResolvers,
-          (res, val) => {
-            return assign(res, val)
-          },
+          (res, val) => assign(res, val),
           {}
         ),
-        Subscription: reduce(
+        Subscription: await reduce(
           resolvers.SubscriptionResolvers,
-          (res, val) => {
-            return assign(res, val)
-          },
+          (res, val) => assign(res, val),
           {}
         ),
-        ...reduce(
+        ...await reduce(
           resolvers.GraphResolvers,
           (res, val, key) => {
             const obj = {}
@@ -42,15 +40,15 @@ const Server = {
             return assign(res, obj)
           },
           {}
-        ),
+        )
       },
-      context(req) {
+      context (req) {
         return {
           ...req,
-          ...services,
+          ...services
         }
       },
-      middlewares,
+      middlewares
     })
 
     server.express.get('/healthz', (req, res) => {
@@ -58,7 +56,7 @@ const Server = {
     })
 
     return server
-  },
+  }
 }
 
 export default Server

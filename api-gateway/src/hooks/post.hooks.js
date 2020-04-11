@@ -1,5 +1,5 @@
 class PostHooks {
-  constructor(services, pubsub, logger) {
+  constructor (services, pubsub, logger) {
     this._eventsBus = services.eventsBus
     this._pubsub = pubsub
     this._logger = logger
@@ -9,29 +9,29 @@ class PostHooks {
     this._eventsBus.on('mutation#deletePost', this.onDelete())
   }
 
-  onCreate() {
+  onCreate () {
     return async ({ result }) => {
       this._logger.info('PostHooks#onCreate.call', result)
 
       this._pubsub.publish('post', {
         mutation: 'CREATED',
-        data: result,
+        data: result
       })
     }
   }
 
-  onUpdate() {
+  onUpdate () {
     return async ({ result }) => {
       this._logger.info('PostHooks#onUpdate.call', result)
 
       this._pubsub.publish('post', {
         mutation: 'UPDATED',
-        data: result,
+        data: result
       })
     }
   }
 
-  onDelete() {
+  onDelete () {
     return async ({ args, result }) => {
       this._logger.info('PostHooks#onDelete.call', result)
 
@@ -39,8 +39,8 @@ class PostHooks {
         this._pubsub.publish('post', {
           mutation: 'DELETED',
           data: {
-            id: args.id,
-          },
+            id: args.id
+          }
         })
       }
     }

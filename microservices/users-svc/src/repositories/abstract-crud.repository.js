@@ -1,13 +1,15 @@
 import Aigle from 'aigle'
-import { isEmpty, isNil, omit } from 'lodash'
+import { isEmpty, isNil } from 'lodash'
+
+const { each, map, omit } = Aigle
 
 class AbstractCrudRepository {
-  constructor(model) {
+  constructor (model) {
     this._model = model
     this._jsonFields = []
   }
 
-  async find({ req, response }) {
+  async find ({ req, response }) {
     const { results, cursors } = await this._model.findAndPaginate({
       attributes: !isEmpty(req.select) ? req.select : undefined,
       where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined,
@@ -15,15 +17,15 @@ class AbstractCrudRepository {
       limit: !isNil(req.limit) ? req.limit : 25,
       before: !isEmpty(req.before) ? req.before : undefined,
       after: !isEmpty(req.after) ? req.after : undefined,
-      raw: true,
+      raw: false,
       paranoid: false
     })
 
     response.res = {
-      edges: await Aigle.map(results, async result => {
-        const node = result
+      edges: await map(results, async (result) => {
+        const node = result.toJSON()
 
-        await Aigle.forEach(this._jsonFields, async field => {
+        await each(this._jsonFields, async (field) => {
           if (!isEmpty(node[field])) node[field] = Buffer.from(JSON.stringify(node[field]))
         })
 
@@ -43,12 +45,12 @@ class AbstractCrudRepository {
     return response.res
   }
 
-  async findById({ req, response }) {
-    const result = await this._model.findByPk(req.id, {
-      raw: true
-    })
+  async findById ({ req, response }) {
+    let result = await this._model.findByPk(req.id)
 
-    await Aigle.forEach(this._jsonFields, async field => {
+    result = !isEmpty(result) ? result.toJSON() : {}
+
+    await each(this._jsonFields, async (field) => {
       if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
     })
 
@@ -57,14 +59,15 @@ class AbstractCrudRepository {
     return response.res
   }
 
-  async findOne({ req, response }) {
-    const result = await this._model.findOne({
+  async findOne ({ req, response }) {
+    let result = await this._model.findOne({
       attributes: !isEmpty(req.select) ? req.select : undefined,
-      where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined,
-      raw: true
+      where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined
     })
 
-    await Aigle.forEach(this._jsonFields, async field => {
+    result = !isEmpty(result) ? result.toJSON() : {}
+
+    await each(this._jsonFields, async (field) => {
       if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
     })
 
@@ -73,7 +76,7 @@ class AbstractCrudRepository {
     return response.res
   }
 
-  async count({ req, response }) {
+  async count ({ req, response }) {
     const count = await this._model.count({
       where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined
     })
@@ -83,10 +86,10 @@ class AbstractCrudRepository {
     return response.res
   }
 
-  async create({ req, response }) {
+  async create ({ req, response }) {
     const data = req
 
-    await Aigle.forEach(this._jsonFields, async field => {
+    await each(this._jsonFields, async (field) => {
       if (Buffer.isBuffer(data[field])) {
         const json = data[field].toString()
 
@@ -96,19 +99,19 @@ class AbstractCrudRepository {
 
     const result = await this._model.create(data)
 
-    await Aigle.forEach(this._jsonFields, async field => {
+    await each(this._jsonFields, async (field) => {
       if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
     })
 
-    response.res = result
+    response.res = result.toJSON()
 
     return response.res
   }
 
-  async update({ req, response }) {
-    const { data } = req
+  async update ({ req, response }) {
+    const { id, data } = req
 
-    await Aigle.forEach(this._jsonFields, async field => {
+    await each(this._jsonFields, async (field) => {
       if (Buffer.isBuffer(data[field])) {
         const json = data[field].toString()
 
@@ -116,24 +119,24 @@ class AbstractCrudRepository {
       }
     })
 
-    const model = await this._model.findByPk(req.id)
+    const model = await this._model.findByPk(id)
 
     if (isEmpty(model)) throw new Error('Record not found.')
 
-    model.set(omit(data, ['id']))
+    model.set(await omit(data, ['id']))
 
     const result = await model.save()
 
-    await Aigle.forEach(this._jsonFields, async field => {
+    await each(this._jsonFields, async (field) => {
       if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
     })
 
-    response.res = result
+    response.res = result.toJSON()
 
     return response.res
   }
 
-  async destroy({ req, response }) {
+  async destroy ({ req, response }) {
     const count = await this._model.destroy({
       where: !isEmpty(req.where) ? JSON.parse(req.where) : {}
     })

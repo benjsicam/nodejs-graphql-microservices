@@ -1,10 +1,10 @@
 class RedisCacheService {
-  constructor(cache, logger) {
+  constructor (cache, logger) {
     this._cache = cache
     this._logger = logger
   }
 
-  async get(key) {
+  async get (key) {
     this._logger.info('Cache#get.call', key)
 
     let result = await this._cache.get(key)
@@ -21,7 +21,7 @@ class RedisCacheService {
     }
   }
 
-  async set(key, value) {
+  async set (key, value) {
     this._logger.info('Cache#set.call', key, value)
 
     let val
@@ -36,19 +36,19 @@ class RedisCacheService {
     return this._cache.set(key, val)
   }
 
-  async remove(key) {
+  async remove (key) {
     this._logger.info('Cache#remove.call', key)
 
     return this._cache.del(key)
   }
 
-  async flush(pattern) {
+  async flush (pattern) {
     this._logger.info('Cache#flush.call', pattern)
 
     return new Promise((resolve, reject) => {
       const stream = this._cache.scanStream({
         match: pattern,
-        count: 99999,
+        count: 99999
       })
       const pipeline = this._cache.pipeline()
 

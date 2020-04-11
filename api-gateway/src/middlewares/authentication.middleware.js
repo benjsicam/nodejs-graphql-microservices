@@ -3,7 +3,7 @@ import { isFunction } from 'lodash'
 import authUtils from '../utils/auth'
 
 const AuthenticationMiddleware = {
-  async Query(resolve, root, args, context, info) {
+  async Query (resolve, root, args, context, info) {
     const query = info.schema.getQueryType().getFields()[info.fieldName]
 
     if (query.authenticate === true) {
@@ -18,7 +18,7 @@ const AuthenticationMiddleware = {
 
     return resolve(root, args, context, info)
   },
-  async Mutation(resolve, root, args, context, info) {
+  async Mutation (resolve, root, args, context, info) {
     const mutation = info.schema.getMutationType().getFields()[info.fieldName]
 
     if (mutation.authenticate === true) {
@@ -33,7 +33,7 @@ const AuthenticationMiddleware = {
 
     return resolve(root, args, context, info)
   },
-  async Subscription(resolve, root, args, context, info) {
+  async Subscription (resolve, root, args, context, info) {
     const subscription = info.schema.getSubscriptionType().getFields()[info.fieldName]
 
     if (subscription.authenticate === true) {
@@ -47,7 +47,7 @@ const AuthenticationMiddleware = {
     }
 
     return resolve(root, args, context, info)
-  },
+  }
 }
 
 export default AuthenticationMiddleware

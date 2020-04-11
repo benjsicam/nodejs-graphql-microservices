@@ -2,13 +2,13 @@ import Email from 'email-templates'
 import path from 'path'
 
 class MailerService {
-  constructor(transporter, logger, serviceName) {
+  constructor (transporter, logger, serviceName) {
     this._transporter = transporter
     this._logger = logger
     this._serviceName = serviceName
   }
 
-  async send({ req, response }) {
+  async send ({ req, response }) {
     let data = Buffer.from(req.data)
     data = JSON.parse(data.toString())
 

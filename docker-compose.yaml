@@ -24,6 +24,7 @@ services:
       DB_PORT: "5432"
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
+      DB_SCHEMA: "public"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
     healthcheck:
@@ -56,6 +57,7 @@ services:
       DB_PORT: "5432"
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
+      DB_SCHEMA: "public"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
     healthcheck:
@@ -88,6 +90,7 @@ services:
       DB_PORT: "5432"
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
+      DB_SCHEMA: "public"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
     healthcheck:
@@ -111,11 +114,11 @@ services:
       NODE_ENV: "test"
       GRPC_HOST: "0.0.0.0"
       GRPC_PORT: "50051"
-      SMTP_HOST:
-      SMTP_PORT:
-      SMTP_SECURE:
-      SMTP_USER:
-      SMTP_PASS:
+      SMTP_HOST: "smtp.gmail.com"
+      SMTP_PORT: "587"
+      SMTP_SECURE: "true"
+      SMTP_USER: "username@gmail.com"
+      SMTP_PASS: "password"
     healthcheck:
       test: ["CMD", "/bin/grpc_health_probe", "-addr=:50051"]
       interval: 30s

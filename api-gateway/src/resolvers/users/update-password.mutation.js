@@ -20,8 +20,8 @@ const updatePassword = {
         .trim()
         .required('Confirm Password is a required field.')
         .min('8', 'Confirm Password should at least be 8 characters.')
-        .max('50', 'Confirm Password should be 50 characters at most.'),
-    }),
+        .max('50', 'Confirm Password should be 50 characters at most.')
+    })
   }),
   resolve: async (parent, args, { userService, logger }) => {
     const { data } = args
@@ -40,14 +40,14 @@ const updatePassword = {
 
     const updatedUser = await userService.update(user.id, {
       ...user,
-      password,
+      password
     })
 
     return {
       user: updatedUser,
-      token: await authUtils.generateToken(updatedUser.id),
+      token: await authUtils.generateToken(updatedUser.id)
     }
-  },
+  }
 }
 
 export default { updatePassword }

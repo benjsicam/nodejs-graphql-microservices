@@ -2,33 +2,35 @@ import Aigle from 'aigle'
 
 import { isEmpty, isNil } from 'lodash'
 
+const { each, map, promisifyAll } = Aigle
+
 class AbstractCrudService {
-  constructor(serviceName, client, logger) {
+  constructor (serviceName, client, logger) {
     this._serviceName = serviceName
-    this._client = Aigle.promisifyAll(client)
+    this._client = promisifyAll(client)
     this._logger = logger
     this._jsonFields = []
   }
 
-  async find(query) {
+  async find (query) {
     this._logger.info(`${this._serviceName}#find.call`, query)
 
     const findResult = await this._client.findAsync({
       select: !isEmpty(query.select) ? query.select : undefined,
       where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined,
-      orderBy: !isEmpty(query.orderBy) ? query.orderBy : undefined,
+      orderBy: !isEmpty(query.orderBy) ? JSON.stringify(query.orderBy) : undefined,
       limit: !isNil(query.limit) ? query.limit : 25,
       before: !isEmpty(query.before) ? query.before : undefined,
-      after: !isEmpty(query.after) ? query.after : undefined,
+      after: !isEmpty(query.after) ? query.after : undefined
     })
 
     let { edges } = findResult
 
     if (!isEmpty(this._jsonFields)) {
-      edges = await Aigle.map(edges, async (edge) => {
+      edges = await map(edges, async (edge) => {
         const { node, cursor } = edge
 
-        await Aigle.forEach(this._jsonFields, async (field) => {
+        await each(this._jsonFields, async (field) => {
           if (Buffer.isBuffer(node[field])) {
             const json = node[field].toString()
 
@@ -38,7 +40,7 @@ class AbstractCrudService {
 
         return {
           node,
-          cursor,
+          cursor
         }
       })
     }
@@ -47,17 +49,17 @@ class AbstractCrudService {
 
     return {
       edges,
-      pageInfo: findResult.pageInfo,
+      pageInfo: findResult.pageInfo
     }
   }
 
-  async findById(id) {
+  async findById (id) {
     this._logger.info(`${this._serviceName}#findById.call`, { id })
 
     const result = await this._client.findByIdAsync({ id })
 
     if (!isEmpty(this._jsonFields)) {
-      await Aigle.forEach(this._jsonFields, async (field) => {
+      await each(this._jsonFields, async (field) => {
         if (Buffer.isBuffer(result[field])) {
           const json = result[field].toString()
 
@@ -71,16 +73,16 @@ class AbstractCrudService {
     return result
   }
 
-  async findOne(query) {
+  async findOne (query) {
     this._logger.info(`${this._serviceName}#findOne.call`, query)
 
     const result = await this._client.findOneAsync({
       select: !isEmpty(query.select) ? query.select : undefined,
-      where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined,
+      where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined
     })
 
     if (!isEmpty(this._jsonFields)) {
-      await Aigle.forEach(this._jsonFields, async (field) => {
+      await each(this._jsonFields, async (field) => {
         if (Buffer.isBuffer(result[field])) {
           const json = result[field].toString()
 
@@ -94,11 +96,11 @@ class AbstractCrudService {
     return result
   }
 
-  async count(query) {
+  async count (query) {
     this._logger.info(`${this._serviceName}#count.call`, query)
 
     const result = await this._client.countAsync({
-      where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined,
+      where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined
     })
 
     this._logger.info(`${this._serviceName}#count.result`, result)
@@ -106,13 +108,13 @@ class AbstractCrudService {
     return result.count
   }
 
-  async create(data) {
+  async create (data) {
     this._logger.info(`${this._serviceName}#create.call`, data)
 
     const model = data
 
     if (!isEmpty(this._jsonFields)) {
-      await Aigle.forEach(this._jsonFields, async (field) => {
+      await each(this._jsonFields, async (field) => {
         if (!isEmpty(model[field])) model[field] = Buffer.from(JSON.stringify(model[field]))
       })
     }
@@ -120,7 +122,7 @@ class AbstractCrudService {
     const result = await this._client.createAsync(model)
 
     if (!isEmpty(this._jsonFields)) {
-      await Aigle.forEach(this._jsonFields, async (field) => {
+      await each(this._jsonFields, async (field) => {
         if (Buffer.isBuffer(result[field])) {
           const json = result[field].toString()
 
@@ -134,13 +136,13 @@ class AbstractCrudService {
     return result
   }
 
-  async update(id, data) {
+  async update (id, data) {
     this._logger.info(`${this._serviceName}#update.call`, { id, data })
 
     const model = data
 
     if (!isEmpty(this._jsonFields)) {
-      await Aigle.forEach(this._jsonFields, async (field) => {
+      await each(this._jsonFields, async (field) => {
         if (!isEmpty(model[field])) model[field] = Buffer.from(JSON.stringify(model[field]))
       })
     }
@@ -148,7 +150,7 @@ class AbstractCrudService {
     const result = await this._client.updateAsync({ id, data: model })
 
     if (!isEmpty(this._jsonFields)) {
-      await Aigle.forEach(this._jsonFields, async (field) => {
+      await each(this._jsonFields, async (field) => {
         if (Buffer.isBuffer(result[field])) {
           const json = result[field].toString()
 
@@ -162,11 +164,11 @@ class AbstractCrudService {
     return result
   }
 
-  async destroy(query) {
+  async destroy (query) {
     this._logger.info(`${this._serviceName}#destroy.call`, query)
 
     const result = await this._client.destroyAsync({
-      where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined,
+      where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined
     })
 
     this._logger.info(`${this._serviceName}#destroy.result`, result)

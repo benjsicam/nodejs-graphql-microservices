@@ -1,7 +1,7 @@
 import errorUtils from '../utils/error'
 
 const ErrorMiddleware = {
-  async Query(resolve, root, args, context, info) {
+  async Query (resolve, root, args, context, info) {
     const { logger } = context
 
     try {
@@ -14,7 +14,7 @@ const ErrorMiddleware = {
       throw error
     }
   },
-  async Mutation(resolve, root, args, context, info) {
+  async Mutation (resolve, root, args, context, info) {
     const { logger } = context
 
     try {
@@ -29,7 +29,7 @@ const ErrorMiddleware = {
       return { errors }
     }
   },
-  async Subscription(resolve, root, args, context, info) {
+  async Subscription (resolve, root, args, context, info) {
     const { logger } = context
 
     try {
@@ -41,7 +41,7 @@ const ErrorMiddleware = {
 
       throw error
     }
-  },
+  }
 }
 
 export default ErrorMiddleware

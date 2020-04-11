@@ -35,26 +35,24 @@ const main = async () => {
   let redisOptions = {}
 
   if (redisHostConfig.length > 1) {
-    const redisNodes = map(redisHostConfig, (host) => {
-      return {
-        host,
-        port: process.env.REDIS_PORT,
-      }
-    })
+    const redisNodes = map(redisHostConfig, host => ({
+      host,
+      port: process.env.REDIS_PORT
+    }))
 
     redisOptions = {
-      password: process.env.REDIS_PASSWORD,
+      password: process.env.REDIS_PASSWORD
     }
 
     cache = new Redis.Cluster(redisNodes, {
       slotsRefreshTimeout: 20000,
-      redisOptions,
+      redisOptions
     })
   } else {
     redisOptions = {
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
-      password: process.env.REDIS_PASSWORD,
+      password: process.env.REDIS_PASSWORD
     }
 
     cache = new Redis(redisOptions)
@@ -70,7 +68,7 @@ const main = async () => {
     count: repo.count.bind(repo),
     create: [cacheMiddleware.write('comments'), repo.create.bind(repo)],
     update: [cacheMiddleware.write('comments'), repo.update.bind(repo)],
-    destroy: [cacheMiddleware.remove('comments'), repo.destroy.bind(repo)],
+    destroy: [cacheMiddleware.remove('comments'), repo.destroy.bind(repo)]
   }
 
   const app = new Mali()
@@ -80,7 +78,7 @@ const main = async () => {
   app.addService(SERVICE_PROTO, null, {
     enums: String,
     objects: true,
-    arrays: true,
+    arrays: true
   })
   app.addService(service)
 
@@ -94,12 +92,12 @@ const main = async () => {
     loggerMiddleware({
       timestamp: true,
       request: true,
-      response: true,
+      response: true
     })
   )
   app.use({
     CommentService,
-    ...healthCheckImpl,
+    ...healthCheckImpl
   })
 
   await app.start(HOST_PORT)
@@ -109,7 +107,7 @@ const main = async () => {
   return {
     app,
     cache,
-    db,
+    db
   }
 }
 

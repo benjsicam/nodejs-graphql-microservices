@@ -1,5 +1,5 @@
 const HookMiddleware = {
-  async Mutation(resolve, root, args, context, info) {
+  async Mutation (resolve, root, args, context, info) {
     const { logger, eventsBus } = context
     const operation = info.fieldName
 
@@ -9,7 +9,7 @@ const HookMiddleware = {
     eventsBus.publish(`mutation#${operation}`, { args, result })
 
     return result
-  },
+  }
 }
 
 export default HookMiddleware

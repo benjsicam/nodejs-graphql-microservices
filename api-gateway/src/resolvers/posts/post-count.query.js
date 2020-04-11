@@ -8,7 +8,7 @@ const postCount = {
     if (!isEmpty(q)) Object.assign(query, { where: { title: { $like: q } } })
 
     return postService.count(query)
-  },
+  }
 }
 
 export default { postCount }

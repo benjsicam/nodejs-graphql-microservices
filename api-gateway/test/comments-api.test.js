@@ -6,7 +6,12 @@ import main from '../src/main'
 import logger from '../src/logger'
 
 describe('Comments API Testing', () => {
-  let server, client, publisher, subscriber, post, loggedInUser
+  let server,
+    client,
+    publisher,
+    subscriber,
+    post,
+    loggedInUser
 
   beforeAll(async () => {
     logger.info('====COMMENTS API SETUP===')
@@ -49,8 +54,7 @@ describe('Comments API Testing', () => {
             message
           }
         }
-      }`
-    )
+      }`)
 
     loggedInUser = signupResponse.signup.user
 
@@ -86,17 +90,13 @@ describe('Comments API Testing', () => {
     `)
 
     post = createPostResponse.createPost.post
-
-    return
   })
 
-  afterAll(async () => {
-    return Promise.all([
-      server.close(),
-      publisher.quit(),
-      subscriber.quit()
-    ])
-  })
+  afterAll(async () => Promise.all([
+    server.close(),
+    publisher.quit(),
+    subscriber.quit()
+  ]))
 
   it('should create a comment', async () => {
     const text = faker.lorem.sentence()
@@ -317,7 +317,7 @@ describe('Comments API Testing', () => {
     `)
 
     const result = response.createComment
-    const id = result.comment.id
+    const { id } = result.comment
 
     expect(result).not.toBeNil()
     expect(result.comment).not.toBeNil()

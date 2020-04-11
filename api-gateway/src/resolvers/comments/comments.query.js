@@ -3,7 +3,9 @@ import queryUtils from '../../utils/query'
 
 const comments = {
   authenticate: false,
-  resolve: async (parent, { q, first, last, before, after, orderBy }, { commentService }) => {
+  resolve: async (parent, {
+    q, first, last, before, after, orderBy
+  }, { commentService }) => {
     const query = {}
 
     if (!isEmpty(q)) Object.assign(query, { where: { text: { $like: q } } })
@@ -23,7 +25,7 @@ const comments = {
     }
 
     return commentService.find(query)
-  },
+  }
 }
 
 export default { comments }
