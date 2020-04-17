@@ -55,7 +55,7 @@ describe('Posts API Testing', () => {
       age: faker.random.number()
     }
 
-    const response = await request(`http://localhost:${process.env.PORT}/`, `
+    const response = await request(`http://localhost:${process.env.GRAPHQL_PORT}/`, `
       mutation {
         signup(
           data: {
@@ -86,7 +86,7 @@ describe('Posts API Testing', () => {
 
     loggedInUser = result.user
 
-    client = new GraphQLClient(`http://localhost:${process.env.PORT}/`, {
+    client = new GraphQLClient(`http://localhost:${process.env.GRAPHQL_PORT}/`, {
       headers: {
         authorization: `Bearer ${result.token}`
       }
@@ -128,8 +128,19 @@ describe('Posts API Testing', () => {
               name
             }
             comments {
-              id
-              text
+              edges {
+                node {
+                  id
+                  text
+                }
+                cursor
+              }
+              pageInfo {
+                startCursor
+                endCursor
+                hasNextPage
+                hasPreviousPage
+              }
             }
           }
         }
@@ -163,7 +174,7 @@ describe('Posts API Testing', () => {
     expect(result.post.updatedAt).toBeString()
     expect(result.post.version).toBeNumber()
     expect(result.post.author).toBeObject()
-    expect(result.post.comments).toBeArray()
+    expect(result.post.comments.edges).toBeArray()
 
     // Value check/s
     expect(result.post.title).toBe(data.title)
@@ -202,8 +213,19 @@ describe('Posts API Testing', () => {
               name
             }
             comments {
-              id
-              text
+              edges {
+                node {
+                  id
+                  text
+                }
+                cursor
+              }
+              pageInfo {
+                startCursor
+                endCursor
+                hasNextPage
+                hasPreviousPage
+              }
             }
           }
         }
@@ -236,8 +258,19 @@ describe('Posts API Testing', () => {
               name
             }
             comments {
-              id
-              text
+              edges {
+                node {
+                  id
+                  text
+                }
+                cursor
+              }
+              pageInfo {
+                startCursor
+                endCursor
+                hasNextPage
+                hasPreviousPage
+              }
             }
           }
         }
@@ -271,7 +304,7 @@ describe('Posts API Testing', () => {
     expect(result.post.updatedAt).toBeString()
     expect(result.post.version).toBeNumber()
     expect(result.post.author).toBeObject()
-    expect(result.post.comments).toBeArray()
+    expect(result.post.comments.edges).toBeArray()
 
     // Value check/s
     expect(result.post.title).toBe(data.title)
@@ -282,28 +315,53 @@ describe('Posts API Testing', () => {
   })
 
   it('should return the currently logged in user\'s posts', async () => {
-    const result = await client.request(`
+    const { myPosts } = await client.request(`
       query myPosts {
         myPosts {
-          id
-          title
-          body
-          published
-          createdAt
-          updatedAt
-          version
-          author {
-            id
+          edges {
+            node {
+              id
+              title
+              body
+              published
+              createdAt
+              updatedAt
+              version
+              author {
+                id
+              }
+            }
+            cursor
+          }
+          pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
           }
         }
       }
     `)
 
-    expect(result).not.toBeNil()
-    expect(result.myPosts).toBeArray()
+    expect(myPosts).not.toBeNil()
+    expect(myPosts.edges).not.toBeNil()
+    expect(myPosts.pageInfo).not.toBeNil()
+
+    expect(myPosts.edges).toBeArray()
+    expect(myPosts.pageInfo).toBeObject()
 
     // Stucture check/s
-    expect(result.myPosts[0]).toContainAllKeys([
+    expect(myPosts.edges[0]).toContainAllKeys([
+      'node',
+      'cursor'
+    ])
+    expect(myPosts.pageInfo).toContainAllKeys([
+      'startCursor',
+      'endCursor',
+      'hasNextPage',
+      'hasPreviousPage'
+    ])
+    expect(myPosts.edges[0].node).toContainAllKeys([
       'id',
       'title',
       'body',
@@ -315,60 +373,90 @@ describe('Posts API Testing', () => {
     ])
 
     // Type check/s
-    expect(result.myPosts[0].id).toBeString()
-    expect(result.myPosts[0].title).toBeString()
-    expect(result.myPosts[0].body).toBeString()
-    expect(result.myPosts[0].published).toBeBoolean()
-    expect(result.myPosts[0].createdAt).toBeString()
-    expect(result.myPosts[0].updatedAt).toBeString()
-    expect(result.myPosts[0].version).toBeNumber()
-    expect(result.myPosts[0].author).toBeObject()
+    expect(myPosts.edges[0].node.id).toBeString()
+    expect(myPosts.edges[0].node.title).toBeString()
+    expect(myPosts.edges[0].node.body).toBeString()
+    expect(myPosts.edges[0].node.published).toBeBoolean()
+    expect(myPosts.edges[0].node.createdAt).toBeString()
+    expect(myPosts.edges[0].node.updatedAt).toBeString()
+    expect(myPosts.edges[0].node.version).toBeNumber()
+    expect(myPosts.edges[0].node.author).toBeObject()
 
     // Value check/s
-    expect(result.myPosts).toBeArrayOfSize(2)
-    expect(result.myPosts[0].author.id).toBe(loggedInUser.id)
-    expect(result.myPosts[1].author.id).toBe(loggedInUser.id)
+    expect(myPosts.edges).toBeArrayOfSize(2)
+    expect(myPosts.edges[0].node.author.id).toBe(loggedInUser.id)
+    expect(myPosts.edges[1].node.author.id).toBe(loggedInUser.id)
 
     return true
   })
 
   it('should return a collection of posts', async () => {
-    const result = await client.request(`
+    const { posts } = await client.request(`
       query findAllPosts {
         posts {
-          id
-          title
-          body
-          published
-          createdAt
-          updatedAt
-          version
+          edges {
+            node {
+              id
+              title
+              body
+              published
+              createdAt
+              updatedAt
+              version
+              author {
+                id
+              }
+            }
+            cursor
+          }
+          pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+          }
         }
       }
     `)
 
-    expect(result).not.toBeNil()
-    expect(result.posts).toBeArray()
+    expect(posts).not.toBeNil()
+    expect(posts.edges).not.toBeNil()
+    expect(posts.pageInfo).not.toBeNil()
+
+    expect(posts.edges).toBeArray()
+    expect(posts.pageInfo).toBeObject()
 
     // Stucture check/s
-    expect(result.posts[0]).toContainAllKeys([
+    expect(posts.edges[0]).toContainAllKeys([
+      'node',
+      'cursor'
+    ])
+    expect(posts.pageInfo).toContainAllKeys([
+      'startCursor',
+      'endCursor',
+      'hasNextPage',
+      'hasPreviousPage'
+    ])
+    expect(posts.edges[0].node).toContainAllKeys([
       'id',
       'title',
       'body',
       'published',
       'createdAt',
       'updatedAt',
-      'version'
+      'version',
+      'author'
     ])
 
     // Type check/s
-    expect(result.posts[0].id).toBeString()
-    expect(result.posts[0].title).toBeString()
-    expect(result.posts[0].body).toBeString()
-    expect(result.posts[0].published).toBeBoolean()
-    expect(result.posts[0].createdAt).toBeString()
-    expect(result.posts[0].updatedAt).toBeString()
-    expect(result.posts[0].version).toBeNumber()
+    expect(posts.edges[0].node.id).toBeString()
+    expect(posts.edges[0].node.title).toBeString()
+    expect(posts.edges[0].node.body).toBeString()
+    expect(posts.edges[0].node.published).toBeBoolean()
+    expect(posts.edges[0].node.createdAt).toBeString()
+    expect(posts.edges[0].node.updatedAt).toBeString()
+    expect(posts.edges[0].node.version).toBeNumber()
+    expect(posts.edges[0].node.author).toBeObject()
 
     return true
   })
@@ -402,8 +490,19 @@ describe('Posts API Testing', () => {
               name
             }
             comments {
-              id
-              text
+              edges {
+                node {
+                  id
+                  text
+                }
+                cursor
+              }
+              pageInfo {
+                startCursor
+                endCursor
+                hasNextPage
+                hasPreviousPage
+              }
             }
           }
         }

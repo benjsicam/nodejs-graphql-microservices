@@ -8,7 +8,7 @@ const users = {
   }, { userService }) => {
     const query = {}
 
-    if (!isEmpty(q)) Object.assign(query, { where: { name: { $like: q } } })
+    if (!isEmpty(q)) Object.assign(query, { where: { name: { _iLike: q } } })
 
     if (!isNil(first)) Object.assign(query, { limit: first })
 

@@ -29,7 +29,7 @@ describe('Comments API Testing', () => {
       age: faker.random.number()
     }
 
-    const signupResponse = await request(`http://localhost:${process.env.PORT}/`, `
+    const signupResponse = await request(`http://localhost:${process.env.GRAPHQL_PORT}/`, `
       mutation {
         signup(
           data: {
@@ -58,7 +58,7 @@ describe('Comments API Testing', () => {
 
     loggedInUser = signupResponse.signup.user
 
-    client = new GraphQLClient(`http://localhost:${process.env.PORT}/`, {
+    client = new GraphQLClient(`http://localhost:${process.env.GRAPHQL_PORT}/`, {
       headers: {
         authorization: `Bearer ${signupResponse.signup.token}`
       }
@@ -240,23 +240,48 @@ describe('Comments API Testing', () => {
   })
 
   it('should return a collection of comments', async () => {
-    const result = await client.request(`
+    const { comments } = await client.request(`
       query findAllComments {
         comments {
-          id
-          text
-          createdAt
-          updatedAt
-          version
+          edges {
+            node {
+              id
+              text
+              createdAt
+              updatedAt
+              version
+            }
+            cursor
+          }
+          pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+          }
         }
       }
     `)
 
-    expect(result).not.toBeNil()
-    expect(result.comments).toBeArray()
+    expect(comments).not.toBeNil()
+    expect(comments.edges).not.toBeNil()
+    expect(comments.pageInfo).not.toBeNil()
+
+    expect(comments.edges).toBeArray()
+    expect(comments.pageInfo).toBeObject()
 
     // Stucture check/s
-    expect(result.comments[0]).toContainAllKeys([
+    expect(comments.edges[0]).toContainAllKeys([
+      'node',
+      'cursor'
+    ])
+    expect(comments.pageInfo).toContainAllKeys([
+      'startCursor',
+      'endCursor',
+      'hasNextPage',
+      'hasPreviousPage'
+    ])
+    expect(comments.edges[0].node).toContainAllKeys([
       'id',
       'text',
       'createdAt',
@@ -265,11 +290,11 @@ describe('Comments API Testing', () => {
     ])
 
     // Type check/s
-    expect(result.comments[0].id).toBeString()
-    expect(result.comments[0].text).toBeString()
-    expect(result.comments[0].createdAt).toBeString()
-    expect(result.comments[0].updatedAt).toBeString()
-    expect(result.comments[0].version).toBeNumber()
+    expect(comments.edges[0].node.id).toBeString()
+    expect(comments.edges[0].node.text).toBeString()
+    expect(comments.edges[0].node.createdAt).toBeString()
+    expect(comments.edges[0].node.updatedAt).toBeString()
+    expect(comments.edges[0].node.version).toBeNumber()
 
     return true
   })

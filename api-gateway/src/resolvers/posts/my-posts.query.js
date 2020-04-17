@@ -8,7 +8,7 @@ const myPosts = {
   }, { postService }) => {
     const query = { where: { author: user } }
 
-    if (!isEmpty(q)) Object.assign(query.where, { author: user, title: { $like: q } })
+    if (!isEmpty(q)) Object.assign(query.where, { author: user, title: { _iLike: q } })
 
     if (!isNil(first)) Object.assign(query, { limit: first })
 

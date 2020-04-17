@@ -51,7 +51,7 @@ describe('Users API Testing', () => {
 
     const data = await generateMockData(true)
 
-    const response = await request(`http://localhost:${process.env.PORT}/`, `
+    const response = await request(`http://localhost:${process.env.GRAPHQL_PORT}/`, `
       mutation {
         signup(
           data: {
@@ -83,7 +83,7 @@ describe('Users API Testing', () => {
     loggedInUser = result.user
     password = data.password
 
-    client = new GraphQLClient(`http://localhost:${process.env.PORT}/`, {
+    client = new GraphQLClient(`http://localhost:${process.env.GRAPHQL_PORT}/`, {
       headers: {
         authorization: `Bearer ${result.token}`
       }
@@ -174,13 +174,35 @@ describe('Users API Testing', () => {
           updatedAt
           version
           posts {
-            id
-            title
-            body
+            edges {
+              node {
+                id
+                title
+                body
+              }
+              cursor
+            }
+            pageInfo {
+              startCursor
+              endCursor
+              hasNextPage
+              hasPreviousPage
+            }
           }
           comments {
-            id
-            text
+            edges {
+              node {
+                id
+                text
+              }
+              cursor
+            }
+            pageInfo {
+              startCursor
+              endCursor
+              hasNextPage
+              hasPreviousPage
+            }
           }
         }
       }
@@ -211,8 +233,8 @@ describe('Users API Testing', () => {
     expect(result.createdAt).toBeString()
     expect(result.updatedAt).toBeString()
     expect(result.version).toBeNumber()
-    expect(result.posts).toBeArray()
-    expect(result.comments).toBeArray()
+    expect(result.posts.edges).toBeArray()
+    expect(result.comments.edges).toBeArray()
 
     // Value check/s
     expect(result.id).toBe(loggedInUser.id)
@@ -222,32 +244,57 @@ describe('Users API Testing', () => {
     expect(result.createdAt).toBe(loggedInUser.createdAt)
     expect(result.updatedAt).toBe(loggedInUser.updatedAt)
     expect(result.version).toBe(loggedInUser.version)
-    expect(result.posts).toBeArrayOfSize(0)
-    expect(result.comments).toBeArrayOfSize(0)
 
     return true
   })
 
   it('should return a collection of users', async () => {
-    const result = await client.request(`
+    const { users } = await client.request(`
       query findAllUsers {
         users {
-          id
-          name
-          email
-          age
-          createdAt
-          updatedAt
-          version
+          edges {
+            node {
+              id
+              name
+              email
+              age
+              createdAt
+              updatedAt
+              version
+            }
+            cursor
+          }
+          pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+          }
         }
       }
     `)
 
-    expect(result).not.toBeNil()
-    expect(result.users).toBeArray()
+    expect(users).not.toBeNil()
+    expect(users.edges).not.toBeNil()
+    expect(users.pageInfo).not.toBeNil()
+
+    expect(users.edges).toBeArray()
+    expect(users.pageInfo).toBeObject()
 
     // Stucture check/s
-    expect(result.users[0]).toContainAllKeys([
+    expect(users.edges[0]).toContainAllKeys([
+      'node',
+      'cursor'
+    ])
+    expect(users.pageInfo).toContainAllKeys([
+      'startCursor',
+      'endCursor',
+      'hasNextPage',
+      'hasPreviousPage'
+    ])
+
+    // Stucture check/s
+    expect(users.edges[0].node).toContainAllKeys([
       'id',
       'name',
       'email',
@@ -258,13 +305,13 @@ describe('Users API Testing', () => {
     ])
 
     // Type check/s
-    expect(result.users[0].id).toBeString()
-    expect(result.users[0].name).toBeString()
-    expect(result.users[0].email).toBeString()
-    expect(result.users[0].age).toBeNumber()
-    expect(result.users[0].createdAt).toBeString()
-    expect(result.users[0].updatedAt).toBeString()
-    expect(result.users[0].version).toBeNumber()
+    expect(users.edges[0].node.id).toBeString()
+    expect(users.edges[0].node.name).toBeString()
+    expect(users.edges[0].node.email).toBeString()
+    expect(users.edges[0].node.age).toBeNumber()
+    expect(users.edges[0].node.createdAt).toBeString()
+    expect(users.edges[0].node.updatedAt).toBeString()
+    expect(users.edges[0].node.version).toBeNumber()
 
     return true
   })

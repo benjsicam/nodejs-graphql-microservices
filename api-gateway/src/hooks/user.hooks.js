@@ -1,6 +1,7 @@
 class UserHooks {
   constructor (services, pubsub, logger) {
     this._eventsBus = services.eventsBus
+    this._services = services
     this._pubsub = pubsub
     this._logger = logger
 

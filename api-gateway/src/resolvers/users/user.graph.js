@@ -8,7 +8,7 @@ const UserGraph = {
     }, { postService }) => {
       const query = {}
 
-      if (!isEmpty(q)) Object.assign(query, { where: { title: { $like: q } } })
+      if (!isEmpty(q)) Object.assign(query, { where: { title: { _iLike: q } } })
 
       if (!isNil(first)) Object.assign(query, { limit: first })
 
@@ -33,7 +33,7 @@ const UserGraph = {
     }, { commentService }) => {
       const query = {}
 
-      if (!isEmpty(q)) Object.assign(query, { where: { text: { $like: q } } })
+      if (!isEmpty(q)) Object.assign(query, { where: { text: { _iLike: q } } })
 
       if (!isNil(first)) Object.assign(query, { limit: first })
 

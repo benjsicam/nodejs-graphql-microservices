@@ -14,7 +14,7 @@ class PostService extends AbstractCrudService {
       const { edges } = await this.find({
         where: {
           id: {
-            $in: keys
+            _in: keys
           }
         },
         limit: keys.length

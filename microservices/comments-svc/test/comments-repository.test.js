@@ -210,7 +210,7 @@ describe('Database Testing', () => {
       const { edges, pageInfo } = await repo.find({
         req: {
           where: JSON.stringify({
-            id: { $in: map(entries, entry => entry.id) }
+            id: { _in: map(entries, entry => entry.id) }
           })
         },
         response: {}

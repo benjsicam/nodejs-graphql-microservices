@@ -1,49 +1,51 @@
-import * as Sequelize from 'sequelize'
+import Aigle from 'aigle'
+import { Sequelize, Op } from 'sequelize'
 
-const { Op } = Sequelize
+const { each } = Aigle
+
 const operatorsAliases = {
-  $and: Op.and,
-  $or: Op.or,
-  $eq: Op.eq,
-  $ne: Op.ne,
-  $is: Op.is,
-  $not: Op.not,
-  $col: Op.col,
-  $gt: Op.gt,
-  $gte: Op.gte,
-  $lt: Op.lt,
-  $lte: Op.lte,
-  $between: Op.between,
-  $notBetween: Op.notBetween,
-  $all: Op.all,
-  $in: Op.in,
-  $notIn: Op.notIn,
-  $like: Op.like,
-  $notLike: Op.notLike,
-  $startsWith: Op.startsWith,
-  $endsWith: Op.endsWith,
-  $substring: Op.substring,
-  $iLike: Op.iLike,
-  $notILike: Op.notILike,
-  $regexp: Op.regexp,
-  $notRegexp: Op.notRegexp,
-  $iRegexp: Op.iRegexp,
-  $notIRegexp: Op.notIRegexp,
-  $any: Op.any,
-  $contains: Op.contains,
-  $contained: Op.contained,
-  $overlap: Op.overlap,
-  $adjacent: Op.adjacent,
-  $strictLeft: Op.strictLeft,
-  $strictRight: Op.strictRight,
-  $noExtendRight: Op.noExtendRight,
-  $noExtendLeft: Op.noExtendLeft,
-  $values: Op.values
+  _and: Op.and,
+  _or: Op.or,
+  _eq: Op.eq,
+  _ne: Op.ne,
+  _is: Op.is,
+  _not: Op.not,
+  _col: Op.col,
+  _gt: Op.gt,
+  _gte: Op.gte,
+  _lt: Op.lt,
+  _lte: Op.lte,
+  _between: Op.between,
+  _notBetween: Op.notBetween,
+  _all: Op.all,
+  _in: Op.in,
+  _notIn: Op.notIn,
+  _like: Op.like,
+  _notLike: Op.notLike,
+  _startsWith: Op.startsWith,
+  _endsWith: Op.endsWith,
+  _substring: Op.substring,
+  _iLike: Op.iLike,
+  _notILike: Op.notILike,
+  _regexp: Op.regexp,
+  _notRegexp: Op.notRegexp,
+  _iRegexp: Op.iRegexp,
+  _notIRegexp: Op.notIRegexp,
+  _any: Op.any,
+  _contains: Op.contains,
+  _contained: Op.contained,
+  _overlap: Op.overlap,
+  _adjacent: Op.adjacent,
+  _strictLeft: Op.strictLeft,
+  _strictRight: Op.strictRight,
+  _noExtendRight: Op.noExtendRight,
+  _noExtendLeft: Op.noExtendLeft,
+  _values: Op.values
 }
 
 const Db = {
   async init (modelPaths, logger) {
-    const db = new Sequelize.Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+    const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
       dialect: 'postgres',
       host: process.env.DB_HOST,
       port: process.env.DB_PORT,
@@ -57,7 +59,7 @@ const Db = {
       operatorsAliases
     })
 
-    modelPaths.forEach((modelPath) => {
+    await each(modelPaths, modelPath => {
       db.import(modelPath)
     })
 
