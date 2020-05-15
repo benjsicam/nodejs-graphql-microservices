@@ -4,9 +4,9 @@ import * as grpc from 'grpc'
 import * as protoLoader from '@grpc/proto-loader'
 
 const proto = protoLoader.loadSync(path.resolve(__dirname, '../../_proto/post.proto'), {
+  keepCase: true,
   enums: String,
-  objects: true,
-  arrays: true
+  oneofs: true
 })
 const PostServiceClient = grpc.loadPackageDefinition(proto).post.PostService
 
