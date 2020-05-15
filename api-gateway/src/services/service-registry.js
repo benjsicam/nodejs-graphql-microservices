@@ -12,14 +12,16 @@ import MailerService from './mailer/mailer.service'
 
 import EventsBus from './events-bus.service'
 
+import { serviceConfig } from '../config'
+
 class ServiceRegistry {
   constructor (logger) {
     const grpcCredentials = grpc.credentials.createInsecure()
 
-    const commentServiceClient = new CommentServiceClient(process.env.COMMENTS_SVC_URL, grpcCredentials)
-    const postServiceClient = new PostServiceClient(process.env.POSTS_SVC_URL, grpcCredentials)
-    const userServiceClient = new UserServiceClient(process.env.USERS_SVC_URL, grpcCredentials)
-    const mailerServiceClient = new MailerServiceClient(process.env.MAILER_SVC_URL, grpcCredentials)
+    const commentServiceClient = new CommentServiceClient(serviceConfig.comments, grpcCredentials)
+    const postServiceClient = new PostServiceClient(serviceConfig.posts, grpcCredentials)
+    const userServiceClient = new UserServiceClient(serviceConfig.users, grpcCredentials)
+    const mailerServiceClient = new MailerServiceClient(serviceConfig.mailer, grpcCredentials)
 
     this._services = {
       eventsBus: new EventsBus(),

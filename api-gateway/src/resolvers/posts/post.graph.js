@@ -1,4 +1,4 @@
-import { isEmpty, isNil } from 'lodash'
+import { isEmpty, merge } from 'lodash'
 import queryUtils from '../../utils/query'
 
 const PostGraph = {
@@ -7,25 +7,13 @@ const PostGraph = {
   },
   comments: {
     resolve: async (parent, {
-      q, first, last, before, after, orderBy
+      q, first, last, before, after, filterBy, orderBy
     }, { commentService }) => {
       const query = { where: { post: parent.id } }
 
       if (!isEmpty(q)) Object.assign(query.where, { text: { _iLike: q } })
 
-      if (!isNil(first)) Object.assign(query, { limit: first })
-
-      if (!isEmpty(after)) {
-        Object.assign(query, { after, limit: first })
-      } else if (!isEmpty(before)) {
-        Object.assign(query, { before, limit: last })
-      }
-
-      if (!isEmpty(orderBy)) {
-        const order = await queryUtils.getOrder(orderBy)
-
-        Object.assign(query, { orderBy: order })
-      }
+      merge(query, await queryUtils.buildQuery(filterBy, orderBy, first, last, before, after))
 
       return commentService.find(query)
     }

@@ -3,6 +3,7 @@ import Aigle from 'aigle'
 import { GraphQLServer } from 'graphql-yoga'
 import { assign, startCase } from 'lodash'
 import { DateTimeResolver, EmailAddressResolver, UnsignedIntResolver } from 'graphql-scalars'
+import { GraphQLJSONObject } from 'graphql-type-json'
 
 const { reduce } = Aigle
 
@@ -14,6 +15,7 @@ const Server = {
         DateTime: DateTimeResolver,
         EmailAddress: EmailAddressResolver,
         UnsignedInt: UnsignedIntResolver,
+        JSONObject: GraphQLJSONObject,
         Query: await reduce(
           resolvers.QueryResolvers,
           (res, val) => assign(res, val),

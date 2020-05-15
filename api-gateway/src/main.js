@@ -24,6 +24,8 @@ import HooksRegistry from './hooks/hooks-registry'
 import ServiceRegistry from './services/service-registry'
 import defaultPlaygroundQuery from './playground-query'
 
+import { env, graphqlConfig, cacheConfig } from './config'
+
 const { map, reduce } = Aigle
 
 const main = async () => {
@@ -41,41 +43,40 @@ const main = async () => {
   )
 
   const serviceRegistry = new ServiceRegistry(logger)
-  const redisHostConfig = `${process.env.REDIS_HOST || ''}`.split(',')
+  const redisHostConfig = `${cacheConfig.host || ''}`.split(',')
 
   let publisher
   let subscriber
-  let redisOptions = {}
 
   if (redisHostConfig.length > 1) {
     const redisNodes = await map(redisHostConfig, host => ({
       host,
-      port: process.env.REDIS_PORT
+      port: cacheConfig.port
     }))
-
-    redisOptions = {
-      password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV
-    }
 
     publisher = new Redis.Cluster(redisNodes, {
       slotsRefreshTimeout: 20000,
-      redisOptions
+      redisOptions: {
+        password: cacheConfig.password,
+        keyPrefix: env
+      }
     })
     subscriber = new Redis.Cluster(redisNodes, {
       slotsRefreshTimeout: 20000,
-      redisOptions
+      redisOptions: {
+        password: cacheConfig.password,
+        keyPrefix: env
+      }
     })
   } else {
-    redisOptions = {
-      host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
-      password: process.env.REDIS_PASSWORD,
-      keyPrefix: process.env.NODE_ENV
-    }
-
-    publisher = new Redis(redisOptions)
-    subscriber = new Redis(redisOptions)
+    publisher = new Redis({
+      ...cacheConfig,
+      keyPrefix: env
+    })
+    subscriber = new Redis({
+      ...cacheConfig,
+      keyPrefix: env
+    })
   }
 
   const pubsub = new RedisPubSub({
@@ -83,7 +84,9 @@ const main = async () => {
     subscriber
   })
 
-  new HooksRegistry(serviceRegistry.services, pubsub, logger) // eslint-disable-line
+  const hooksRegistry = new HooksRegistry(serviceRegistry.services, pubsub, logger)
+
+  hooksRegistry.init()
 
   const server = await Server.init(
     schema,
@@ -104,7 +107,7 @@ const main = async () => {
   const httpServer = await server.start(
     {
       defaultPlaygroundQuery,
-      port: process.env.GRAPHQL_PORT || 3000
+      port: graphqlConfig.port
     },
     ({ port }) => {
       logger.info(`GraphQL Server is now running on port ${port}`)

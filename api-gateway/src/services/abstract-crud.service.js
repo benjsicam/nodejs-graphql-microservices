@@ -15,7 +15,7 @@ class AbstractCrudService {
   async find (query) {
     this._logger.info(`${this._serviceName}#find.call`, query)
 
-    const findResult = await this._client.findAsync({
+    const result = await this._client.findAsync({
       select: !isEmpty(query.select) ? query.select : undefined,
       where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined,
       orderBy: !isEmpty(query.orderBy) ? JSON.stringify(query.orderBy) : undefined,
@@ -24,19 +24,21 @@ class AbstractCrudService {
       after: !isEmpty(query.after) ? query.after : undefined
     })
 
-    let { edges } = findResult
+    let { edges } = result
 
     if (!isEmpty(this._jsonFields)) {
       edges = await map(edges, async (edge) => {
         const { node, cursor } = edge
 
-        await each(this._jsonFields, async (field) => {
-          if (Buffer.isBuffer(node[field])) {
-            const json = node[field].toString()
+        if (!isEmpty(node)) {
+          await each(this._jsonFields, async (field) => {
+            if (Buffer.isBuffer(node[field])) {
+              const json = node[field].toString()
 
-            if (!isEmpty(json)) node[field] = JSON.parse(json)
-          }
-        })
+              if (!isEmpty(json)) node[field] = JSON.parse(json)
+            }
+          })
+        }
 
         return {
           node,
@@ -45,11 +47,11 @@ class AbstractCrudService {
       })
     }
 
-    this._logger.info(`${this._serviceName}#find.result`, edges, findResult.pageInfo)
+    this._logger.info(`${this._serviceName}#find.result`, edges, result.pageInfo)
 
     return {
       edges,
-      pageInfo: findResult.pageInfo
+      pageInfo: result.pageInfo
     }
   }
 
@@ -58,7 +60,7 @@ class AbstractCrudService {
 
     const result = await this._client.findByIdAsync({ id })
 
-    if (!isEmpty(this._jsonFields)) {
+    if (!isEmpty(result) && !isEmpty(this._jsonFields)) {
       await each(this._jsonFields, async (field) => {
         if (Buffer.isBuffer(result[field])) {
           const json = result[field].toString()
@@ -81,7 +83,7 @@ class AbstractCrudService {
       where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined
     })
 
-    if (!isEmpty(this._jsonFields)) {
+    if (!isEmpty(result) && !isEmpty(this._jsonFields)) {
       await each(this._jsonFields, async (field) => {
         if (Buffer.isBuffer(result[field])) {
           const json = result[field].toString()
@@ -121,7 +123,7 @@ class AbstractCrudService {
 
     const result = await this._client.createAsync(model)
 
-    if (!isEmpty(this._jsonFields)) {
+    if (!isEmpty(result) && !isEmpty(this._jsonFields)) {
       await each(this._jsonFields, async (field) => {
         if (Buffer.isBuffer(result[field])) {
           const json = result[field].toString()
@@ -149,7 +151,7 @@ class AbstractCrudService {
 
     const result = await this._client.updateAsync({ id, data: model })
 
-    if (!isEmpty(this._jsonFields)) {
+    if (!isEmpty(result) && !isEmpty(this._jsonFields)) {
       await each(this._jsonFields, async (field) => {
         if (Buffer.isBuffer(result[field])) {
           const json = result[field].toString()

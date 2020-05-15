@@ -2,13 +2,15 @@ import jwt from 'jsonwebtoken'
 
 import { get } from 'lodash'
 
+import { jwtConfig } from '../config'
+
 const authUtils = {
   async getUser (request, requireAuth = true) {
     const header = get(request, 'headers.authorization') || get(request, 'connection.context.Authorization')
 
     if (header) {
       const token = header.replace('Bearer ', '')
-      const decoded = jwt.verify(token, process.env.JWT_SECRET)
+      const decoded = jwt.verify(token, jwtConfig.secret)
 
       return decoded.userId
     }
@@ -20,7 +22,7 @@ const authUtils = {
     return null
   },
   async generateToken (userId) {
-    return jwt.sign({ userId }, process.env.JWT_SECRET)
+    return jwt.sign({ userId }, jwtConfig.secret)
   }
 }
 
