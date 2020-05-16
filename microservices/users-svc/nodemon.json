@@ -3,7 +3,7 @@
   "ignore": [
     ".git",
     "dist",
-    "test",
+    "__tests__",
     "coverage",
     "node_modules"
   ],

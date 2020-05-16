@@ -19,7 +19,7 @@ stages:
   - deploy
 
 setup:
-  image: node:12.16.2-alpine
+  image: node:12-alpine
   stage: setup
   before_script:
     - apk add --no-cache make g++ python postgresql-dev &> /dev/null
@@ -34,15 +34,15 @@ setup:
   when: always
 
 test:
-  image: node:12.16.2-alpine
+  image: node:12-alpine
   stage: test
   dependencies:
     - setup
   before_script:
-    - apk add --no-cache postgresql-client
+    - apk add --no-cache libpq
   script:
     - npm run lint
-    - npm test
+    - npm test:coverage
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   services:
     - name: postgres:12.2-alpine
@@ -72,7 +72,7 @@ test:
   when: always
 
 build:
-  image: node:12.16.2-alpine
+  image: node:12-alpine
   stage: build
   dependencies:
     - test

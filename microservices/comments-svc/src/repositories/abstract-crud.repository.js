@@ -1,5 +1,7 @@
 import Aigle from 'aigle'
-import { isEmpty, isNil } from 'lodash'
+import {
+  get, isEmpty, isNil, omitBy, set, unset
+} from 'lodash'
 
 const { each, map, omit } = Aigle
 
@@ -7,27 +9,30 @@ class AbstractCrudRepository {
   constructor (model) {
     this._model = model
     this._jsonFields = []
+    this._enumFields = []
   }
 
   async find ({ req, response }) {
     const { results, cursors } = await this._model.findAndPaginate({
-      attributes: !isEmpty(req.select) ? req.select : undefined,
+      attributes: !isEmpty(req.select) ? ['id'].concat(req.select) : undefined,
       where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined,
       order: !isEmpty(req.orderBy) ? JSON.parse(req.orderBy) : undefined,
       limit: !isNil(req.limit) ? req.limit : 25,
       before: !isEmpty(req.before) ? req.before : undefined,
       after: !isEmpty(req.after) ? req.after : undefined,
-      raw: false,
+      raw: true,
       paranoid: false
     })
 
     response.res = {
       edges: await map(results, async (result) => {
-        const node = result.toJSON()
+        const node = omitBy(result, isNil)
 
-        await each(this._jsonFields, async (field) => {
-          if (!isEmpty(node[field])) node[field] = Buffer.from(JSON.stringify(node[field]))
-        })
+        if (!isEmpty(this._jsonFields) && !isEmpty(node)) {
+          await each(this._jsonFields, async (field) => {
+            if (!isEmpty(get(node, field))) set(node, field, Buffer.from(JSON.stringify(node[field])))
+          })
+        }
 
         return {
           node,
@@ -46,32 +51,35 @@ class AbstractCrudRepository {
   }
 
   async findById ({ req, response }) {
-    let result = await this._model.findByPk(req.id)
+    const result = omitBy(await this._model.findByPk(req.id, {
+      raw: true
+    }), isNil)
 
-    result = !isEmpty(result) ? result.toJSON() : {}
+    if (!isEmpty(this._jsonFields) && !isEmpty(result)) {
+      await each(this._jsonFields, async (field) => {
+        if (!isEmpty(get(result, field))) set(result, field, Buffer.from(JSON.stringify(result[field])))
+      })
+    }
 
-    await each(this._jsonFields, async (field) => {
-      if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
-    })
-
-    response.res = result
+    response.res = result || {}
 
     return response.res
   }
 
   async findOne ({ req, response }) {
-    let result = await this._model.findOne({
+    const result = omitBy(await this._model.findOne({
       attributes: !isEmpty(req.select) ? req.select : undefined,
-      where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined
-    })
+      where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined,
+      raw: true
+    }), isNil)
 
-    result = !isEmpty(result) ? result.toJSON() : {}
+    if (!isEmpty(this._jsonFields) && !isEmpty(result)) {
+      await each(this._jsonFields, async (field) => {
+        if (!isEmpty(get(result, field))) set(result, field, Buffer.from(JSON.stringify(result[field])))
+      })
+    }
 
-    await each(this._jsonFields, async (field) => {
-      if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
-    })
-
-    response.res = result
+    response.res = result || {}
 
     return response.res
   }
@@ -89,21 +97,35 @@ class AbstractCrudRepository {
   async create ({ req, response }) {
     const data = req
 
-    await each(this._jsonFields, async (field) => {
-      if (Buffer.isBuffer(data[field])) {
-        const json = data[field].toString()
+    if (!isEmpty(this._jsonFields)) {
+      await each(this._jsonFields, async (field) => {
+        if (Buffer.isBuffer(get(data, field))) {
+          const json = get(data, field).toString()
 
-        if (!isEmpty(json)) data[field] = JSON.parse(json)
-      }
-    })
+          if (!isEmpty(json)) set(data, field, JSON.parse(json))
+        }
+      })
+    }
 
-    const result = await this._model.create(data)
+    if (!isEmpty(this._enumFields)) {
+      await each(this._enumFields, async (field) => {
+        const value = get(data, field)
 
-    await each(this._jsonFields, async (field) => {
-      if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
-    })
+        if (value === 'UNKNOWN') unset(data, field)
+      })
+    }
 
-    response.res = result.toJSON()
+    let result = await this._model.create(data)
+
+    result = omitBy(result.toJSON(), isNil)
+
+    if (!isEmpty(this._jsonFields)) {
+      await each(this._jsonFields, async (field) => {
+        if (!isEmpty(get(result, field))) set(result, field, Buffer.from(JSON.stringify(result[field])))
+      })
+    }
+
+    response.res = result
 
     return response.res
   }
@@ -111,27 +133,39 @@ class AbstractCrudRepository {
   async update ({ req, response }) {
     const { id, data } = req
 
-    await each(this._jsonFields, async (field) => {
-      if (Buffer.isBuffer(data[field])) {
-        const json = data[field].toString()
+    if (!isEmpty(this._jsonFields)) {
+      await each(this._jsonFields, async (field) => {
+        if (Buffer.isBuffer(get(data, field))) {
+          const json = get(data, field).toString()
 
-        if (!isEmpty(json)) data[field] = JSON.parse(json)
-      }
-    })
+          if (!isEmpty(json)) set(data, field, JSON.parse(json))
+        }
+      })
+    }
+
+    if (!isEmpty(this._enumFields)) {
+      await each(this._enumFields, async (field) => {
+        const value = get(data, field)
+
+        if (value === 'UNKNOWN') unset(data, field)
+      })
+    }
 
     const model = await this._model.findByPk(id)
 
     if (isEmpty(model)) throw new Error('Record not found.')
 
-    model.set(await omit(data, ['id']))
+    let result = await model.update(await omit(data, ['id']))
 
-    const result = await model.save()
+    result = omitBy(result.toJSON(), isNil)
 
-    await each(this._jsonFields, async (field) => {
-      if (!isEmpty(result[field])) result[field] = Buffer.from(JSON.stringify(result[field]))
-    })
+    if (!isEmpty(this._jsonFields)) {
+      await each(this._jsonFields, async (field) => {
+        if (!isEmpty(get(result, field))) set(result, field, Buffer.from(JSON.stringify(result[field])))
+      })
+    }
 
-    response.res = result.toJSON()
+    response.res = result
 
     return response.res
   }

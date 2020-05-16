@@ -1,6 +1,8 @@
 import Aigle from 'aigle'
 import { Sequelize, Op } from 'sequelize'
 
+import { env, dbConfig } from './config'
+
 const { each } = Aigle
 
 const operatorsAliases = {
@@ -45,11 +47,11 @@ const operatorsAliases = {
 
 const Db = {
   async init (modelPaths, logger) {
-    const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-      dialect: 'postgres',
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT,
-      logging: process.env.NODE_ENV !== 'test' ? logger.info.bind(logger) : false,
+    const db = new Sequelize(dbConfig.name, dbConfig.user, dbConfig.password, {
+      dialect: dbConfig.dialect,
+      host: dbConfig.host,
+      port: dbConfig.port,
+      logging: env !== 'test' ? logger.info.bind(logger) : false,
       benchmark: true,
       retry: {
         max: 3,
@@ -59,11 +61,9 @@ const Db = {
       operatorsAliases
     })
 
-    await each(modelPaths, modelPath => {
-      db.import(modelPath)
-    })
+    await each(modelPaths, modelPath => db.import(modelPath))
 
-    await db.sync()
+    if (dbConfig.sync) await db.sync()
 
     return db
   }

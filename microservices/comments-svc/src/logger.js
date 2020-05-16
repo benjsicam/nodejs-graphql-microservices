@@ -1,8 +1,10 @@
 import pino from 'pino'
 
+import { env } from './config'
+
 const logger = pino({
   safe: true,
-  prettyPrint: process.env.NODE_ENV === 'dev'
+  prettyPrint: env === 'dev'
 })
 
 export default logger

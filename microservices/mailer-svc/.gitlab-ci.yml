@@ -19,7 +19,7 @@ stages:
   - deploy
 
 setup:
-  image: node:12.16.2-alpine
+  image: node:12-alpine
   stage: setup
   before_script:
     - rm -rf ./node_modules/.cache
@@ -33,13 +33,13 @@ setup:
   when: always
 
 test:
-  image: node:12.16.2-alpine
+  image: node:12-alpine
   stage: test
   dependencies:
     - setup
   script:
     - npm run lint
-    - npm test
+    - npm test:coverage
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   variables:
     NODE_ENV: "test"
@@ -59,7 +59,7 @@ test:
   when: always
 
 build:
-  image: node:12.16.2-alpine
+  image: node:12-alpine
   stage: build
   dependencies:
     - test

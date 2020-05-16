@@ -8,6 +8,7 @@ import loggerMiddleware from '@malijs/logger'
 import { service } from 'grpc-health-check'
 
 import logger from './logger'
+import { grpcConfig, smtpConfig } from './config'
 
 import HealthCheckService from './services/health-check.service'
 
@@ -17,18 +18,12 @@ const SERVICE_NAME = 'MailerService'
 
 const SERVICE_PROTO = path.resolve(__dirname, '_proto/mailer.proto')
 
-const HOST_PORT = `${process.env.GRPC_HOST}:${process.env.GRPC_PORT}`
+const HOST_PORT = `${grpcConfig.host}:${grpcConfig.port}`
 
 const main = async () => {
   const transporter = nodemailer.createTransport({
     pool: true,
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: process.env.SMTP_SECURE,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS
-    }
+    ...smtpConfig
   })
 
   const mailerClient = new MailerClientService(transporter, logger, SERVICE_NAME)
@@ -42,9 +37,9 @@ const main = async () => {
   const healthCheckImpl = await healthCheckService.getServiceImpl()
 
   app.addService(SERVICE_PROTO, null, {
+    keepCase: true,
     enums: String,
-    objects: true,
-    arrays: true
+    oneofs: true
   })
   app.addService(service)
 
@@ -68,7 +63,7 @@ const main = async () => {
 
   await app.start(HOST_PORT)
 
-  logger.info(`gRPC Server is now listening on port ${process.env.GRPC_PORT}`)
+  logger.info(`gRPC Server is now listening on port ${grpcConfig.port}`)
 
   return {
     app

@@ -1,6 +1,8 @@
 import paginate from 'sequelize-cursor-pagination'
 import * as Sequelize from 'sequelize'
 
+import { dbConfig } from '../config'
+
 export default function (sequelize, DataTypes) {
   class User extends Sequelize.Model {}
 
@@ -37,7 +39,7 @@ export default function (sequelize, DataTypes) {
     timestamps: true,
     underscored: true,
     version: true,
-    schema: process.env.DB_SCHEMA || 'public',
+    schema: dbConfig.schema,
     sequelize
   })
 

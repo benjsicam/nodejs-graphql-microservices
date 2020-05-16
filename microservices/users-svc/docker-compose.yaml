@@ -41,7 +41,7 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
     healthcheck:
-      test: ["CMD-SHELL", "su -c 'pg_isready -U postgres'"]
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U postgres'"]
       interval: 30s
       timeout: 30s
       retries: 3

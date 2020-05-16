@@ -9,7 +9,7 @@ RUN apk add --no-cache make g++ python postgresql-dev \
 
 FROM node:12-alpine
 
-RUN apk add --no-cache postgresql-client
+RUN apk add --no-cache libpq
 
 RUN GRPC_HEALTH_PROBE_VERSION=v0.3.2 && \
     wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
