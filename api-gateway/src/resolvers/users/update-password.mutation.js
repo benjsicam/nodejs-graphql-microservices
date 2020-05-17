@@ -1,14 +1,16 @@
 import * as yup from 'yup'
 import bcrypt from 'bcryptjs'
 
-import authUtils from '../../utils/auth'
 import passwordUtils from '../../utils/password'
 
 const updatePassword = {
   authenticate: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
-      currentPassword: yup.string().trim().required('Current Password is a required field.'),
+      currentPassword: yup
+        .string()
+        .trim()
+        .required('Current Password is a required field.'),
       newPassword: yup
         .string()
         .trim()
@@ -23,16 +25,14 @@ const updatePassword = {
         .max('50', 'Confirm Password should be 50 characters at most.')
     })
   }),
-  resolve: async (parent, args, { userService, logger }) => {
+  resolve: async (parent, args, { user, userService, logger }) => {
     const { data } = args
-    const user = await userService.findOne({ where: { id: args.user } })
     const isMatch = await bcrypt.compare(data.currentPassword, user.password)
     const isConfirmed = data.newPassword === data.confirmPassword
 
-    logger.info('UserMutation#updatePassword.target', user)
-    logger.info('UserMutation#updatePassword.check', !user || !isMatch || !isConfirmed)
+    logger.info('UserMutation#updatePassword.check', !isMatch || !isConfirmed)
 
-    if (!user || !isMatch || !isConfirmed) {
+    if (!isMatch || !isConfirmed) {
       throw new Error('Error updating password. Kindly check your passwords.')
     }
 
@@ -44,8 +44,7 @@ const updatePassword = {
     })
 
     return {
-      user: updatedUser,
-      token: await authUtils.generateToken(updatedUser.id)
+      user: updatedUser
     }
   }
 }

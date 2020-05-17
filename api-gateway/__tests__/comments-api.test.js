@@ -1,17 +1,20 @@
 import faker from 'faker'
 
-import { request, GraphQLClient } from 'graphql-request'
+import { GraphQLClient } from 'graphql-request'
 
 import main from '../src/main'
 import logger from '../src/logger'
 
 describe('Comments API Testing', () => {
   let server,
-    client,
     publisher,
     subscriber,
     post,
     loggedInUser
+
+  const client = new GraphQLClient(`http://localhost:${process.env.GRAPHQL_PORT}/`, {
+    credentials: 'include'
+  })
 
   beforeAll(async () => {
     logger.info('====COMMENTS API SETUP===')
@@ -29,7 +32,7 @@ describe('Comments API Testing', () => {
       age: faker.random.number()
     }
 
-    const signupResponse = await request(`http://localhost:${process.env.GRAPHQL_PORT}/`, `
+    await client.request(`
       mutation {
         signup(
           data: {
@@ -39,7 +42,6 @@ describe('Comments API Testing', () => {
             age: ${userData.age}
           }
         ) {
-          token
           user {
             id
             name
@@ -56,13 +58,31 @@ describe('Comments API Testing', () => {
         }
       }`)
 
-    loggedInUser = signupResponse.signup.user
+    const loginResponse = await client.request(`
+      mutation {
+        login(
+          data: {
+            email: "${userData.email}",
+            password: "${userData.password}"
+          }
+        ) {
+          user {
+            id
+            name
+            email
+            age
+            createdAt
+            updatedAt
+            version
+          }
+          errors {
+            field
+            message
+          }
+        }
+      }`)
 
-    client = new GraphQLClient(`http://localhost:${process.env.GRAPHQL_PORT}/`, {
-      headers: {
-        authorization: `Bearer ${signupResponse.signup.token}`
-      }
-    })
+    loggedInUser = loginResponse.login.user
 
     const postData = {
       title: faker.random.words(),

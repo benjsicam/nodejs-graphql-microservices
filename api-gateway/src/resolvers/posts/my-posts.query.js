@@ -4,11 +4,11 @@ import queryUtils from '../../utils/query'
 const myPosts = {
   authenticate: true,
   resolve: async (parent, {
-    q, first, last, before, after, user, filterBy, orderBy
-  }, { postService }) => {
-    const query = { where: { author: user } }
+    q, first, last, before, after, filterBy, orderBy
+  }, { user, postService }) => {
+    const query = { where: { author: user.id } }
 
-    if (!isEmpty(q)) Object.assign(query.where, { author: user, title: { _iLike: q } })
+    if (!isEmpty(q)) merge(query, { where: { title: { _iLike: q } } })
 
     merge(query, await queryUtils.buildQuery(filterBy, orderBy, first, last, before, after))
 

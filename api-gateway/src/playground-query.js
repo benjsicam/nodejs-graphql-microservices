@@ -7,7 +7,6 @@ export default `mutation signup {
       age: 18
     }
   ) {
-    token
     user {
       id
       name
@@ -31,7 +30,6 @@ mutation login {
       password: "admin1234"
     }
   ) {
-    token
     user {
       id
       name
@@ -568,7 +566,6 @@ mutation updateEmail {
       currentPassword: "admin1234"
     }
   ) {
-    token
     user {
       id
       name
@@ -593,7 +590,6 @@ mutation updatePassword {
       confirmPassword: "user12345"
     }
   ) {
-    token
     user {
       id
       name

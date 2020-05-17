@@ -8,6 +8,8 @@ async function gracefulExit () {
   if (publisher) publisher.disconnect()
   if (subscriber) subscriber.disconnect()
   if (httpServer) httpServer.close()
+
+  process.exit(0)
 }
 
 ['SIGINT', 'SIGTERM'].forEach((signal) => {

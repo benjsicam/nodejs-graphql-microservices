@@ -5,7 +5,10 @@ const graphqlConfig = {
 }
 
 const jwtConfig = {
-  secret: process.env.JWT_SECRET
+  accessTokenSecret: process.env.JWT_ACCESSTOKEN_SECRET,
+  refreshTokenSecret: process.env.JWT_REFRESHTOKEN_SECRET,
+  issuer: process.env.JWT_ISSUER,
+  audience: process.env.JWT_AUDIENCE
 }
 
 const cacheConfig = {

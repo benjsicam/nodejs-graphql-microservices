@@ -22,7 +22,6 @@ import logger from './logger'
 import Server from './server'
 import HooksRegistry from './hooks/hooks-registry'
 import ServiceRegistry from './services/service-registry'
-import defaultPlaygroundQuery from './playground-query'
 
 import { env, graphqlConfig, cacheConfig } from './config'
 
@@ -106,7 +105,7 @@ const main = async () => {
 
   const httpServer = await server.start(
     {
-      defaultPlaygroundQuery,
+      playground: false,
       port: graphqlConfig.port
     },
     ({ port }) => {

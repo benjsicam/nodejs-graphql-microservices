@@ -1,6 +1,6 @@
 const me = {
   authenticate: true,
-  resolve: async (parent, { user }, { userService }) => userService.findById(user)
+  resolve: async (parent, args, { user, userService }) => userService.findById(user.id)
 }
 
 export default { me }

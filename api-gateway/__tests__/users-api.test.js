@@ -7,11 +7,14 @@ import logger from '../src/logger'
 
 describe('Users API Testing', () => {
   let server,
-    client,
     publisher,
     subscriber,
     loggedInUser,
     password
+
+  const client = new GraphQLClient(`http://localhost:${process.env.GRAPHQL_PORT}/`, {
+    credentials: 'include'
+  })
 
   const generateMockData = async (isSingle = false) => {
     if (isSingle) {
@@ -49,19 +52,18 @@ describe('Users API Testing', () => {
     publisher = start.publisher
     subscriber = start.subscriber
 
-    const data = await generateMockData(true)
+    const userData = await generateMockData(true)
 
-    const response = await request(`http://localhost:${process.env.GRAPHQL_PORT}/`, `
+    await client.request(`
       mutation {
         signup(
           data: {
-            name: "${data.name}",
-            email: "${data.email}",
-            password: "${data.password}",
-            age: ${data.age}
+            name: "${userData.name}",
+            email: "${userData.email}",
+            password: "${userData.password}",
+            age: ${userData.age}
           }
         ) {
-          token
           user {
             id
             name
@@ -78,16 +80,32 @@ describe('Users API Testing', () => {
         }
       }`)
 
-    const result = response.signup
+    const loginResponse = await client.request(`
+      mutation {
+        login(
+          data: {
+            email: "${userData.email}",
+            password: "${userData.password}"
+          }
+        ) {
+          user {
+            id
+            name
+            email
+            age
+            createdAt
+            updatedAt
+            version
+          }
+          errors {
+            field
+            message
+          }
+        }
+      }`)
 
-    loggedInUser = result.user
-    password = data.password
-
-    client = new GraphQLClient(`http://localhost:${process.env.GRAPHQL_PORT}/`, {
-      headers: {
-        authorization: `Bearer ${result.token}`
-      }
-    })
+    loggedInUser = loginResponse.login.user
+    password = userData.password
   })
 
   afterAll(async () => {
@@ -105,7 +123,6 @@ describe('Users API Testing', () => {
             password: "${password}"
           }
         ) {
-          token
           user {
             id
             name
@@ -126,7 +143,6 @@ describe('Users API Testing', () => {
     const result = response.login
 
     expect(result).not.toBeNil()
-    expect(result.token).not.toBeNil()
     expect(result.user).not.toBeNil()
 
     // Stucture check/s
@@ -141,7 +157,6 @@ describe('Users API Testing', () => {
     ])
 
     // Type check/s
-    expect(result.token).toBeString()
     expect(result.user.id).toBeString()
     expect(result.user.name).toBeString()
     expect(result.user.email).toBeString()
@@ -456,7 +471,6 @@ describe('Users API Testing', () => {
             currentPassword: "${password}"
           }
         ) {
-          token
           user {
             id
             name
@@ -519,7 +533,6 @@ describe('Users API Testing', () => {
             confirmPassword: "${newPassword}"
           }
         ) {
-          token
           user {
             id
             name
@@ -540,7 +553,6 @@ describe('Users API Testing', () => {
     let result = response.updatePassword
 
     expect(result).not.toBeNil()
-    expect(result.token).not.toBeNil()
     expect(result.user).not.toBeNil()
 
     await new Promise((resolve) => {
@@ -555,7 +567,6 @@ describe('Users API Testing', () => {
             password: "${newPassword}"
           }
         ) {
-          token
           user {
             id
             name
@@ -576,7 +587,6 @@ describe('Users API Testing', () => {
     result = response.login
 
     expect(result).not.toBeNil()
-    expect(result.token).not.toBeNil()
     expect(result.user).not.toBeNil()
 
     return true

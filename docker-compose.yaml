@@ -25,6 +25,7 @@ services:
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
       DB_SCHEMA: "public"
+      DB_SYNC: "true"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
     healthcheck:
@@ -58,6 +59,7 @@ services:
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
       DB_SCHEMA: "public"
+      DB_SYNC: "true"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
     healthcheck:
@@ -91,6 +93,7 @@ services:
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
       DB_SCHEMA: "public"
+      DB_SYNC: "true"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
     healthcheck:
@@ -146,7 +149,10 @@ services:
       GRAPHQL_PORT: "3000"
       REDIS_HOST: "cache"
       REDIS_PORT: "6379"
-      JWT_SECRET: "47YNbpelXTd2gAi+6r1C4bDj4NSlxUDS"
+      JWT_ACCESSTOKEN_SECRET: "VtWeuJo5cPrH1gzvLX0HwPkcbVVeMkV0/a2JFeP3hGE="
+      JWT_REFRESHTOKEN_SECRET: "tPQz6vb7nJDilma85OQExilvgZX+QyEf1CL95DmfBLA="
+      JWT_ISSUER: "application"
+      JWT_AUDIENCE: "public"
       COMMENTS_SVC_URL: "comments-svc:50051"
       POSTS_SVC_URL: "posts-svc:50051"
       USERS_SVC_URL: "users-svc:50051"
