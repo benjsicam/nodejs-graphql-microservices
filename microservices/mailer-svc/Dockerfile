@@ -2,7 +2,7 @@ FROM node:12-alpine as build
 
 WORKDIR /usr/local/mailer-svc
 
-COPY dist package.json ./
+ADD dist package.json ./
 
 RUN npm install --production
 

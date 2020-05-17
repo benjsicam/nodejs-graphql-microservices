@@ -2,7 +2,7 @@ FROM node:12-alpine as build
 
 WORKDIR /usr/local/comments-svc
 
-COPY dist package.json ./
+ADD dist package.json ./
 
 RUN apk add --no-cache make g++ python postgresql-dev \
   && npm install --production
@@ -11,9 +11,9 @@ FROM node:12-alpine
 
 RUN apk add --no-cache libpq
 
-RUN GRPC_HEALTH_PROBE_VERSION=v0.3.2 && \
-    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
-    chmod +x /bin/grpc_health_probe
+ADD https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/v0.3.2/grpc_health_probe-linux-amd64 /bin/grpc_health_probe
+
+RUN chmod +x /bin/grpc_health_probe
 
 WORKDIR /usr/local/comments-svc
 

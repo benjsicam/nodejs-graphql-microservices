@@ -2,7 +2,7 @@ FROM node:12-alpine as build
 
 WORKDIR /usr/local/users-svc
 
-COPY dist package.json ./
+ADD dist package.json ./
 
 RUN apk add --no-cache make g++ python postgresql-dev \
   && npm install --production
