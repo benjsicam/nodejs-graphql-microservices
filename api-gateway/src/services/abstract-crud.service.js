@@ -26,6 +26,8 @@ class AbstractCrudService {
 
     let { edges } = result
 
+    edges = edges || []
+
     if (!isEmpty(this._jsonFields)) {
       edges = await map(edges, async (edge) => {
         const { node, cursor } = edge
