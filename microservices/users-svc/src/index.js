@@ -8,6 +8,8 @@ async function gracefulExit () {
   if (server) await server.close()
   if (cache) cache.disconnect()
   if (db) await db.close()
+
+  process.exit(0)
 }
 
 ['SIGINT', 'SIGTERM'].forEach((signal) => {

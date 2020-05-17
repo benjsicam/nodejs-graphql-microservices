@@ -1,28 +1,23 @@
 import jwt from 'jsonwebtoken'
 
-import { get } from 'lodash'
-
 import { jwtConfig } from '../config'
 
 const authUtils = {
-  async getUser (request, requireAuth = true) {
-    const header = get(request, 'headers.authorization') || get(request, 'connection.context.Authorization')
-
-    if (header) {
-      const token = header.replace('Bearer ', '')
-      const decoded = jwt.verify(token, jwtConfig.secret)
-
-      return decoded.userId
-    }
-
-    if (requireAuth) {
-      throw new Error('Authentication required')
-    }
-
-    return null
+  async generateAccessToken (userId) {
+    return jwt.sign({ userId }, jwtConfig.accessTokenSecret, {
+      subject: userId,
+      audience: jwtConfig.audience,
+      issuer: jwtConfig.issuer,
+      expiresIn: '30min'
+    })
   },
-  async generateToken (userId) {
-    return jwt.sign({ userId }, jwtConfig.secret)
+  async generateRefreshToken (userId) {
+    return jwt.sign({ userId }, jwtConfig.refreshTokenSecret, {
+      subject: userId,
+      audience: jwtConfig.audience,
+      issuer: jwtConfig.issuer,
+      expiresIn: '2d'
+    })
   }
 }
 

@@ -6,6 +6,8 @@ async function gracefulExit () {
   const { server } = app
 
   if (server) await server.close()
+
+  process.exit(0)
 }
 
 ['SIGINT', 'SIGTERM'].forEach((signal) => {

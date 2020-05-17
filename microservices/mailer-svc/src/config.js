@@ -1,3 +1,5 @@
+const env = process.env.NODE_ENV
+
 const grpcConfig = {
   host: process.env.GRPC_HOST || '0.0.0.0',
   port: parseInt(`${process.env.GRPC_PORT || 50051}`, 10)
@@ -14,6 +16,7 @@ const smtpConfig = {
 }
 
 export {
+  env,
   grpcConfig,
   smtpConfig
 }
