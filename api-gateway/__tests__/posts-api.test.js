@@ -93,11 +93,11 @@ describe('Posts API Testing', () => {
     })
   })
 
-  afterAll(async () => Promise.all([
-    server.close(),
-    publisher.quit(),
-    subscriber.quit()
-  ]))
+  afterAll(async () => {
+    publisher.disconnect()
+    subscriber.disconnect()
+    server.close()
+  })
 
   it('should create a post', async () => {
     const data = await generateMockData(true)

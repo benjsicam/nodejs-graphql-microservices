@@ -90,11 +90,11 @@ describe('Users API Testing', () => {
     })
   })
 
-  afterAll(async () => Promise.all([
-    server.close(),
-    publisher.quit(),
-    subscriber.quit()
-  ]))
+  afterAll(async () => {
+    publisher.disconnect()
+    subscriber.disconnect()
+    server.close()
+  })
 
   it('should login a user', async () => {
     const response = await client.request(`

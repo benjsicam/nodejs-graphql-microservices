@@ -63,41 +63,41 @@ const main = async () => {
     destroy: [cacheMiddleware.remove('posts'), repo.destroy.bind(repo)]
   }
 
-  const app = new Mali()
+  const server = new Mali()
   const healthCheckService = new HealthCheckService(SERVICE_NAME)
   const healthCheckImpl = await healthCheckService.getServiceImpl()
 
-  app.addService(SERVICE_PROTO, null, {
+  server.addService(SERVICE_PROTO, null, {
     keepCase: true,
     enums: String,
     oneofs: true
   })
-  app.addService(service)
+  server.addService(service)
 
-  app.use(
+  server.use(
     errorMiddleware((err, ctx) => {
       logger.error(`${ctx.service}#${ctx.name}.error`, err)
       throw err
     })
   )
-  app.use(
+  server.use(
     loggerMiddleware({
       timestamp: true,
       request: true,
       response: true
     })
   )
-  app.use({
+  server.use({
     PostService,
     ...healthCheckImpl
   })
 
-  await app.start(HOST_PORT)
+  await server.start(HOST_PORT)
 
   logger.info(`gRPC Server is now listening on port ${grpcConfig.port}`)
 
   return {
-    app,
+    server,
     cache,
     db
   }

@@ -92,11 +92,11 @@ describe('Comments API Testing', () => {
     post = createPostResponse.createPost.post
   })
 
-  afterAll(async () => Promise.all([
-    server.close(),
-    publisher.quit(),
-    subscriber.quit()
-  ]))
+  afterAll(async () => {
+    publisher.disconnect()
+    subscriber.disconnect()
+    server.close()
+  })
 
   it('should create a comment', async () => {
     const text = faker.lorem.sentence()

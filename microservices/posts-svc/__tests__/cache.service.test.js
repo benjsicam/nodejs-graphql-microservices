@@ -21,7 +21,7 @@ describe('Cache Testing', () => {
 
   afterAll(async () => {
     logger.info('=====TEARDOWN====')
-    return redis.quit()
+    return redis.disconnect()
   })
 
   describe('CacheService', () => {
