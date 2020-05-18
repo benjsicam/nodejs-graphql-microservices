@@ -1,5 +1,5 @@
 {
-  "name": "node-graphql-microservices",
+  "name": "nodejs-graphql-microservices",
   "version": "1.0.0",
   "description": "A sample GraphQL API Gateway with gRPC back-end microservices.",
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:benjsicam/node-graphql-microservices.git"
+    "url": "git+ssh://git@github.com:benjsicam/nodejs-graphql-microservices.git"
   },
   "author": "Benj Sicam <benjsicam@gmail.com> (https://github.com/benjsicam)",
   "contributors": [
@@ -22,7 +22,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/benjsicam/node-graphql-microservices/issues"
+    "url": "https://github.com/benjsicam/nodejs-graphql-microservices/issues"
   },
-  "homepage": "https://github.com/benjsicam/node-graphql-microservices#readme"
+  "homepage": "https://github.com/benjsicam/nodejs-graphql-microservices#readme"
 }

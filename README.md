@@ -6,7 +6,7 @@ This project is a [monorepo](https://gomonorepo.org/) containing a [GraphQL](htt
 
 When creating GraphQL APIs, one must understand what [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) and Graph Data Modelling are. One must also [think in graphs](https://graphql.org/learn/thinking-in-graphs/) as per the GraphQL specification recommends. A diagram of the graph data model is shown below.
 
-![Graph Model](https://raw.githubusercontent.com/benjsicam/node-graphql-microservices/master/docs/img/graph-model.png)
+![Graph Model](https://raw.githubusercontent.com/benjsicam/nodejs-graphql-microservices/master/docs/img/graph-model.png)
 
 1. Users can write both posts and comments therefore, a users are authors posts and comments.
 2. Posts are authored by users and comments can be linked/submitted for them.
@@ -20,7 +20,7 @@ The GraphQL API acts as a gateway/proxy for the different microservices it expos
 
 A diagram of the architecture is shown below.
 
-![Architecture Diagram](https://raw.githubusercontent.com/benjsicam/node-graphql-microservices/master/docs/img/archi-diagram.png)
+![Architecture Diagram](https://raw.githubusercontent.com/benjsicam/nodejs-graphql-microservices/master/docs/img/archi-diagram.png)
 
 This architecture implements the following Microservice Design Patterns:
 
@@ -87,4 +87,4 @@ You must install the following on your local machine:
 
 ### Video Demo
 
-[![GraphQL + gRPC Microservices](https://raw.githubusercontent.com/benjsicam/node-graphql-microservices/master/docs/img/vid-preview.jpg)](https://youtu.be/SuH2K92FOaE)
+[![GraphQL + gRPC Microservices](https://raw.githubusercontent.com/benjsicam/nodejs-graphql-microservices/master/docs/img/vid-preview.jpg)](https://youtu.be/SuH2K92FOaE)

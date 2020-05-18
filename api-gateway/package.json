@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/benjsicam/node-graphql-microservices.git"
+    "url": "git+https://github.com/benjsicam/nodejs-graphql-microservices.git"
   },
   "keywords": [
     "graphql",
@@ -27,9 +27,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/benjsicam/node-graphql-microservices/issues"
+    "url": "https://github.com/benjsicam/nodejs-graphql-microservices/issues"
   },
-  "homepage": "https://github.com/benjsicam/node-graphql-microservices#readme",
+  "homepage": "https://github.com/benjsicam/nodejs-graphql-microservices#readme",
   "dependencies": {
     "@babel/runtime": "^7.9.6",
     "@grpc/proto-loader": "^0.5.4",
