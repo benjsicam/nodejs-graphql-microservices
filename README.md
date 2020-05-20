@@ -1,4 +1,4 @@
-# Node Graphql + gRPC microservices
+# Node GraphQL + gRPC microservices
 
 This project is a [monorepo](https://gomonorepo.org/) containing a [GraphQL](https://graphql.org/) API gateway with [gRPC](https://grpc.io/) back-end microservices all written in Node.js. This project is mainly used for learning/trial purposes only.
 
