@@ -1,6 +1,7 @@
 ---
 extends:
   - airbnb-standard
+  - plugin:jest/recommended
   - plugin:import/errors
   - plugin:import/warnings
 parser: babel-eslint

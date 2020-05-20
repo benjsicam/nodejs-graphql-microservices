@@ -39,7 +39,7 @@ test:
     - setup
   script:
     - npm run lint
-    - npm test:coverage
+    - npm run test:coverage
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   variables:
     NODE_ENV: "test"

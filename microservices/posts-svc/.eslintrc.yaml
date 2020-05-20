@@ -1,6 +1,7 @@
 ---
 extends:
   - airbnb-standard
+  - plugin:jest/recommended
   - plugin:import/errors
   - plugin:import/warnings
 parser: babel-eslint
@@ -12,6 +13,7 @@ env:
   jest: true
 rules:
   no-underscore-dangle: 0
+  no-template-curly-in-string: 0
   semi:
     - error
     - never

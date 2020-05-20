@@ -39,7 +39,7 @@ test:
     - setup
   script:
     - npm run lint
-    - npm test:coverage
+    - npm run test:coverage
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   services:
     - name: postgres:12.2-alpine
@@ -58,7 +58,10 @@ test:
     FF_NETWORK_PER_BUILD: 1
     NODE_ENV: "test"
     GRAPHQL_PORT: "3000"
-    JWT_SECRET: "47YNbpelXTd2gAi+6r1C4bDj4NSlxUDS"
+    JWT_ACCESSTOKEN_SECRET: "Ga64EzaIG1mlP+FPsqz6bo+YK1qIBaY09toLd9fqb1w="
+    JWT_REFRESHTOKEN_SECRET: "VtWeuJo5cPrH1gzvLX0HwPkcbVVeMkV0/a2JFeP3hGE="
+    JWT_ISSUER: "application"
+    JWT_AUDIENCE: "public"
     COMMENTS_SVC_URL: "comments-svc:50051"
     POSTS_SVC_URL: "posts-svc:50051"
     USERS_SVC_URL: "users-svc:50051"
@@ -73,9 +76,6 @@ test:
     DB_PASSWORD: "postgres"
     REDIS_HOST: "cache"
     REDIS_PORT: "6379"
-    JWT_SECRET: "VtWeuJo5cPrH1gzvLX0HwPkcbVVeMkV0/a2JFeP3hGE="
-    JWT_ISSUER: "application"
-    JWT_AUDIENCE: "public"
     POSTGRESQL_USERNAME: "postgres"
     POSTGRESQL_PASSWORD: "postgres"
     POSTGRESQL_DATABASE: "postgres"
@@ -110,10 +110,10 @@ release:
   dependencies:
     - build
   script:
-    - docker login -u ${CI_REGISTRY_USER} -p $CI_REGISTRY_PASSWORD ${CI_REGISTRY}
     - docker build -t ${CONTAINER_IMAGE} .
     - docker tag ${CONTAINER_IMAGE} $CI_REGISTRY_IMAGE:dev
     - docker tag ${CONTAINER_IMAGE} $CI_REGISTRY_IMAGE:latest
+    - docker login -u ${CI_REGISTRY_USER} -p $CI_REGISTRY_PASSWORD ${CI_REGISTRY}
     - docker push ${CONTAINER_IMAGE}
     - docker push $CI_REGISTRY_IMAGE:dev
     - docker push $CI_REGISTRY_IMAGE:latest

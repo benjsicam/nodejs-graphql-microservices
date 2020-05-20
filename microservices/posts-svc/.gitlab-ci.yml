@@ -42,7 +42,7 @@ test:
     - apk add --no-cache libpq
   script:
     - npm run lint
-    - npm test:coverage
+    - npm run test:coverage
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   services:
     - name: postgres:12.2-alpine
