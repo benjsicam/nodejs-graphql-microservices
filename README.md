@@ -8,13 +8,13 @@ When creating GraphQL APIs, one must understand what [Graph Theory](https://en.w
 
 ![Graph Model](https://raw.githubusercontent.com/benjsicam/nodejs-graphql-microservices/master/docs/img/graph-model.png)
 
-1. Users can write both posts and comments therefore, a users are authors posts and comments.
+1. Users can write both posts and comments therefore, users are authors posts and comments.
 2. Posts are authored by users and comments can be linked/submitted for them.
 3. Comments are authored by users and are linked/submitted to posts.
 
 ## Architecture Overview
  
-The GraphQL API acts as a gateway/proxy for the different microservices it exposes. The resolvers of the GraphQL API make calls to the gRPC servers/microservices in the back-end through gRPC client implementations of the back-end services which are defined through [Protocol Buffers](https://developers.google.com/protocol-buffers/) that also serves as the data interchange format. The gRPC microservices then handles the request to connect to databases or any other service it needs to serve requests.
+The GraphQL API acts as a gateway/proxy for the different microservices it exposes. The resolvers of the GraphQL API make calls to the gRPC servers/microservices in the back-end through gRPC client implementations of the back-end services which are defined through [Protocol Buffers](https://developers.google.com/protocol-buffers/) that also serves as the data interchange format. The gRPC microservices then handles the request to connect to databases or any other service it needs to fulfill the client requests.
 
 ### Diagram
 
