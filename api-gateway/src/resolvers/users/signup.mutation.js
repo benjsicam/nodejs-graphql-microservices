@@ -38,7 +38,7 @@ const signup = {
       throw new Error('Email taken')
     }
 
-    const password = await passwordUtils.hashPassword(data.password)
+    const password = await passwordUtils.hash(data.password)
 
     const user = await userService.create({
       ...data,

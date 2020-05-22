@@ -35,7 +35,7 @@ const updatePassword = {
       throw new Error('Error updating password. Kindly check your passwords.')
     }
 
-    const password = await passwordUtils.hashPassword(data.newPassword)
+    const password = await passwordUtils.hash(data.newPassword)
 
     const updatedUser = await userService.update(user.id, {
       ...user,
