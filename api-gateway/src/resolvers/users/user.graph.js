@@ -6,9 +6,9 @@ const UserGraph = {
     resolve: async (parent, {
       q, first, last, before, after, filterBy, orderBy
     }, { postService }) => {
-      const query = {}
+      const query = { where: { author: parent.id } }
 
-      if (!isEmpty(q)) Object.assign(query, { where: { title: { _iLike: q } } })
+      if (!isEmpty(q)) merge(query, { where: { title: { _iLike: q } } })
 
       merge(query, await queryUtils.buildQuery(filterBy, orderBy, first, last, before, after))
 
@@ -19,9 +19,9 @@ const UserGraph = {
     resolve: async (parent, {
       q, first, last, before, after, filterBy, orderBy
     }, { commentService }) => {
-      const query = {}
+      const query = { where: { author: parent.id } }
 
-      if (!isEmpty(q)) Object.assign(query, { where: { text: { _iLike: q } } })
+      if (!isEmpty(q)) merge(query, { where: { text: { _iLike: q } } })
 
       merge(query, await queryUtils.buildQuery(filterBy, orderBy, first, last, before, after))
 

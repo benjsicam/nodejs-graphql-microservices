@@ -8,7 +8,7 @@ const posts = {
   }, { postService }) => {
     const query = {}
 
-    if (!isEmpty(q)) Object.assign(query, { where: { title: { _iLike: q } } })
+    if (!isEmpty(q)) merge(query, { where: { title: { _iLike: q } } })
 
     merge(query, await queryUtils.buildQuery(filterBy, orderBy, first, last, before, after))
 

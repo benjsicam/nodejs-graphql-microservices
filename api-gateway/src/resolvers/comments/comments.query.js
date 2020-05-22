@@ -8,7 +8,7 @@ const comments = {
   }, { commentService }) => {
     const query = {}
 
-    if (!isEmpty(q)) Object.assign(query, { where: { text: { _iLike: q } } })
+    if (!isEmpty(q)) merge(query, { where: { text: { _iLike: q } } })
 
     merge(query, await queryUtils.buildQuery(filterBy, orderBy, first, last, before, after))
 
