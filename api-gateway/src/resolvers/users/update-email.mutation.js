@@ -1,5 +1,6 @@
 import * as yup from 'yup'
-import bcrypt from 'bcryptjs'
+
+import passwordUtils from '../../utils/password'
 
 const updateEmail = {
   authenticate: true,
@@ -18,11 +19,11 @@ const updateEmail = {
   }),
   resolve: async (parent, args, { user, userService, logger }) => {
     const { data } = args
-    const isMatch = await bcrypt.compare(data.currentPassword, user.password)
+    const isSame = await passwordUtils.verify(data.currentPassword, user.password)
 
-    logger.info('UserMutation#updateEmail.check1', !user || !isMatch)
+    logger.info('UserMutation#updateEmail.check1', !user || !isSame)
 
-    if (!isMatch) {
+    if (!isSame) {
       throw new Error('Error updating email. Kindly check the email or password provided')
     }
 

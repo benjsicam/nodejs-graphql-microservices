@@ -1,9 +1,9 @@
 import * as yup from 'yup'
-import bcrypt from 'bcryptjs'
 
 import { isEmpty, isNil } from 'lodash'
 
 import authUtils from '../../utils/auth'
+import passwordUtils from '../../utils/password'
 
 const login = {
   authenticate: false,
@@ -33,11 +33,11 @@ const login = {
       throw new Error('Unable to login')
     }
 
-    const isMatch = await bcrypt.compare(data.password, user.password)
+    const isSame = await passwordUtils.verify(data.password, user.password)
 
-    logger.info('UserQuery#login.check2', !isMatch)
+    logger.info('UserQuery#login.check2', !isSame)
 
-    if (!isMatch) {
+    if (!isSame) {
       throw new Error('Unable to login')
     }
 

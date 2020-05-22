@@ -1,5 +1,4 @@
 import * as yup from 'yup'
-import bcrypt from 'bcryptjs'
 
 import passwordUtils from '../../utils/password'
 
@@ -27,12 +26,12 @@ const updatePassword = {
   }),
   resolve: async (parent, args, { user, userService, logger }) => {
     const { data } = args
-    const isMatch = await bcrypt.compare(data.currentPassword, user.password)
+    const isSame = await passwordUtils.verify(data.currentPassword, user.password)
     const isConfirmed = data.newPassword === data.confirmPassword
 
-    logger.info('UserMutation#updatePassword.check', !isMatch || !isConfirmed)
+    logger.info('UserMutation#updatePassword.check', !isSame || !isConfirmed)
 
-    if (!isMatch || !isConfirmed) {
+    if (!isSame || !isConfirmed) {
       throw new Error('Error updating password. Kindly check your passwords.')
     }
 
