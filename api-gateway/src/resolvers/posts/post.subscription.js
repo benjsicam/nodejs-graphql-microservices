@@ -1,8 +1,9 @@
-const post = {
-  subscribe: {
-    authenticate: false,
-    resolve: async (parent, args, { pubsub }) => pubsub.asyncIterator('post')
-  }
+const postAdded = {
+  authenticate: false,
+  subscribe: async (parent, args, { pubsub }) => {
+    return pubsub.asyncIterator('postAdded')
+  },
+  resolve: payload => payload
 }
 
-export default { post }
+export default { postAdded }

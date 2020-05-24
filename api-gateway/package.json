@@ -34,6 +34,7 @@
     "@babel/runtime": "^7.9.6",
     "@grpc/proto-loader": "^0.5.4",
     "aigle": "^1.14.1",
+    "apollo-server": "^2.13.1",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.5",
     "core-js": "^3.6.5",

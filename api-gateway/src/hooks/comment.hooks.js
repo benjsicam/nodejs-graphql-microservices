@@ -6,8 +6,6 @@ class CommentHooks {
     this._logger = logger
 
     this._eventsBus.on('mutation#createComment', this.onCreate())
-    this._eventsBus.on('mutation#updateComment', this.onUpdate())
-    this._eventsBus.on('mutation#deleteComment', this.onDelete())
   }
 
   onCreate () {
@@ -28,7 +26,7 @@ class CommentHooks {
         where: { id: result.author }
       })
 
-      this._pubsub.publish(`comment#${result.post}`, result)
+      this._pubsub.publish('commentAdded', result)
 
       return mailerService.send({
         template: 'new-comment',
@@ -42,32 +40,6 @@ class CommentHooks {
           })
         )
       })
-    }
-  }
-
-  onUpdate () {
-    return async ({ result }) => {
-      this._logger.info('CommentHooks#onCreate.call', result)
-
-      this._pubsub.publish('comment', {
-        mutation: 'UPDATED',
-        data: result
-      })
-    }
-  }
-
-  onDelete () {
-    return async ({ args, result }) => {
-      this._logger.info('CommentHooks#onDelete.call', result)
-
-      if (result >= 1) {
-        this._pubsub.publish('comment', {
-          mutation: 'DELETED',
-          data: {
-            id: args.id
-          }
-        })
-      }
     }
   }
 }

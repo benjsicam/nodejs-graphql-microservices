@@ -1,18 +1,15 @@
-import errorUtils from '../../utils/error'
+import { withFilter } from 'apollo-server'
 
 const commentAdded = {
-  subscribe: {
-    authenticate: false,
-    resolve: async (parent, { post }, { postService, pubsub }) => {
-      const postExists = (await postService.count({ where: { id: post, published: true } })) >= 1
+  authenticate: false,
+  subscribe: withFilter(async (parent, { post }, { postService, pubsub }) => {
+    const postExists = (await postService.count({ where: { id: post, published: true } })) >= 1
 
-      if (!postExists) {
-        return errorUtils.buildError(['Unable to find post'])
-      }
+    if (!postExists) throw new Error('Unable to find post')
 
-      return pubsub.asyncIterator(`comment#${post}`)
-    }
-  }
+    return pubsub.asyncIterator('commentAdded')
+  }, (payload, variables) => payload.post === variables.post),
+  resolve: payload => payload
 }
 
 export default { commentAdded }
