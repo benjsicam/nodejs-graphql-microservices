@@ -1,6 +1,6 @@
 import errorUtils from '../../utils/error'
 
-const comment = {
+const commentAdded = {
   subscribe: {
     authenticate: false,
     resolve: async (parent, { post }, { postService, pubsub }) => {
@@ -15,4 +15,4 @@ const comment = {
   }
 }
 
-export default { comment }
+export default { commentAdded }

@@ -14,10 +14,7 @@ class PostHooks {
     return async ({ result }) => {
       this._logger.info('PostHooks#onCreate.call', result)
 
-      this._pubsub.publish('post', {
-        mutation: 'CREATED',
-        data: result
-      })
+      this._pubsub.publish('post', result)
     }
   }
 

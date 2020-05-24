@@ -1,7 +1,7 @@
 type Subscription {
   # Comments Subscription
-  comment(post: ID!): CommentSubscriptionPayload!
+  commentAdded(post: ID!): Comment!
 
   # Posts Subscription
-  post: PostSubscriptionPayload!
+  postAdded: Post!
 }

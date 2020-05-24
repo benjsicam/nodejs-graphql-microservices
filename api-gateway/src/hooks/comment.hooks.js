@@ -28,10 +28,7 @@ class CommentHooks {
         where: { id: result.author }
       })
 
-      this._pubsub.publish('comment', {
-        mutation: 'CREATED',
-        data: result
-      })
+      this._pubsub.publish(`comment#${result.post}`, result)
 
       return mailerService.send({
         template: 'new-comment',
