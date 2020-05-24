@@ -1,14 +1,14 @@
 import { isEmpty, isNil } from 'lodash'
 
 const queryUtils = {
-  async getFilters (filterBy) {
+  async getFilters(filterBy) {
     const queryFilters = { where: {} }
 
     if (!isEmpty(filterBy)) Object.assign(queryFilters.where, filterBy)
 
     return queryFilters
   },
-  async getOrder (orderBy) {
+  async getOrder(orderBy) {
     const queryOrder = {}
 
     if (!isEmpty(orderBy)) {
@@ -21,7 +21,7 @@ const queryUtils = {
 
     return queryOrder
   },
-  async getCursor (first, last, before, after) {
+  async getCursor(first, last, before, after) {
     const queryCursor = {}
 
     if (!isNil(first)) Object.assign(queryCursor, { limit: first })
@@ -34,7 +34,7 @@ const queryUtils = {
 
     return queryCursor
   },
-  async buildQuery (filterBy, orderBy, first, last, before, after) {
+  async buildQuery(filterBy, orderBy, first, last, before, after) {
     const query = {}
 
     Object.assign(query, await this.getFilters(filterBy))

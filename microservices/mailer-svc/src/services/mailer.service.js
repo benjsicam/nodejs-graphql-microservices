@@ -2,13 +2,13 @@ import Email from 'email-templates'
 import path from 'path'
 
 class MailerService {
-  constructor (transporter, logger, serviceName) {
+  constructor(transporter, logger, serviceName) {
     this._transporter = transporter
     this._logger = logger
     this._serviceName = serviceName
   }
 
-  async send ({ req, response }) {
+  async send({ req, response }) {
     let data = Buffer.from(req.data)
     data = JSON.parse(data.toString())
 
@@ -20,7 +20,7 @@ class MailerService {
       transport: this._transporter
     })
 
-    this._logger.info(`${this._serviceName}#send.call`, req)
+    this._logger.info(`${this._serviceName}#send.call %o`, req)
 
     try {
       const result = await email.send({
@@ -33,12 +33,12 @@ class MailerService {
         }
       })
 
-      this._logger.info(`${this._serviceName}#send.result`, result)
+      this._logger.info(`${this._serviceName}#send.result %o`, result)
 
       response.res = { isSent: true }
       return response.res
     } catch (error) {
-      this._logger.error(`${this._serviceName}#send.error`, error)
+      this._logger.error(`${this._serviceName}#send.error %o`, error)
 
       response.res = { isSent: false }
 

@@ -1,9 +1,9 @@
 import AbstractCrudService from '../abstract-crud.service'
 
-class CommentService extends AbstractCrudService {
-  constructor (client, logger) {
-    super('CommentService', client, logger)
+class CommentsService extends AbstractCrudService {
+  constructor(client, logger) {
+    super(CommentsService.name, client, logger)
   }
 }
 
-export default CommentService
+export default CommentsService

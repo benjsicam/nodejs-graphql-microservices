@@ -11,8 +11,7 @@ import PostRepository from '../src/repositories/post.repository'
 const MODEL_NAME = 'Post'
 
 describe('Database Testing', () => {
-  let db,
-    repo
+  let db, repo
 
   const generateMockData = async (isSingle = false) => {
     if (isSingle) {
@@ -23,22 +22,26 @@ describe('Database Testing', () => {
         author: faker.random.uuid()
       }
     }
-    return [{
-      title: faker.random.words(),
-      body: faker.lorem.paragraphs(),
-      published: faker.random.boolean(),
-      author: faker.random.uuid()
-    }, {
-      title: faker.random.words(),
-      body: faker.lorem.paragraphs(),
-      published: faker.random.boolean(),
-      author: faker.random.uuid()
-    }, {
-      title: faker.random.words(),
-      body: faker.lorem.paragraphs(),
-      published: faker.random.boolean(),
-      author: faker.random.uuid()
-    }]
+    return [
+      {
+        title: faker.random.words(),
+        body: faker.lorem.paragraphs(),
+        published: faker.random.boolean(),
+        author: faker.random.uuid()
+      },
+      {
+        title: faker.random.words(),
+        body: faker.lorem.paragraphs(),
+        published: faker.random.boolean(),
+        author: faker.random.uuid()
+      },
+      {
+        title: faker.random.words(),
+        body: faker.lorem.paragraphs(),
+        published: faker.random.boolean(),
+        author: faker.random.uuid()
+      }
+    ]
   }
 
   beforeAll(async () => {
@@ -55,10 +58,12 @@ describe('Database Testing', () => {
   })
 
   describe('PostRepository', () => {
-    beforeEach(async () => repo.destroy({
-      req: { where: {} },
-      response: {}
-    }))
+    beforeEach(async () =>
+      repo.destroy({
+        req: { where: {} },
+        response: {}
+      })
+    )
 
     it('should return a new db entry on create', async () => {
       const data = await generateMockData(true)
@@ -71,16 +76,7 @@ describe('Database Testing', () => {
       expect(result).not.toBeNil()
 
       // Stucture check/s
-      expect(result).toContainAllKeys([
-        'id',
-        'title',
-        'body',
-        'published',
-        'author',
-        'createdAt',
-        'updatedAt',
-        'version'
-      ])
+      expect(result).toContainAllKeys(['id', 'title', 'body', 'published', 'author', 'createdAt', 'updatedAt', 'version'])
 
       // Type check/s
       expect(result.id).toBeString()
@@ -119,16 +115,7 @@ describe('Database Testing', () => {
       expect(result).not.toBeNil()
 
       // Stucture check/s
-      expect(result).toContainAllKeys([
-        'id',
-        'title',
-        'body',
-        'published',
-        'author',
-        'createdAt',
-        'updatedAt',
-        'version'
-      ])
+      expect(result).toContainAllKeys(['id', 'title', 'body', 'published', 'author', 'createdAt', 'updatedAt', 'version'])
 
       // Type check/s
       expect(result.id).toBeString()
@@ -151,14 +138,16 @@ describe('Database Testing', () => {
     it('#should return all rows on blank query', async () => {
       const data = await generateMockData()
 
-      await Promise.all(map(data, async (entry) => {
-        const post = await repo.create({
-          req: entry,
-          response: {}
-        })
+      await Promise.all(
+        map(data, async (entry) => {
+          const post = await repo.create({
+            req: entry,
+            response: {}
+          })
 
-        return post
-      }))
+          return post
+        })
+      )
 
       const { edges, pageInfo } = await repo.find({
         req: {},
@@ -166,26 +155,9 @@ describe('Database Testing', () => {
       })
 
       // Stucture check/s
-      expect(edges[0]).toContainAllKeys([
-        'node',
-        'cursor'
-      ])
-      expect(pageInfo).toContainAllKeys([
-        'startCursor',
-        'endCursor',
-        'hasNextPage',
-        'hasPreviousPage'
-      ])
-      expect(edges[0].node).toContainAllKeys([
-        'id',
-        'title',
-        'body',
-        'published',
-        'author',
-        'createdAt',
-        'updatedAt',
-        'version'
-      ])
+      expect(edges[0]).toContainAllKeys(['node', 'cursor'])
+      expect(pageInfo).toContainAllKeys(['startCursor', 'endCursor', 'hasNextPage', 'hasPreviousPage'])
+      expect(edges[0].node).toContainAllKeys(['id', 'title', 'body', 'published', 'author', 'createdAt', 'updatedAt', 'version'])
 
       // Type check/s
       expect(edges).toBeArray()
@@ -207,19 +179,21 @@ describe('Database Testing', () => {
     it('#should return all rows matching a query', async () => {
       const data = await generateMockData()
 
-      const entries = await Promise.all(map(data, async (entry) => {
-        const post = await repo.create({
-          req: entry,
-          response: {}
-        })
+      const entries = await Promise.all(
+        map(data, async (entry) => {
+          const post = await repo.create({
+            req: entry,
+            response: {}
+          })
 
-        return post
-      }))
+          return post
+        })
+      )
 
       const { edges, pageInfo } = await repo.find({
         req: {
           where: JSON.stringify({
-            id: { _in: map(entries, entry => entry.id) }
+            id: { _in: map(entries, (entry) => entry.id) }
           })
         },
         response: {}
@@ -229,26 +203,9 @@ describe('Database Testing', () => {
       expect(pageInfo).not.toBeNil()
 
       // Stucture check/s
-      expect(edges[0]).toContainAllKeys([
-        'node',
-        'cursor'
-      ])
-      expect(pageInfo).toContainAllKeys([
-        'startCursor',
-        'endCursor',
-        'hasNextPage',
-        'hasPreviousPage'
-      ])
-      expect(edges[0].node).toContainAllKeys([
-        'id',
-        'title',
-        'body',
-        'published',
-        'author',
-        'createdAt',
-        'updatedAt',
-        'version'
-      ])
+      expect(edges[0]).toContainAllKeys(['node', 'cursor'])
+      expect(pageInfo).toContainAllKeys(['startCursor', 'endCursor', 'hasNextPage', 'hasPreviousPage'])
+      expect(edges[0].node).toContainAllKeys(['id', 'title', 'body', 'published', 'author', 'createdAt', 'updatedAt', 'version'])
 
       // Type check/s
       expect(edges).toBeArray()
@@ -263,7 +220,7 @@ describe('Database Testing', () => {
 
       // Value checks
       expect(edges).toBeArrayOfSize(3)
-      expect(map(edges, entry => entry.text)).toIncludeSameMembers(map(data, entry => entry.text))
+      expect(map(edges, (entry) => entry.text)).toIncludeSameMembers(map(data, (entry) => entry.text))
 
       return true
     })
@@ -286,16 +243,7 @@ describe('Database Testing', () => {
       expect(result).not.toBeNil()
 
       // Stucture check/s
-      expect(result).toContainAllKeys([
-        'id',
-        'title',
-        'body',
-        'published',
-        'author',
-        'createdAt',
-        'updatedAt',
-        'version'
-      ])
+      expect(result).toContainAllKeys(['id', 'title', 'body', 'published', 'author', 'createdAt', 'updatedAt', 'version'])
 
       // Type check/s
       expect(result.id).toBeString()
@@ -334,16 +282,7 @@ describe('Database Testing', () => {
       expect(result).not.toBeNil()
 
       // Stucture check/s
-      expect(result).toContainAllKeys([
-        'id',
-        'title',
-        'body',
-        'published',
-        'author',
-        'createdAt',
-        'updatedAt',
-        'version'
-      ])
+      expect(result).toContainAllKeys(['id', 'title', 'body', 'published', 'author', 'createdAt', 'updatedAt', 'version'])
 
       // Type check/s
       expect(result.id).toBeString()

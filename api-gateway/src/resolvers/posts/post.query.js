@@ -1,6 +1,6 @@
 const post = {
   authenticate: false,
-  resolve: async (parent, { id }, { postService }) => postService.findById(id)
+  resolve: async (parent, { id }, { postsService }) => postsService.findById(id)
 }
 
 export default { post }

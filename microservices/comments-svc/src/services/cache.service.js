@@ -1,15 +1,15 @@
 class RedisCacheService {
-  constructor (cache, logger) {
+  constructor(cache, logger) {
     this._cache = cache
     this._logger = logger
   }
 
-  async get (key) {
-    this._logger.info('Cache#get.call', `${key}`.toLowerCase())
+  async get(key) {
+    this._logger.info('Cache#get.call %o', key)
 
-    let result = await this._cache.get(`${key}`.toLowerCase())
+    let result = await this._cache.get(key)
 
-    this._logger.info('Cache#get.result', result)
+    this._logger.info('Cache#get.result %o', result)
 
     try {
       result = JSON.parse(result)
@@ -21,8 +21,8 @@ class RedisCacheService {
     }
   }
 
-  async set (key, value) {
-    this._logger.info('Cache#set.call', `${key}`.toLowerCase(), value)
+  async set(key, value) {
+    this._logger.info('Cache#set.call %o %o', key, value)
 
     let val
 
@@ -33,27 +33,27 @@ class RedisCacheService {
       val = ''
     }
 
-    return this._cache.set(`${key}`.toLowerCase(), val)
+    return this._cache.set(key, val)
   }
 
-  async remove (key) {
-    this._logger.info('Cache#remove.call', `${key}`.toLowerCase())
+  async remove(key) {
+    this._logger.info('Cache#remove.call %o', key)
 
-    return this._cache.del(`${key}`.toLowerCase())
+    return this._cache.del(key)
   }
 
-  async flush (pattern) {
-    this._logger.info('Cache#flush.call', pattern)
+  async flush(pattern) {
+    this._logger.info('Cache#flush.call %o', pattern)
 
     return new Promise((resolve, reject) => {
       const stream = this._cache.scanStream({
-        match: `${pattern}`.toLowerCase(),
+        match: pattern,
         count: 99999
       })
       const pipeline = this._cache.pipeline()
 
       stream.on('data', (keys) => {
-        this._logger.info('Cache#flush.keys', keys.join(', '))
+        this._logger.info('Cache#flush.keys %o', keys.join(', '))
 
         keys.forEach((key) => {
           pipeline.del(key)

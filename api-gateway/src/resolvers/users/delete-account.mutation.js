@@ -1,7 +1,7 @@
 const deleteAccount = {
   authenticate: true,
-  resolve: async (parent, args, { user, userService }) => {
-    const count = await userService.destroy({
+  resolve: async (parent, args, { user, usersService }) => {
+    const count = await usersService.destroy({
       where: { id: user.id }
     })
 

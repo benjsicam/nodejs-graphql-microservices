@@ -7,7 +7,7 @@ import { keys } from 'lodash'
 const { each, groupBy } = Aigle
 
 const errorUtils = {
-  async buildError (error) {
+  async buildError(error) {
     const errors = []
 
     if (error instanceof yup.ValidationError) {

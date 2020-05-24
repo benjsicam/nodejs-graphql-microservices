@@ -48,7 +48,7 @@ const main = async () => {
   let subscriber
 
   if (redisHostConfig.length > 1) {
-    const redisNodes = await map(redisHostConfig, host => ({
+    const redisNodes = await map(redisHostConfig, (host) => ({
       host,
       port: cacheConfig.port
     }))
@@ -83,7 +83,7 @@ const main = async () => {
     subscriber
   })
 
-  const hooksRegistry = new HooksRegistry(serviceRegistry.services, pubsub, logger)
+  const hooksRegistry = new HooksRegistry(serviceRegistry.services, logger)
 
   hooksRegistry.init()
 

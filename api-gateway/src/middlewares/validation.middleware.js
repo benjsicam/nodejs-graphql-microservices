@@ -1,5 +1,5 @@
 const ValidationMiddleware = {
-  async Mutation (resolve, root, args, context, info) {
+  async Mutation(resolve, root, args, context, info) {
     const mutation = info.schema.getMutationType().getFields()[info.fieldName]
     const mutationValidationSchema = mutation.validationSchema
 

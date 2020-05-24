@@ -46,7 +46,7 @@ const operatorsAliases = {
 }
 
 const Db = {
-  async init (modelPaths, logger) {
+  async init(modelPaths, logger) {
     const db = new Sequelize(dbConfig.name, dbConfig.user, dbConfig.password, {
       dialect: dbConfig.dialect,
       host: dbConfig.host,
@@ -61,7 +61,7 @@ const Db = {
       operatorsAliases
     })
 
-    await each(modelPaths, modelPath => db.import(modelPath))
+    await each(modelPaths, (modelPath) => db.import(modelPath))
 
     if (dbConfig.sync) await db.sync()
 

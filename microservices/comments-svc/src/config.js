@@ -9,9 +9,9 @@ const dbConfig = {
   dialect: 'postgres',
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(`${process.env.DB_PORT || 5432}`, 10),
-  user: process.env.DB_USER || 'postgres',
+  user: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
-  name: process.env.DB_NAME || 'postgres',
+  name: process.env.DB_DATABASE || 'postgres',
   schema: process.env.DB_SCHEMA || 'public',
   sync: process.env.DB_SYNC === 'true'
 }
@@ -22,9 +22,4 @@ const cacheConfig = {
   password: process.env.REDIS_PASSWORD || undefined
 }
 
-export {
-  env,
-  grpcConfig,
-  dbConfig,
-  cacheConfig
-}
+export { env, grpcConfig, dbConfig, cacheConfig }

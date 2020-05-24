@@ -6,10 +6,7 @@ const updatePassword = {
   authenticate: true,
   validationSchema: yup.object().shape({
     data: yup.object().shape({
-      currentPassword: yup
-        .string()
-        .trim()
-        .required('Current Password is a required field.'),
+      currentPassword: yup.string().trim().required('Current Password is a required field.'),
       newPassword: yup
         .string()
         .trim()
@@ -24,12 +21,12 @@ const updatePassword = {
         .max('50', 'Confirm Password should be 50 characters at most.')
     })
   }),
-  resolve: async (parent, args, { user, userService, logger }) => {
+  resolve: async (parent, args, { user, usersService, logger }) => {
     const { data } = args
     const isSame = await passwordUtils.verify(data.currentPassword, user.password)
     const isConfirmed = data.newPassword === data.confirmPassword
 
-    logger.info('UserMutation#updatePassword.check', !isSame || !isConfirmed)
+    logger.info('UserMutation#updatePassword.check %o', !isSame || !isConfirmed)
 
     if (!isSame || !isConfirmed) {
       throw new Error('Error updating password. Kindly check your passwords.')
@@ -37,7 +34,7 @@ const updatePassword = {
 
     const password = await passwordUtils.hash(data.newPassword)
 
-    const updatedUser = await userService.update(user.id, {
+    const updatedUser = await usersService.update(user.id, {
       ...user,
       password
     })

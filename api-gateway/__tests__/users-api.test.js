@@ -6,11 +6,7 @@ import main from '../src/main'
 import logger from '../src/logger'
 
 describe('Users API Testing', () => {
-  let server,
-    publisher,
-    subscriber,
-    loggedInUser,
-    password
+  let server, publisher, subscriber, loggedInUser, password
 
   const client = new GraphQLClient(`http://localhost:${process.env.GRAPHQL_PORT}/`, {
     credentials: 'include'
@@ -25,22 +21,26 @@ describe('Users API Testing', () => {
         age: faker.random.number({ min: 20, max: 80 })
       }
     }
-    return [{
-      name: faker.fake('{{name.firstName}} {{name.lastName}}'),
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-      age: faker.random.number({ min: 20, max: 80 })
-    }, {
-      name: faker.fake('{{name.firstName}} {{name.lastName}}'),
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-      age: faker.random.number({ min: 20, max: 80 })
-    }, {
-      name: faker.fake('{{name.firstName}} {{name.lastName}}'),
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-      age: faker.random.number({ min: 20, max: 80 })
-    }]
+    return [
+      {
+        name: faker.fake('{{name.firstName}} {{name.lastName}}'),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+        age: faker.random.number({ min: 20, max: 80 })
+      },
+      {
+        name: faker.fake('{{name.firstName}} {{name.lastName}}'),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+        age: faker.random.number({ min: 20, max: 80 })
+      },
+      {
+        name: faker.fake('{{name.firstName}} {{name.lastName}}'),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+        age: faker.random.number({ min: 20, max: 80 })
+      }
+    ]
   }
 
   beforeAll(async () => {
@@ -146,15 +146,7 @@ describe('Users API Testing', () => {
     expect(result.user).not.toBeNil()
 
     // Stucture check/s
-    expect(result.user).toContainAllKeys([
-      'id',
-      'name',
-      'email',
-      'age',
-      'createdAt',
-      'updatedAt',
-      'version'
-    ])
+    expect(result.user).toContainAllKeys(['id', 'name', 'email', 'age', 'createdAt', 'updatedAt', 'version'])
 
     // Type check/s
     expect(result.user.id).toBeString()
@@ -228,17 +220,7 @@ describe('Users API Testing', () => {
     expect(result).not.toBeNil()
 
     // Stucture check/s
-    expect(result).toContainAllKeys([
-      'id',
-      'name',
-      'email',
-      'age',
-      'createdAt',
-      'updatedAt',
-      'version',
-      'posts',
-      'comments'
-    ])
+    expect(result).toContainAllKeys(['id', 'name', 'email', 'age', 'createdAt', 'updatedAt', 'version', 'posts', 'comments'])
 
     // Type check/s
     expect(result.id).toBeString()
@@ -297,27 +279,11 @@ describe('Users API Testing', () => {
     expect(users.pageInfo).toBeObject()
 
     // Stucture check/s
-    expect(users.edges[0]).toContainAllKeys([
-      'node',
-      'cursor'
-    ])
-    expect(users.pageInfo).toContainAllKeys([
-      'startCursor',
-      'endCursor',
-      'hasNextPage',
-      'hasPreviousPage'
-    ])
+    expect(users.edges[0]).toContainAllKeys(['node', 'cursor'])
+    expect(users.pageInfo).toContainAllKeys(['startCursor', 'endCursor', 'hasNextPage', 'hasPreviousPage'])
 
     // Stucture check/s
-    expect(users.edges[0].node).toContainAllKeys([
-      'id',
-      'name',
-      'email',
-      'age',
-      'createdAt',
-      'updatedAt',
-      'version'
-    ])
+    expect(users.edges[0].node).toContainAllKeys(['id', 'name', 'email', 'age', 'createdAt', 'updatedAt', 'version'])
 
     // Type check/s
     expect(users.edges[0].node.id).toBeString()
@@ -350,15 +316,7 @@ describe('Users API Testing', () => {
     expect(result.user).not.toBeNil()
 
     // Stucture check/s
-    expect(result.user).toContainAllKeys([
-      'id',
-      'name',
-      'email',
-      'age',
-      'createdAt',
-      'updatedAt',
-      'version'
-    ])
+    expect(result.user).toContainAllKeys(['id', 'name', 'email', 'age', 'createdAt', 'updatedAt', 'version'])
 
     // Type check/s
     expect(result.user.id).toBeString()
@@ -394,7 +352,7 @@ describe('Users API Testing', () => {
     expect(result).toBeNumber()
 
     // Value check/s
-    expect(result).toSatisfy(count => count > 0)
+    expect(result).toSatisfy((count) => count > 0)
 
     return true
   })
@@ -432,15 +390,7 @@ describe('Users API Testing', () => {
     expect(result.user).not.toBeNil()
 
     // Stucture check/s
-    expect(result.user).toContainAllKeys([
-      'id',
-      'name',
-      'email',
-      'age',
-      'createdAt',
-      'updatedAt',
-      'version'
-    ])
+    expect(result.user).toContainAllKeys(['id', 'name', 'email', 'age', 'createdAt', 'updatedAt', 'version'])
 
     // Type check/s
     expect(result.user.id).toBeString()
@@ -494,15 +444,7 @@ describe('Users API Testing', () => {
     expect(result.user).not.toBeNil()
 
     // Stucture check/s
-    expect(result.user).toContainAllKeys([
-      'id',
-      'name',
-      'email',
-      'age',
-      'createdAt',
-      'updatedAt',
-      'version'
-    ])
+    expect(result.user).toContainAllKeys(['id', 'name', 'email', 'age', 'createdAt', 'updatedAt', 'version'])
 
     // Type check/s
     expect(result.user.id).toBeString()

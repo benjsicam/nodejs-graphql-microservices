@@ -1,18 +1,16 @@
 import Aigle from 'aigle'
-import {
-  get, isEmpty, isNil, omitBy, set, unset
-} from 'lodash'
+import { get, isEmpty, isNil, omitBy, set, unset } from 'lodash'
 
 const { each, map, omit } = Aigle
 
 class AbstractCrudRepository {
-  constructor (model) {
+  constructor(model) {
     this._model = model
     this._jsonFields = []
     this._enumFields = []
   }
 
-  async find ({ req, response }) {
+  async find({ req, response }) {
     const { results, cursors } = await this._model.findAndPaginate({
       attributes: !isEmpty(req.select) ? ['id'].concat(req.select) : undefined,
       where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined,
@@ -50,10 +48,13 @@ class AbstractCrudRepository {
     return response.res
   }
 
-  async findById ({ req, response }) {
-    const result = omitBy(await this._model.findByPk(req.id, {
-      raw: true
-    }), isNil)
+  async findById({ req, response }) {
+    const result = omitBy(
+      await this._model.findByPk(req.id, {
+        raw: true
+      }),
+      isNil
+    )
 
     if (!isEmpty(this._jsonFields) && !isEmpty(result)) {
       await each(this._jsonFields, async (field) => {
@@ -66,12 +67,15 @@ class AbstractCrudRepository {
     return response.res
   }
 
-  async findOne ({ req, response }) {
-    const result = omitBy(await this._model.findOne({
-      attributes: !isEmpty(req.select) ? req.select : undefined,
-      where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined,
-      raw: true
-    }), isNil)
+  async findOne({ req, response }) {
+    const result = omitBy(
+      await this._model.findOne({
+        attributes: !isEmpty(req.select) ? req.select : undefined,
+        where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined,
+        raw: true
+      }),
+      isNil
+    )
 
     if (!isEmpty(this._jsonFields) && !isEmpty(result)) {
       await each(this._jsonFields, async (field) => {
@@ -84,7 +88,7 @@ class AbstractCrudRepository {
     return response.res
   }
 
-  async count ({ req, response }) {
+  async count({ req, response }) {
     const count = await this._model.count({
       where: !isEmpty(req.where) ? JSON.parse(req.where) : undefined
     })
@@ -94,7 +98,7 @@ class AbstractCrudRepository {
     return response.res
   }
 
-  async create ({ req, response }) {
+  async create({ req, response }) {
     const data = req
 
     if (!isEmpty(this._jsonFields)) {
@@ -130,7 +134,7 @@ class AbstractCrudRepository {
     return response.res
   }
 
-  async update ({ req, response }) {
+  async update({ req, response }) {
     const { id, data } = req
 
     if (!isEmpty(this._jsonFields)) {
@@ -170,7 +174,7 @@ class AbstractCrudRepository {
     return response.res
   }
 
-  async destroy ({ req, response }) {
+  async destroy({ req, response }) {
     const count = await this._model.destroy({
       where: !isEmpty(req.where) ? JSON.parse(req.where) : {}
     })

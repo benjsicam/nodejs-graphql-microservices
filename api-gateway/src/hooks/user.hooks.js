@@ -1,5 +1,5 @@
 class UserHooks {
-  constructor (services, pubsub, logger) {
+  constructor(services, pubsub, logger) {
     this._eventsBus = services.eventsBus
     this._services = services
     this._pubsub = pubsub
@@ -10,44 +10,47 @@ class UserHooks {
     this._eventsBus.on('mutation#updatePassword', this.onUpdatePassword())
   }
 
-  onSignup () {
+  onSignup() {
     return async ({ result }) => {
-      this._logger.info('UserHooks#onSignup.call', result.user)
+      this._logger.info('UserHooks#onSignup.call %o', result.user)
 
+      const { user } = result
       const { mailerService } = this._services
 
       return mailerService.send({
         template: 'signup',
-        to: result.user.email,
-        data: Buffer.from(JSON.stringify(result.user))
+        to: user.email,
+        data: Buffer.from(JSON.stringify(user))
       })
     }
   }
 
-  onUpdateEmail () {
+  onUpdateEmail() {
     return async ({ result }) => {
-      this._logger.info('UserHooks#onUpdateEmail.call', result.user)
+      this._logger.info('UserHooks#onUpdateEmail.call %o', result.user)
 
+      const { user } = result
       const { mailerService } = this._services
 
       return mailerService.send({
         template: 'update-email',
-        to: result.user.email,
-        data: Buffer.from(JSON.stringify(result.user))
+        to: user.email,
+        data: Buffer.from(JSON.stringify(user))
       })
     }
   }
 
-  onUpdatePassword () {
+  onUpdatePassword() {
     return async ({ result }) => {
-      this._logger.info('UserHooks#onUpdatePassword.call', result.user)
+      this._logger.info('UserHooks#onUpdatePassword.call %o', result.user)
 
+      const { user } = result
       const { mailerService } = this._services
 
       return mailerService.send({
         template: 'update-password',
-        to: result.user.email,
-        data: Buffer.from(JSON.stringify(result.user))
+        to: user.email,
+        data: Buffer.from(JSON.stringify(user))
       })
     }
   }

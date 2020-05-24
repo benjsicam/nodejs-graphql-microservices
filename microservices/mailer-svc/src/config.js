@@ -15,8 +15,4 @@ const smtpConfig = {
   }
 }
 
-export {
-  env,
-  grpcConfig,
-  smtpConfig
-}
+export { env, grpcConfig, smtpConfig }

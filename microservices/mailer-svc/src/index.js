@@ -2,7 +2,7 @@ import main from './main'
 
 const app = {}
 
-async function gracefulExit () {
+async function gracefulExit() {
   const { server } = app
 
   if (server) await server.close()
@@ -10,12 +10,14 @@ async function gracefulExit () {
   process.exit(0)
 }
 
-['SIGINT', 'SIGTERM'].forEach((signal) => {
+;['SIGINT', 'SIGTERM'].forEach((signal) => {
   process.on(signal, gracefulExit)
 })
 
-main().then((obj) => {
-  Object.assign(app, obj)
-}).catch((err) => {
-  throw err
-})
+main()
+  .then((obj) => {
+    Object.assign(app, obj)
+  })
+  .catch((err) => {
+    throw err
+  })

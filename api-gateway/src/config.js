@@ -24,10 +24,4 @@ const serviceConfig = {
   mailer: process.env.MAILER_SVC_URL
 }
 
-export {
-  env,
-  graphqlConfig,
-  jwtConfig,
-  cacheConfig,
-  serviceConfig
-}
+export { env, graphqlConfig, jwtConfig, cacheConfig, serviceConfig }

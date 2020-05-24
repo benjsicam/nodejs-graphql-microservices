@@ -8,6 +8,6 @@ const proto = protoLoader.loadSync(path.resolve(__dirname, '../../_proto/post.pr
   enums: String,
   oneofs: true
 })
-const PostServiceClient = grpc.loadPackageDefinition(proto).post.PostService
+const PostsServiceClient = grpc.loadPackageDefinition(proto).post.PostsService
 
-export default PostServiceClient
+export default PostsServiceClient

@@ -1,5 +1,5 @@
 const HookMiddleware = {
-  async Mutation (resolve, root, args, context, info) {
+  async Mutation(resolve, root, args, context, info) {
     const { logger, eventsBus } = context
     const operation = info.fieldName
 

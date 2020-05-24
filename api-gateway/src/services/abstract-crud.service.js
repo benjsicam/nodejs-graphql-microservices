@@ -5,15 +5,15 @@ import { isEmpty, isNil } from 'lodash'
 const { each, map, promisifyAll } = Aigle
 
 class AbstractCrudService {
-  constructor (serviceName, client, logger) {
+  constructor(serviceName, client, logger) {
     this._serviceName = serviceName
     this._client = promisifyAll(client)
     this._logger = logger
     this._jsonFields = []
   }
 
-  async find (query) {
-    this._logger.info(`${this._serviceName}#find.call`, query)
+  async find(query) {
+    this._logger.info(`${this._serviceName}#find.call %o`, query)
 
     const result = await this._client.findAsync({
       select: !isEmpty(query.select) ? query.select : undefined,
@@ -49,7 +49,7 @@ class AbstractCrudService {
       })
     }
 
-    this._logger.info(`${this._serviceName}#find.result`, edges, result.pageInfo)
+    this._logger.info(`${this._serviceName}#find.result %o %o`, edges, result.pageInfo)
 
     return {
       edges,
@@ -57,8 +57,8 @@ class AbstractCrudService {
     }
   }
 
-  async findById (id) {
-    this._logger.info(`${this._serviceName}#findById.call`, { id })
+  async findById(id) {
+    this._logger.info(`${this._serviceName}#findById.call %o`, { id })
 
     const result = await this._client.findByIdAsync({ id })
 
@@ -72,13 +72,13 @@ class AbstractCrudService {
       })
     }
 
-    this._logger.info(`${this._serviceName}#findById.result`, result)
+    this._logger.info(`${this._serviceName}#findById.result %o`, result)
 
     return result
   }
 
-  async findOne (query) {
-    this._logger.info(`${this._serviceName}#findOne.call`, query)
+  async findOne(query) {
+    this._logger.info(`${this._serviceName}#findOne.call %o`, query)
 
     const result = await this._client.findOneAsync({
       select: !isEmpty(query.select) ? query.select : undefined,
@@ -95,25 +95,25 @@ class AbstractCrudService {
       })
     }
 
-    this._logger.info(`${this._serviceName}#findOne.result`, result)
+    this._logger.info(`${this._serviceName}#findOne.result %o`, result)
 
     return result
   }
 
-  async count (query) {
-    this._logger.info(`${this._serviceName}#count.call`, query)
+  async count(query) {
+    this._logger.info(`${this._serviceName}#count.call %o`, query)
 
     const result = await this._client.countAsync({
       where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined
     })
 
-    this._logger.info(`${this._serviceName}#count.result`, result)
+    this._logger.info(`${this._serviceName}#count.result %o`, result)
 
     return result.count
   }
 
-  async create (data) {
-    this._logger.info(`${this._serviceName}#create.call`, data)
+  async create(data) {
+    this._logger.info(`${this._serviceName}#create.call %o`, data)
 
     const model = data
 
@@ -135,13 +135,13 @@ class AbstractCrudService {
       })
     }
 
-    this._logger.info(`${this._serviceName}#create.result`, result)
+    this._logger.info(`${this._serviceName}#create.result %o`, result)
 
     return result
   }
 
-  async update (id, data) {
-    this._logger.info(`${this._serviceName}#update.call`, { id, data })
+  async update(id, data) {
+    this._logger.info(`${this._serviceName}#update.call %o`, { id, data })
 
     const model = data
 
@@ -163,19 +163,19 @@ class AbstractCrudService {
       })
     }
 
-    this._logger.info(`${this._serviceName}#update.result`, result)
+    this._logger.info(`${this._serviceName}#update.result %o`, result)
 
     return result
   }
 
-  async destroy (query) {
-    this._logger.info(`${this._serviceName}#destroy.call`, query)
+  async destroy(query) {
+    this._logger.info(`${this._serviceName}#destroy.call %o`, query)
 
     const result = await this._client.destroyAsync({
       where: !isEmpty(query.where) ? JSON.stringify(query.where) : undefined
     })
 
-    this._logger.info(`${this._serviceName}#destroy.result`, result)
+    this._logger.info(`${this._serviceName}#destroy.result %o`, result)
 
     return result.count
   }

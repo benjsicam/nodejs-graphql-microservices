@@ -5,12 +5,12 @@ import AbstractCrudService from '../abstract-crud.service'
 
 const { map, find } = Aigle
 
-class PostService extends AbstractCrudService {
-  constructor (client, logger) {
-    super('PostService', client, logger)
+class PostsService extends AbstractCrudService {
+  constructor(client, logger) {
+    super(PostsService.name, client, logger)
 
     this._loader = new Dataloader(async (keys) => {
-      this._logger.info(`Loading keys from ${this._serviceName}`, keys)
+      this._logger.info(`Loading keys from ${this._serviceName} %o`, keys)
       const { edges } = await this.find({
         where: {
           id: {
@@ -21,16 +21,16 @@ class PostService extends AbstractCrudService {
       })
 
       return map(keys, async (key) => {
-        const { node } = await find(edges, async edge => edge.node.id === key)
+        const { node } = await find(edges, async (edge) => edge.node.id === key)
 
         return node
       })
     })
   }
 
-  get loader () {
+  get loader() {
     return this._loader
   }
 }
 
-export default PostService
+export default PostsService

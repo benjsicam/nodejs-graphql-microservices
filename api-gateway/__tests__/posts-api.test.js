@@ -6,10 +6,7 @@ import main from '../src/main'
 import logger from '../src/logger'
 
 describe('Posts API Testing', () => {
-  let server,
-    publisher,
-    subscriber,
-    loggedInUser
+  let server, publisher, subscriber, loggedInUser
 
   const client = new GraphQLClient(`http://localhost:${process.env.GRAPHQL_PORT}/`, {
     credentials: 'include'
@@ -24,22 +21,26 @@ describe('Posts API Testing', () => {
         author: faker.random.uuid()
       }
     }
-    return [{
-      title: faker.random.words(),
-      body: faker.lorem.sentence(),
-      published: faker.random.boolean(),
-      author: faker.random.uuid()
-    }, {
-      title: faker.random.words(),
-      body: faker.lorem.sentence(),
-      published: faker.random.boolean(),
-      author: faker.random.uuid()
-    }, {
-      title: faker.random.words(),
-      body: faker.lorem.sentence(),
-      published: faker.random.boolean(),
-      author: faker.random.uuid()
-    }]
+    return [
+      {
+        title: faker.random.words(),
+        body: faker.lorem.sentence(),
+        published: faker.random.boolean(),
+        author: faker.random.uuid()
+      },
+      {
+        title: faker.random.words(),
+        body: faker.lorem.sentence(),
+        published: faker.random.boolean(),
+        author: faker.random.uuid()
+      },
+      {
+        title: faker.random.words(),
+        body: faker.lorem.sentence(),
+        published: faker.random.boolean(),
+        author: faker.random.uuid()
+      }
+    ]
   }
 
   beforeAll(async () => {
@@ -171,17 +172,7 @@ describe('Posts API Testing', () => {
     expect(result.post).not.toBeNil()
 
     // Stucture check/s
-    expect(result.post).toContainAllKeys([
-      'id',
-      'title',
-      'body',
-      'published',
-      'createdAt',
-      'updatedAt',
-      'version',
-      'author',
-      'comments'
-    ])
+    expect(result.post).toContainAllKeys(['id', 'title', 'body', 'published', 'createdAt', 'updatedAt', 'version', 'author', 'comments'])
 
     // Type check/s
     expect(result.post.id).toBeString()
@@ -301,17 +292,7 @@ describe('Posts API Testing', () => {
     expect(result.post).not.toBeNil()
 
     // Stucture check/s
-    expect(result.post).toContainAllKeys([
-      'id',
-      'title',
-      'body',
-      'published',
-      'createdAt',
-      'updatedAt',
-      'version',
-      'author',
-      'comments'
-    ])
+    expect(result.post).toContainAllKeys(['id', 'title', 'body', 'published', 'createdAt', 'updatedAt', 'version', 'author', 'comments'])
 
     // Type check/s
     expect(result.post.id).toBeString()
@@ -332,7 +313,7 @@ describe('Posts API Testing', () => {
     return true
   })
 
-  it('should return the currently logged in user\'s posts', async () => {
+  it("should return the currently logged in user's posts", async () => {
     const { myPosts } = await client.request(`
       query myPosts {
         myPosts {
@@ -369,26 +350,9 @@ describe('Posts API Testing', () => {
     expect(myPosts.pageInfo).toBeObject()
 
     // Stucture check/s
-    expect(myPosts.edges[0]).toContainAllKeys([
-      'node',
-      'cursor'
-    ])
-    expect(myPosts.pageInfo).toContainAllKeys([
-      'startCursor',
-      'endCursor',
-      'hasNextPage',
-      'hasPreviousPage'
-    ])
-    expect(myPosts.edges[0].node).toContainAllKeys([
-      'id',
-      'title',
-      'body',
-      'published',
-      'createdAt',
-      'updatedAt',
-      'version',
-      'author'
-    ])
+    expect(myPosts.edges[0]).toContainAllKeys(['node', 'cursor'])
+    expect(myPosts.pageInfo).toContainAllKeys(['startCursor', 'endCursor', 'hasNextPage', 'hasPreviousPage'])
+    expect(myPosts.edges[0].node).toContainAllKeys(['id', 'title', 'body', 'published', 'createdAt', 'updatedAt', 'version', 'author'])
 
     // Type check/s
     expect(myPosts.edges[0].node.id).toBeString()
@@ -445,26 +409,9 @@ describe('Posts API Testing', () => {
     expect(posts.pageInfo).toBeObject()
 
     // Stucture check/s
-    expect(posts.edges[0]).toContainAllKeys([
-      'node',
-      'cursor'
-    ])
-    expect(posts.pageInfo).toContainAllKeys([
-      'startCursor',
-      'endCursor',
-      'hasNextPage',
-      'hasPreviousPage'
-    ])
-    expect(posts.edges[0].node).toContainAllKeys([
-      'id',
-      'title',
-      'body',
-      'published',
-      'createdAt',
-      'updatedAt',
-      'version',
-      'author'
-    ])
+    expect(posts.edges[0]).toContainAllKeys(['node', 'cursor'])
+    expect(posts.pageInfo).toContainAllKeys(['startCursor', 'endCursor', 'hasNextPage', 'hasPreviousPage'])
+    expect(posts.edges[0].node).toContainAllKeys(['id', 'title', 'body', 'published', 'createdAt', 'updatedAt', 'version', 'author'])
 
     // Type check/s
     expect(posts.edges[0].node.id).toBeString()
@@ -554,16 +501,7 @@ describe('Posts API Testing', () => {
     expect(result.post).not.toBeNil()
 
     // Stucture check/s
-    expect(result.post).toContainAllKeys([
-      'id',
-      'title',
-      'body',
-      'published',
-      'createdAt',
-      'updatedAt',
-      'version',
-      'author'
-    ])
+    expect(result.post).toContainAllKeys(['id', 'title', 'body', 'published', 'createdAt', 'updatedAt', 'version', 'author'])
 
     // Type check/s
     expect(result.post.id).toBeString()
@@ -598,7 +536,7 @@ describe('Posts API Testing', () => {
     expect(result).toBeNumber()
 
     // Value check/s
-    expect(result).toSatisfy(count => count > 0)
+    expect(result).toSatisfy((count) => count > 0)
 
     return true
   })
@@ -650,7 +588,7 @@ describe('Posts API Testing', () => {
     expect(deleteResponse.deletePost.count).toBeNumber()
 
     // Value check/s
-    expect(deleteResponse.deletePost.count).toSatisfy(count => count === 1)
+    expect(deleteResponse.deletePost.count).toSatisfy((count) => count === 1)
 
     return true
   })

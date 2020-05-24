@@ -17,7 +17,7 @@ import defaultPlaygroundQuery from './playground-query'
 const { reduce } = Aigle
 
 const Server = {
-  async init (schema, resolvers, services, middlewares) {
+  async init(schema, resolvers, services, middlewares) {
     const server = new GraphQLServer({
       typeDefs: schema,
       resolvers: {
@@ -25,22 +25,10 @@ const Server = {
         EmailAddress: EmailAddressResolver,
         UnsignedInt: UnsignedIntResolver,
         JSONObject: GraphQLJSONObject,
-        Query: await reduce(
-          resolvers.QueryResolvers,
-          (res, val) => assign(res, val),
-          {}
-        ),
-        Mutation: await reduce(
-          resolvers.MutationResolvers,
-          (res, val) => assign(res, val),
-          {}
-        ),
-        Subscription: await reduce(
-          resolvers.SubscriptionResolvers,
-          (res, val) => assign(res, val),
-          {}
-        ),
-        ...await reduce(
+        Query: await reduce(resolvers.QueryResolvers, (res, val) => assign(res, val), {}),
+        Mutation: await reduce(resolvers.MutationResolvers, (res, val) => assign(res, val), {}),
+        Subscription: await reduce(resolvers.SubscriptionResolvers, (res, val) => assign(res, val), {}),
+        ...(await reduce(
           resolvers.GraphResolvers,
           (res, val, key) => {
             const obj = {}
@@ -51,72 +39,85 @@ const Server = {
             return assign(res, obj)
           },
           {}
-        )
+        ))
       },
-      context: ({ request, response }) => {
-        const { user } = request
-
-        return {
-          req: request,
-          res: response,
-          user,
-          ...services
-        }
-      },
+      context: ({ request, response }) => ({
+        req: request,
+        res: response,
+        user: get(request, 'user'),
+        ...services
+      }),
       middlewares,
       cors: false
     })
 
-    passport.use('jwt', new JwtStrategy({
-      secretOrKey: jwtConfig.accessTokenSecret,
-      issuer: jwtConfig.issuer,
-      audience: jwtConfig.audience,
-      jwtFromRequest: ExtractJwt.fromExtractors([req => get(req, 'cookies.accessToken')])
-    }, async (token, done) => {
-      const { userService } = services
-      const userId = get(token, 'userId')
+    passport.use(
+      'jwt',
+      new JwtStrategy(
+        {
+          secretOrKey: jwtConfig.accessTokenSecret,
+          issuer: jwtConfig.issuer,
+          audience: jwtConfig.audience,
+          jwtFromRequest: ExtractJwt.fromExtractors([(req) => get(req, 'cookies.access-token')])
+        },
+        async (token, done) => {
+          const { usersService } = services
+          const userId = get(token, 'sub')
 
-      if (userId) {
-        try {
-          const user = await userService.findById(userId)
+          if (userId) {
+            try {
+              const user = await usersService.findById(userId)
 
-          done(null, user)
-        } catch (err) {
-          done()
+              done(null, user)
+            } catch (err) {
+              done()
+            }
+          } else {
+            done()
+          }
         }
-      } else {
-        done()
-      }
-    }))
+      )
+    )
 
-    server.express.use(cors({
-      origin: '*',
-      credentials: true
-    }))
+    server.express.use(
+      cors({
+        origin: '*',
+        credentials: true
+      })
+    )
     server.express.use(cookieParser())
     server.express.use(passport.initialize())
     server.express.post('/', (req, res, next) => {
-      passport.authenticate('jwt', {
-        session: false
-      }, (err, user) => {
-        if (!err && user) req.logIn(user)
+      passport.authenticate(
+        'jwt',
+        {
+          session: false
+        },
+        (err, user) => {
+          if (!err && user) req.logIn(user)
 
-        return next()
-      })(req, res, next)
+          return next()
+        }
+      )(req, res, next)
     })
 
-    server.express.get('/', expressPlayground({
-      endpoint: '/',
-      subscriptionEndpoint: '/',
-      settings: {
-        'request.credentials': 'include'
-      },
-      tabs: [{
-        name: 'API',
+    server.express.get(
+      '/',
+      expressPlayground({
         endpoint: '/',
-        query: defaultPlaygroundQuery
-      }]
-    }))
+        subscriptionEndpoint: '/',
+        settings: {
+          'request.credentials': 'include'
+        },
+        tabs: [
+          {
+            name: 'API',
+            endpoint: '/',
+            query: defaultPlaygroundQuery
+          }
+        ]
+      })
+    )
 
     server.express.get('/healthz', (req, res) => {
       res.send('OK')

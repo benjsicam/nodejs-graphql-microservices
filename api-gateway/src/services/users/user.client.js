@@ -8,6 +8,6 @@ const proto = protoLoader.loadSync(path.resolve(__dirname, '../../_proto/user.pr
   enums: String,
   oneofs: true
 })
-const UserServiceClient = grpc.loadPackageDefinition(proto).user.UserService
+const UsersServiceClient = grpc.loadPackageDefinition(proto).user.UsersService
 
-export default UserServiceClient
+export default UsersServiceClient

@@ -19,7 +19,7 @@ import HealthCheckService from './services/health-check.service'
 import CommentRepository from './repositories/comment.repository'
 
 const MODEL_NAME = 'Comment'
-const SERVICE_NAME = 'CommentService'
+const SERVICE_NAME = 'CommentsService'
 
 const SERVICE_PROTO = path.resolve(__dirname, '_proto/comment.proto')
 
@@ -37,7 +37,7 @@ const main = async () => {
   let cache
 
   if (redisHostConfig.length > 1) {
-    const redisNodes = await map(redisHostConfig, host => ({
+    const redisNodes = await map(redisHostConfig, (host) => ({
       host,
       port: cacheConfig.password
     }))
@@ -55,7 +55,7 @@ const main = async () => {
   const cacheService = new CacheService(cache, logger)
   const cacheMiddleware = new CacheMiddleware(cacheService, logger)
 
-  const CommentService = {
+  const CommentsService = {
     find: [cacheMiddleware.find('comments'), repo.find.bind(repo)],
     findById: [cacheMiddleware.read('comments'), repo.findById.bind(repo)],
     findOne: [cacheMiddleware.read('comments'), repo.findOne.bind(repo)],
@@ -78,7 +78,7 @@ const main = async () => {
 
   server.use(
     errorMiddleware((err, ctx) => {
-      logger.error(`${ctx.service}#${ctx.name}.error`, err)
+      logger.error(`${ctx.service}#${ctx.name}.error %o`, err)
       throw err
     })
   )
@@ -90,7 +90,7 @@ const main = async () => {
     })
   )
   server.use({
-    CommentService,
+    CommentsService,
     ...healthCheckImpl
   })
 

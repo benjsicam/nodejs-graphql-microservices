@@ -8,6 +8,6 @@ const proto = protoLoader.loadSync(path.resolve(__dirname, '../../_proto/comment
   enums: String,
   oneofs: true
 })
-const CommentServiceClient = grpc.loadPackageDefinition(proto).comment.CommentService
+const CommentsServiceClient = grpc.loadPackageDefinition(proto).comment.CommentsService
 
-export default CommentServiceClient
+export default CommentsServiceClient

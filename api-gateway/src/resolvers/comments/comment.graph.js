@@ -1,9 +1,9 @@
 const CommentGraph = {
   author: {
-    resolve: async (parent, args, { userService }) => userService.loader.load(parent.author)
+    resolve: async (parent, args, { usersService }) => usersService.loader.load(parent.author)
   },
   post: {
-    resolve: async (parent, args, { postService }) => postService.loader.load(parent.post)
+    resolve: async (parent, args, { postsService }) => postsService.loader.load(parent.post)
   }
 }
 

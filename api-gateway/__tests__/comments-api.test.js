@@ -6,11 +6,7 @@ import main from '../src/main'
 import logger from '../src/logger'
 
 describe('Comments API Testing', () => {
-  let server,
-    publisher,
-    subscriber,
-    post,
-    loggedInUser
+  let server, publisher, subscriber, post, loggedInUser
 
   const client = new GraphQLClient(`http://localhost:${process.env.GRAPHQL_PORT}/`, {
     credentials: 'include'
@@ -153,15 +149,7 @@ describe('Comments API Testing', () => {
     const result = response.createComment
 
     // Stucture check/s
-    expect(result.comment).toContainAllKeys([
-      'id',
-      'text',
-      'createdAt',
-      'updatedAt',
-      'version',
-      'author',
-      'post'
-    ])
+    expect(result.comment).toContainAllKeys(['id', 'text', 'createdAt', 'updatedAt', 'version', 'author', 'post'])
 
     // Type check/s
     expect(result.comment.id).toBeString()
@@ -238,13 +226,7 @@ describe('Comments API Testing', () => {
     expect(result.comment).not.toBeNil()
 
     // Stucture check/s
-    expect(result.comment).toContainAllKeys([
-      'id',
-      'text',
-      'createdAt',
-      'updatedAt',
-      'version'
-    ])
+    expect(result.comment).toContainAllKeys(['id', 'text', 'createdAt', 'updatedAt', 'version'])
 
     // Type check/s
     expect(result.comment.id).toBeString()
@@ -291,23 +273,9 @@ describe('Comments API Testing', () => {
     expect(comments.pageInfo).toBeObject()
 
     // Stucture check/s
-    expect(comments.edges[0]).toContainAllKeys([
-      'node',
-      'cursor'
-    ])
-    expect(comments.pageInfo).toContainAllKeys([
-      'startCursor',
-      'endCursor',
-      'hasNextPage',
-      'hasPreviousPage'
-    ])
-    expect(comments.edges[0].node).toContainAllKeys([
-      'id',
-      'text',
-      'createdAt',
-      'updatedAt',
-      'version'
-    ])
+    expect(comments.edges[0]).toContainAllKeys(['node', 'cursor'])
+    expect(comments.pageInfo).toContainAllKeys(['startCursor', 'endCursor', 'hasNextPage', 'hasPreviousPage'])
+    expect(comments.edges[0].node).toContainAllKeys(['id', 'text', 'createdAt', 'updatedAt', 'version'])
 
     // Type check/s
     expect(comments.edges[0].node.id).toBeString()
@@ -334,7 +302,7 @@ describe('Comments API Testing', () => {
     expect(result).toBeNumber()
 
     // Value check/s
-    expect(result).toSatisfy(count => count > 0)
+    expect(result).toSatisfy((count) => count > 0)
 
     return true
   })
@@ -385,7 +353,7 @@ describe('Comments API Testing', () => {
     expect(deleteResponse.deleteComment.count).toBeNumber()
 
     // Value check/s
-    expect(deleteResponse.deleteComment.count).toSatisfy(count => count === 1)
+    expect(deleteResponse.deleteComment.count).toSatisfy((count) => count === 1)
 
     return true
   })

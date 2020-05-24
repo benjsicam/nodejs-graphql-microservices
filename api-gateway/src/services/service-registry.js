@@ -1,13 +1,13 @@
 import * as grpc from 'grpc'
 
-import CommentServiceClient from './comments/comment.client'
-import PostServiceClient from './posts/post.client'
-import UserServiceClient from './users/user.client'
+import CommentsServiceClient from './comments/comment.client'
+import PostsServiceClient from './posts/post.client'
+import UsersServiceClient from './users/user.client'
 import MailerServiceClient from './mailer/mailer.client'
 
-import CommentService from './comments/comment.service'
-import PostService from './posts/post.service'
-import UserService from './users/user.service'
+import CommentsService from './comments/comment.service'
+import PostsService from './posts/post.service'
+import UsersService from './users/user.service'
 import MailerService from './mailer/mailer.service'
 
 import EventsBus from './events-bus.service'
@@ -15,24 +15,24 @@ import EventsBus from './events-bus.service'
 import { serviceConfig } from '../config'
 
 class ServiceRegistry {
-  constructor (logger) {
+  constructor(logger) {
     const grpcCredentials = grpc.credentials.createInsecure()
 
-    const commentServiceClient = new CommentServiceClient(serviceConfig.comments, grpcCredentials)
-    const postServiceClient = new PostServiceClient(serviceConfig.posts, grpcCredentials)
-    const userServiceClient = new UserServiceClient(serviceConfig.users, grpcCredentials)
+    const commentsServiceClient = new CommentsServiceClient(serviceConfig.comments, grpcCredentials)
+    const postsServiceClient = new PostsServiceClient(serviceConfig.posts, grpcCredentials)
+    const usersServiceClient = new UsersServiceClient(serviceConfig.users, grpcCredentials)
     const mailerServiceClient = new MailerServiceClient(serviceConfig.mailer, grpcCredentials)
 
     this._services = {
       eventsBus: new EventsBus(),
-      commentService: new CommentService(commentServiceClient, logger),
-      postService: new PostService(postServiceClient, logger),
-      userService: new UserService(userServiceClient, logger),
+      commentsService: new CommentsService(commentsServiceClient, logger),
+      postsService: new PostsService(postsServiceClient, logger),
+      usersService: new UsersService(usersServiceClient, logger),
       mailerService: new MailerService(mailerServiceClient, logger)
     }
   }
 
-  get services () {
+  get services() {
     return this._services
   }
 }

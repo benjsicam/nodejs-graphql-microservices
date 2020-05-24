@@ -166,7 +166,7 @@ describe('Cache Testing', () => {
       expect(result.author).toBe(args.response.res.author)
     })
 
-    it('#should cache result on read ', async () => {
+    it('#should cache result on read 2', async () => {
       const id = faker.random.uuid()
       const args = {
         req: {
