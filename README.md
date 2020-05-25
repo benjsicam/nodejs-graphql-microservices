@@ -88,11 +88,3 @@ You must install the following on your local machine:
 ### Video Demo
 
 [![GraphQL + gRPC Microservices](https://raw.githubusercontent.com/benjsicam/nodejs-graphql-microservices/master/docs/img/vid-preview.jpg)](https://youtu.be/SuH2K92FOaE)
-
-## Roadmap
-
-### API Gateway
-
-- [ ] Add Refresh Token Functionality
-- [ ] Add Logout Functionality
-- [ ] Add Access Token/Refresh Token Invalidation
