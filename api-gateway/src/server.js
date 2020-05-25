@@ -44,7 +44,17 @@ const Server = {
       context: ({ request, response }) => ({
         req: request,
         res: response,
-        user: get(request, 'user'),
+        authenticate: (name, options) => {
+          return new Promise((resolve, reject) => {
+            const done = (err, user, info) => {
+              if (err) reject(err)
+              else resolve({user, info})
+            }
+
+            const auth = passport.authenticate(name, options, done)
+            return auth(request, response)
+          })
+        },
         ...services
       }),
       middlewares,
@@ -79,6 +89,34 @@ const Server = {
       )
     )
 
+    passport.use(
+      'jwt-refresh',
+      new JwtStrategy(
+        {
+          secretOrKey: jwtConfig.refreshTokenSecret,
+          issuer: jwtConfig.issuer,
+          audience: jwtConfig.audience,
+          jwtFromRequest: ExtractJwt.fromExtractors([(req) => get(req, 'cookies.refresh-token')])
+        },
+        async (token, done) => {
+          const { usersService } = services
+          const userId = get(token, 'sub')
+
+          if (userId) {
+            try {
+              const user = await usersService.findById(userId)
+
+              done(null, user)
+            } catch (err) {
+              done()
+            }
+          } else {
+            done()
+          }
+        }
+      )
+    )
+
     server.express.use(
       cors({
         origin: '*',
@@ -87,19 +125,6 @@ const Server = {
     )
     server.express.use(cookieParser())
     server.express.use(passport.initialize())
-    server.express.post('/', (req, res, next) => {
-      passport.authenticate(
-        'jwt',
-        {
-          session: false
-        },
-        (err, user) => {
-          if (!err && user) req.logIn(user)
-
-          return next()
-        }
-      )(req, res, next)
-    })
 
     server.express.get(
       '/',

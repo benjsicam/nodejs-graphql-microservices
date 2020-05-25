@@ -1,26 +1,40 @@
-import { get, isEmpty, isFunction } from 'lodash'
+import { isEmpty, isFunction } from 'lodash'
 
 const AuthenticationMiddleware = {
   async Query(resolve, root, args, context, info) {
     const query = info.schema.getQueryType().getFields()[info.fieldName]
-    const user = get(context, 'user')
 
-    if (isEmpty(user) && query.authenticate === true) {
-      throw new Error('Authentication required')
+    if (query.authenticate === true) {
+      const { user } = await context.authenticate('jwt', { session: false })
+
+      if (!isEmpty(user)) {
+        context.user = user
+      } else {
+        throw new Error('Authentication required')
+      }
     } else if (isFunction(query.authenticate)) {
-      await query.authenticate(root, args, context, info)
+      const user = await query.authenticate(root, args, context, info)
+
+      context.user = user
     }
 
     return resolve(root, args, context, info)
   },
   async Mutation(resolve, root, args, context, info) {
     const mutation = info.schema.getMutationType().getFields()[info.fieldName]
-    const user = get(context, 'user')
 
-    if (isEmpty(user) && mutation.authenticate === true) {
-      throw new Error('Authentication required')
+    if (mutation.authenticate === true) {
+      const { user } = await context.authenticate('jwt', { session: false })
+
+      if (!isEmpty(user)) {
+        context.user = user
+      } else {
+        throw new Error('Authentication required')
+      }
     } else if (isFunction(mutation.authenticate)) {
-      await mutation.authenticate(root, args, context, info)
+      const user = await mutation.authenticate(root, args, context, info)
+
+      context.user = user
     }
 
     return resolve(root, args, context, info)
