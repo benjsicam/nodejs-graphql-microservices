@@ -1,6 +1,6 @@
-# Node GraphQL + gRPC microservices
+# Node.js GraphQL API + gRPC microservices
 
-This project is a [monorepo](https://gomonorepo.org/) containing a [GraphQL](https://graphql.org/) API gateway with [gRPC](https://grpc.io/) back-end microservices all written in Node.js. This project is mainly used for learning/trial purposes only.
+This project is a [monorepo](https://gomonorepo.org/) containing a [GraphQL](https://graphql.org/) API with [gRPC](https://grpc.io/) back-end microservices all written in Node.js. This project is mainly used for learning/trial and boilerplate purposes only.
 
 ## Graph Model
 
@@ -8,13 +8,15 @@ When creating GraphQL APIs, one must understand what [Graph Theory](https://en.w
 
 ![Graph Model](https://raw.githubusercontent.com/benjsicam/nodejs-graphql-microservices/master/docs/img/graph-model.png)
 
+### Explanation
+
 1. Users can write both posts and comments therefore, users are authors posts and comments.
 2. Posts are authored by users and comments can be linked/submitted for them.
 3. Comments are authored by users and are linked/submitted to posts.
 
 ## Architecture Overview
  
-The GraphQL API acts as a gateway/proxy for the different microservices it exposes. The resolvers of the GraphQL API make calls to the gRPC servers/microservices in the back-end through gRPC client implementations of the back-end services which are defined through [Protocol Buffers](https://developers.google.com/protocol-buffers/) that also serves as the data interchange format. The gRPC microservices then handles the request to connect to databases or any other service it needs to fulfill the client requests.
+The GraphQL API acts as a gateway/proxy for the different microservices it exposes. The resolvers of the GraphQL API make calls to the gRPC microservices through client-server communication. The services and the data interchange are defined using [Protocol Buffers](https://developers.google.com/protocol-buffers/). The gRPC microservices handle and fulfill the requests whether they are database or storage operations or any other internal or external calls.
 
 ### Diagram
 
@@ -31,47 +33,23 @@ This architecture implements the following Microservice Design Patterns:
 5. [API Gateway](https://microservices.io/patterns/apigateway.html)
 6. [Database per Service](https://microservices.io/patterns/data/database-per-service.html)
 
-### Benefits
-
-Some of the benefits of adopting a microservice architecture are:
-
-**Individual Deployment**
-
-Each app can be deployed separately without knowledge of the other application. Each service is reusable in the entire tech stack. Upgrades can also be done in isolation from other application/microservice. This makes hot fixes and quick roll backs possible.
-
-**Fault Isolation**
-
-When an error or fault occurs, one will immediately know where it came from and debugging can be done immediately.
-
-**Easier Testing and Debugging**
-
-Having a very small codebase per microservice makes doing tests easier and debugging quicker by orders of magnitude.
-
-**Granular Scaling**
-
-Scaling can also be done on a per microservice deployment. Each microservice application can scale separately of others if it is serving more load than the others.
-
-**Better Observability**
-
-Operations will have better observability on the application as a whole since monitoring and logging can be done with granularity as is not mixed with other parts of the application.
-
-## Architecture Layers
+## Layers
 
 ### API Layer
 
-[GraphQL](https://graphql.org/) acts as the API Layer for the architecture. It takes care of listening for user requests and proxying those requests to the appropriate back-end microservice. The framework used for GraphQL in this application is [graphql-yoga](https://github.com/prisma/graphql-yoga).
+[GraphQL](https://graphql.org/) acts as the API Layer for the architecture. It takes care of listening for client requests and calling the appropriate back-end microservice to fulfill them.
 
 ### Microservice Layer
 
-[gRPC](https://grpc.io/) was chosen as the framework to do the microservices. [Protocol buffers](https://developers.google.com/protocol-buffers/) was used as the data interchange format between the client (GraphQL API) and the server (gRPC microservices). The framework used for gRPC in this application is [Mali](https://mali.js.org/)
+[MaliJS](https://mali.js.org/) was chosen as the framework to do the gRPC microservices. [Protocol buffers](https://developers.google.com/protocol-buffers/) was used as the data interchange format between the client (GraphQL API) and the server (gRPC microservices).
 
-### Data Layer
+### Persistence Layer
 
-PostgreSQL is used as the database and Redis is used as the cache.
+PostgreSQL is used as the database and [Sequelize](https://sequelize.org) is used as the Object-Relational Mapper (ORM).
 
 ## Deployment
 
-Deployment is done with containers in mind. A Docker Compose file along with Dockerfiles for each project are given to run the whole thing on any machine. For production, it's always recommended to use [Kubernetes](https://kubernetes.io/) for these kinds of microservices architecture to deploy in production. [Istio](https://istio.io/) takes care of service discovery, distributed tracing and other observability requirements.
+Deployment is done with containers in mind. A Docker Compose file along with Dockerfiles for each project are given to run the whole thing on any machine. It's recommended to use [Kubernetes](https://kubernetes.io/) for deploying microservices at scale in production. [Istio](https://istio.io/) takes care of service discovery, distributed tracing and other observability requirements.
 
 ## How to Run
 
@@ -84,6 +62,12 @@ You must install the following on your local machine:
 3. Docker Compose
 4. PostgreSQL Client (libpq as required by [pg-native](https://www.npmjs.com/package/pg-native#install))
 
-### Video Demo
+### Running
+
+1. On the Terminal, go into the project's root folder (`cd /project/root/folder`) and execute `npm start`. The start script will install all npm dependencies for all projects, lint the code, transpile the code, build the artifacts (Docker images) and run all of them via `docker-compose`.
+
+2. Once the start script is done, the GraphQL Playground will be running on [http://localhost:3000](http://localhost:3000)
+
+### Video Demo (old)
 
 [![GraphQL + gRPC Microservices](https://raw.githubusercontent.com/benjsicam/nodejs-graphql-microservices/master/docs/img/vid-preview.jpg)](https://youtu.be/SuH2K92FOaE)
