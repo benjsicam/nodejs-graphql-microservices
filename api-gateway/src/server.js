@@ -32,7 +32,7 @@ const Server = {
           resolvers.GraphResolvers,
           (res, val, key) => {
             const obj = {}
-            const graph = startCase(key.substr(key.lastIndexOf('$') + 1)).replace(/\s/, '')
+            const graph = startCase(key.substr(key.lastIndexOf('$') + 1)).replace(/\s/g, '')
 
             obj[graph] = val
 
