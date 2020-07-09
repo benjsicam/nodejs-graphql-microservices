@@ -37,7 +37,7 @@ const main = async () => {
   if (redisHostConfig.length > 1) {
     const redisNodes = await map(redisHostConfig, (host) => ({
       host,
-      port: cacheConfig.password
+      port: cacheConfig.port
     }))
 
     cache = new Redis.Cluster(redisNodes, {
