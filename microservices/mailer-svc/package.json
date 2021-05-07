@@ -45,7 +45,7 @@
     "nodemailer": "^6.4.6",
     "pino": "^6.2.1",
     "pug": "^2.0.4",
-    "underscore": "^1.10.2"
+    "underscore": "^1.12.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
