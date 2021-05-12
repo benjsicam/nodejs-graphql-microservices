@@ -38,7 +38,7 @@
     "core-js": "^3.6.5",
     "email-templates": "^7.0.5",
     "glob": "^7.1.6",
-    "grpc": "^1.24.2",
+    "grpc": "^1.24.9",
     "grpc-health-check": "^1.8.0",
     "lodash": "^4.17.19",
     "mali": "^0.20.0",
