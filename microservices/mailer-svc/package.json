@@ -42,7 +42,7 @@
     "grpc-health-check": "^1.8.0",
     "lodash": "^4.17.19",
     "mali": "^0.20.0",
-    "nodemailer": "^6.4.6",
+    "nodemailer": "^6.4.16",
     "pino": "^6.2.1",
     "pug": "^2.0.4",
     "underscore": "^1.10.2"
